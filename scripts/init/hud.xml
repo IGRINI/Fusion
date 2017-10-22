@@ -1,0 +1,28 @@
+<root>
+	<styles>
+		<include src="s2r://panorama/styles/dotastyles.css"/>
+		<include src="s2r://panorama/styles/magadan.vcss_c"/>
+	</styles>
+	
+	<Panel class="Popup">
+		<Panel class="Main">
+			<Label class="Title2" text="Fusion"/>
+			<Panel class="Overlay">
+				<Label style="text-align:center;width:600px;" text="Camera distance" id="CamDist"/>
+				<Slider class="HorizontalSlider" style="width:600px;" direction="horizontal" id="CameraDistance"/>
+				<Panel class="Toggles" id="scripts"/>
+			</Panel>
+			<Button id="Reload" class="Title2">
+				<Label id="ReloadText" class="Title2" text="Reload scripts"/>
+			</Button>
+			<Button id="ReloadCustomGames" class="Title2">
+				<Label id="ReloadText" class="Title2" text="Reload scripts with custom games' scripts"/>
+			</Button>
+			<Label class="Title2" text="Script log"/>
+			<Panel id="ScriptLog"/>
+		</Panel>
+		<Button id="QuestSlideThumb" class="PanelSlideThumb" onactivate="$.GetContextPanel().ToggleClass('PopupOpened')">
+			<Panel class="PanelSlideThumbArrow"/>
+		</Button>
+	</Panel>
+</root>
