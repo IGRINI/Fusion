@@ -2,54 +2,30 @@
 var damage		= [300, 450, 600]
 var scepterdamage = [450, 600, 750]
 
-init()
-function init() {
-	Fusion.EzTechiesLVLUp = [-1, -1, -1]
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-	Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
+function SummonParticle(range, ent) {
+	var radius = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent)
+	Particles.SetParticleControl(radius, 1, [range, 0, 0])
+	Fusion.Particles.EzTechies.push(radius)
 }
 
-for(i in Fusion.Particles.EzTechies)
-	try {
-		var par = parseInt(Fusion.Particles.EzTechies[i])
-		Particles.DestroyParticleEffect(par, par)
-	} catch(e) {  }
-Fusion.Particles.EzTechies = []
-
-try {
-	Fusion.Panels.EzTechies.DeleteAsync(0)
-} catch(e) {  }
-try {
-	GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.EzTechiesMinesSpawn))
-} catch(e) {  }
-try {
-	GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.UltiUp))
-} catch(e) {  }
-
-Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", function(event) {
-	if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname!="techies_remote_mines")
-		return
-	
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-	Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
-})
-
-Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", function(event) {
-	var ent = parseInt(event.entindex)
-	if(Entities.IsEnemy(ent))
-		return
+function HandleEntity(ent) {
 	if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
 		var range = triggerradius
 	else if(Entities.GetUnitName(ent) === "npc_dota_techies_land_mine")
 		var range = 400
 	else
 		return
-	radius = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent)
-	Particles.SetParticleControl(radius, 1, [range, 0, 0])
-	Fusion.Particles.EzTechies.push(radius)
-})
+	
+	SummonParticle(range, ent)
+}
+
+function RespawnParticles() {
+	Entities.GetAllEntities().map(function(ent) {
+		return parseInt(ent)
+	}).filter(function(ent) {
+		return !Entities.IsEnemy(ent) && Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent))
+	}).forEach(HandleEntity)
+}
 
 function EzTechiesF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
@@ -119,14 +95,13 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 }
 
 function DenyMines(MyEnt) {
-	var dmgMines = Entities.GetAllEntitiesByClassname("npc_dota_techies_mines").filter(function(ent) {
+	Entities.GetAllEntitiesByClassname("npc_dota_techies_mines").filter(function(ent) {
 		return Entities.IsAlive(ent) && Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine" && Entities.IsValidEntity(ent) && Entities.GetHealthPercent(ent) !== 100
 	}).forEach(function(rmine) {
 		GameUI.SelectUnit(rmine, false)
 		Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
-	})
-	if(dmgMines.length !== 0)
 		GameUI.SelectUnit(MyEnt, false)
+	})
 }
 
 function RemoteMines(MyEnt, HEnts) {
@@ -208,4 +183,50 @@ function EzTechiesCheckBoxClick() {
 	Game.ScriptLogMsg("Script enabled: EzTechies", "#00ff00")
 }
 
+function UnsubscribeEvents() {
+	if(Fusion.Subscribes.EzTechiesMinesSpawn)
+		GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.EzTechiesMinesSpawn))
+
+	if(Fusion.Subscribes.UltiUp)
+		GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.UltiUp))
+}
+
+function SubscribeEvents() {
+	Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", function(event) {
+		if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname!="techies_remote_mines")
+			return
+		
+		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
+		Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
+	})
+	Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", function(event) {
+		var ent = parseInt(event.entindex)
+		if(Entities.IsEnemy(ent))
+			return
+		HandleEntity(ent)
+	})
+}
+
+function init() {
+	if(Fusion.Particles.EzTechies)
+		Fusion.Particles.EzTechies.forEach(function(par) {
+			try {
+				par = parseInt(par)
+				Particles.DestroyParticleEffect(par, par)
+			} catch(e) {  }
+		})
+	Fusion.Particles.EzTechies = []
+	UnsubscribeEvents()
+	Fusion.EzTechiesLVLUp = [-1, -1, -1]
+	
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+	var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
+	Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
+
+	RespawnParticles()
+	SubscribeEvents()
+}
+
+init()
 var EzTechies = Game.AddScript("EzTechies", EzTechiesCheckBoxClick)

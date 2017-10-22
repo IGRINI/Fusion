@@ -7,7 +7,6 @@ Fusion = {
 	MyTick: 1 / 30,
 	debug: false,
 	debugLoad: false,
-	//debugScripts: true,
 	debugAnimations: false,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
@@ -25,7 +24,7 @@ Fusion.ReloadFusion = function(postfix) {
 	Fusion.LoadFusion(function() {
 		Fusion.ServerRequest("scriptlist" + postfix, "", function(response) {
 			var scriptlist = JSON.parse(response)
-			Fusion.Panels.MainPanel.FindChildTraverse("scripts").RemoveAndDeleteChildren()
+			Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
 			scriptlist.forEach(Fusion.LoadScript)
 		})
 	})
@@ -33,10 +32,7 @@ Fusion.ReloadFusion = function(postfix) {
 
 Fusion.LoadScript = function(scriptName) {
 	Fusion.ServerRequest("getscript", scriptName, function(response) {
-		var code = response
-		//if(Fusion.debugScripts)
-			code = "try {" + code + "} catch(e) {$.Msg(\"Error in " + scriptName + ": \" + e)}"
-		eval(code)
+		eval("try {" + response + "} catch(e) {$.Msg(\"Error in " + scriptName + ": \" + e)}")
 		$.Msg("JScript " + scriptName + " loaded")
 	})
 }
@@ -92,17 +88,20 @@ Fusion.HUDEnabled = true
 Fusion.LoadFusion = function(callback) {
 	if(Fusion.Panels.MainPanel !== undefined)
 		Fusion.Panels.MainPanel.DeleteAsync(0)
-	Fusion.Panels.MainPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "DotaOverlay");
+	Fusion.Panels.MainPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "DotaOverlay")
 	Fusion.GetXML("init/hud", function(layout_string) {
 		$.Msg("HUD now are initializing...")
 		
-		Fusion.Panels.MainPanel.BLoadLayoutFromString(layout_string, false, false)
-		Fusion.Panels.MainPanel.ToggleClass("PopupOpened")
-		Fusion.Panels.MainPanel.ToggleClass("Popup")
-		Fusion.Panels.MainPanel.FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusionVanilla)
-		Fusion.Panels.MainPanel.FindChildTraverse("ReloadCustomGames").SetPanelEvent("onactivate", Fusion.ReloadFusionCustomGames)
-		Fusion.Panels.MainPanel.Slider = Fusion.Panels.MainPanel.FindChildInLayoutFile("CameraDistance")
-		Fusion.Panels.MainPanel.CamDist = Fusion.Panels.MainPanel.FindChildTraverse("CamDist")
+		with(Fusion.Panels.MainPanel) {
+			BLoadLayoutFromString(layout_string, false, false)
+			ToggleClass("PopupOpened")
+			ToggleClass("Popup")
+			FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusionVanilla)
+			FindChildTraverse("ReloadCustomGames").SetPanelEvent("onactivate", Fusion.ReloadFusionCustomGames)
+			Fusion.Panels.MainPanel.Slider = FindChildInLayoutFile("CameraDistance")
+			Fusion.Panels.MainPanel.CamDist = FindChildTraverse("CamDist")
+			Fusion.Panels.MainPanel.scripts = FindChildTraverse("scripts")
+		}
 		
 		$.Msg("HUD initializing finished!")
 		
@@ -185,16 +184,17 @@ function InstallMainHUD() {
 	Fusion.Panels.Main.HUDElements = Fusion.Panels.Main.FindChild("HUDElements")
 }
 
-function f() {
+function WaitForGameStart() {
 	$.Schedule (
 		0.04,
 		function() {
 			if(Players.GetLocalPlayer() !== -1)
 				Fusion.ReloadFusionVanilla()
 			else
-				f()
+				WaitForGameStart()
 		}
 	)
 }
+
 InstallMainHUD()
-f()
+WaitForGameStart()

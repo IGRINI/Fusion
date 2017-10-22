@@ -626,7 +626,7 @@ Game.CloneObject = function(obj) {
 }
 
 Game.AddScript = function(scriptName, onCheckBoxClick) {
-	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.FindChildTraverse("scripts"), scriptName)
+	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
 	Temp.SetPanelEvent("onactivate", onCheckBoxClick)
 	Temp.BLoadLayoutFromString('\
 		<root>\
@@ -639,7 +639,7 @@ Game.AddScript = function(scriptName, onCheckBoxClick) {
 			</Panel>\
 		</root>\
 	', false, false) 
-	Fusion.Panels.MainPanel.FindChildTraverse("scripts").Children().sort(function(a, b) {
+	Fusion.Panels.MainPanel.scripts.Children().sort(function(a, b) {
 		var aText = a.Children()[0].text
 		var bText = b.Children()[0].text
 		return aText.toLowerCase() > bText.toLowerCase()
@@ -647,5 +647,3 @@ Game.AddScript = function(scriptName, onCheckBoxClick) {
 	
 	return $.GetContextPanel().FindChildTraverse(scriptName).Children()[0]
 }
-
-Game.ScriptLogMsg("Utils sucessfull loaded", "#00ff00")
