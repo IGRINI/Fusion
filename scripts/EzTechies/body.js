@@ -156,10 +156,6 @@ function RemoteMines(MyEnt, HEnts) {
 
 function EzTechiesCheckBoxClick() {
 	if (!EzTechies.checked) {
-		Fusion.Particles.EzTechies.forEach(function(par) {
-			Particles.DestroyParticleEffect(par, par)
-		})
-		Fusion.Particles.EzTechies = []
 		Game.ScriptLogMsg("Script disabled: EzTechies", "#ff0000")
 		return
 	}
