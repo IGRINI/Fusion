@@ -1,5 +1,5 @@
-﻿var ExpRanged = 1300
-var DaggerRanged = 1200
+﻿var ExpRange = 1300
+var DaggerRange = 1200
 
 function DestroyParticles() {
 	try {
@@ -14,12 +14,12 @@ function ExpRangeEnable() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	Fusion.Particles.ExpRange = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
 	Fusion.Particles.DaggerRange = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
-	Particles.SetParticleControl(Fusion.Particles.ExpRange, 1, [ExpRanged, 0, 0])
-	Particles.SetParticleControl(Fusion.Particles.DaggerRange, 1, [DaggerRanged, 0, 0])
+	Particles.SetParticleControl(Fusion.Particles.ExpRange, 1, [ExpRange, 0, 0])
+	Particles.SetParticleControl(Fusion.Particles.DaggerRange, 1, [DaggerRange, 0, 0])
 }
 
-function exprangeOnOff(){
-	if (!ExpRange.checked) {
+function ExpRangeCheckBoxToggle() {
+	if (!ExpRangeCheckBox.checked) {
 		DestroyParticles()
 		Game.ScriptLogMsg("Script disabled: ExpRange", "#ff0000")
 	} else {
@@ -28,5 +28,5 @@ function exprangeOnOff(){
 	}
 }
 
-var ExpRange = Game.AddScript("ExpRange", exprangeOnOff)
+var ExpRangeCheckBox = Game.AddScript("ExpRange", ExpRangeCheckBoxToggle)
 DestroyParticles()

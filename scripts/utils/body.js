@@ -51,7 +51,8 @@ Fusion.DeepEquals = function (x, y) {
 }
 
 Game.GetScreenCursonWorldVec = function() {
-	return Game.ScreenXYToWorld(GameUI.GetCursorPosition()[0], GameUI.GetCursorPosition()[1])
+	var curPos = GameUI.GetCursorPosition
+	return Game.ScreenXYToWorld(curPos[0], curPos[1])
 }
 
 Abilities.GetCastRangeFix = function(abil) { // Don"t redefine internals
@@ -83,13 +84,12 @@ Fusion.IgnoreBuffs = [
 	"modifier_brewmaster_primal_split",
 	"modifier_omniknight_repel",
 	"modifier_phoenix_supernova_hiding",
-	"modifier_tusk_snowball_movemEnemyEntity",
-	"modifier_tusk_snowball_movemEnemyEntity_friendly",
 	"modifier_juggernaut_blade_fury",
 	"modifier_medusa_stone_gaze",
 	"modifier_nyx_assassin_spiked_carapace",
 	"modifier_templar_assassin_refraction_absorb",
 	"modifier_oracle_false_promise",
+	"modifier_oracle_fates_edict",
 	"modifier_dazzle_shallow_grave",
 	"modifier_treant_living_armor",
 	"modifier_life_stealer_rage",
@@ -112,7 +112,7 @@ Fusion.BuffsAddMagicDmgForMe = [
 ]
 
 Fusion.DebuffsAddMagicDmg = [
-	//в большую сторону
+	//в большую сторону (1 + perc)
 	["modifier_item_veil_of_discord_debuff", 1.25],
 	["modifier_bloodthorn_debuff", 1.3],
 	["modifier_orchid_malevolence_debuff", 1.3],
@@ -124,13 +124,12 @@ Fusion.DebuffsAddMagicDmg = [
 	["modifier_bloodseeker_bloodrage", [1.25, 1.3, 1.35, 1.4]],
 	["modifier_shadow_demon_soul_catcher", [1.2, 1.3, 1.4, 1.5]],
 	["modifier_pugna_decrepify", [1.3, 1.4, 1.5, 1.6]],
-	["modifier_necrolyte_sadist_active", 1.2],
+	["modifier_necrolyte_sadist_active", 1.25],
 	
-	//в меньшую сторону
+	//в меньшую сторону (1 - perc)
 	["modifier_item_pipe", 0.7],
-	["modifier_ursa_enrage", 0.2],
 	["modifier_item_pipe_aura", 0.9],
-	["modifier_oracle_fates_edict", 0],
+	["modifier_ursa_enrage", 0.2],
 	["modifier_item_hood_of_defiance", 0.7],
 	["modifier_item_planeswalkers_cloak", 0.85],
 	["modifier_item_glimmer_cape", 0.85],
@@ -186,10 +185,17 @@ Fusion.GetNeededMagicDmg = function(entFrom, entTo, dmg) {
 }
 
 Game.AngleBetweenVectors = function(a_pos, a_facing, b_pos) {
-	var distancevector = [b_pos[0] - a_pos[0], b_pos[1] - a_pos[1]]
-	var normalize = [ distancevector[0] / Math.sqrt(Math.pow(distancevector[0],2) + Math.pow(distancevector[1],2)), distancevector[1] / Math.sqrt(Math.pow(distancevector[0],2) + Math.pow(distancevector[1],2))]
-	var anglerad = Math.acos((a_facing[0] * normalize[0]) + (a_facing[1] * normalize[1]))
-	return anglerad
+	with(Math) {
+		var distancevector = [
+			b_pos[0] - a_pos[0],
+			b_pos[1] - a_pos[1]
+		]
+		var normalize = [
+			distancevector[0] / sqrt(pow(distancevector[0], 2) + pow(distancevector[1], 2)),
+			distancevector[1] / sqrt(pow(distancevector[0], 2) + pow(distancevector[1], 2))
+		]
+		return acos((a_facing[0] * normalize[0]) + (a_facing[1] * normalize[1]))
+	}
 }
 
 Game.AngleBetweenTwoFaces = function(a_facing, b_facing) {
@@ -249,14 +255,14 @@ Game.GetSpeed = function(ent) {
 		var b = Entities.GetMoveSpeedModifier(ent,a)
 		return b
 	} else {
-		return 1
+		return 0
 	}
 }
 
 Game.VelocityWaypoint = function(ent, time, movespeed) {
 	var zxc = Entities.GetAbsOrigin(ent)
 	var forward = Entities.GetForward(ent)
-	if(typeof movespeed === "undefined")
+	if(movespeed === undefined)
 		var movespeed = Game.GetSpeed(ent)
 
 	return [zxc[0] + (forward[0] * movespeed * time),zxc[1] + (forward[1] * movespeed * time),zxc[2]]
@@ -307,7 +313,7 @@ GameUI.MovePanel = function(a, callback) {
 		a.style.backgroundColor = "#FFFF00FF"
 		var uiw = Fusion.Panels.Main.actuallayoutwidth
 		var uih = Fusion.Panels.Main.actuallayoutheight
-		linkpanel = function() {
+		var linkpanel = function() {
 			a.style.position = (GameUI.GetCursorPosition()[0] / uiw * 100) + "% " + (GameUI.GetCursorPosition()[1] / uih * 100) + "% " + "0"
 			if (GameUI.IsMouseDown(0)) {
 				m = false
@@ -333,165 +339,155 @@ GameUI.MovePanel = function(a, callback) {
 }
 
 Game.MoveToPos = function(ent, xyz, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION
-	order.UnitIndex = ent
-	order.Position = xyz
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION,
+		UnitIndex: ent,
+		Position: xyz,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
-Game.MoveToTarget = function(ent, ent, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET
-	order.UnitIndex = ent
-	order.Position = xyz
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+Game.MoveToTarget = function(ent, entTo, queue) { //FIXME
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET,
+		UnitIndex: ent,
+		Position: entTo,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.MoveToAttackPos = function(ent, xyz, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE
-	order.UnitIndex = ent
-	order.Position = xyz
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE,
+		UnitIndex: ent,
+		Position: xyz,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
-Game.MoveToAttackTarget = function(ent, ent, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET
-	order.UnitIndex = ent
-	order.Position = xyz
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+Game.MoveToAttackTarget = function(ent, ent2, queue) {
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET,
+		UnitIndex: ent,
+		Position: ent2,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.CastTarget = function(ent, abil, target, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET
-	order.UnitIndex = ent
-	order.TargetIndex  = target
-	order.AbilityIndex = abil
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET,
+		UnitIndex: ent,
+		TargetIndex: target,
+		AbilityIndex: abil,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.CastPosition = function(ent, abil, xyz, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION
-	order.UnitIndex = ent
-	order.Position = xyz
-	order.AbilityIndex = abil
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION,
+		UnitIndex: ent,
+		Position: xyz,
+		AbilityIndex: abil,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.CastNoTarget = function(ent, abil, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_CAST_NO_TARGET
-	order.UnitIndex = ent
-	order.AbilityIndex = abil
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_NO_TARGET,
+		UnitIndex: ent,
+		AbilityIndex: abil,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.ToggleAbil = function(ent, abil, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TOGGLE
-	order.UnitIndex = ent
-	order.AbilityIndex = abil
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TOGGLE,
+		UnitIndex: ent,
+		AbilityIndex: abil,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.EntStop = function(ent, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_STOP
-	order.UnitIndex = ent
-	order.Queue = queue
-	order.ShowEffects = Fusion.debugAnimations
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_STOP,
+		UnitIndex: ent,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.DisassembleItem = function(ent, item, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_DISASSEMBLE_ITEM
-	order.UnitIndex = ent
-	order.AbilityIndex = item
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_DISASSEMBLE_ITEM,
+		UnitIndex: ent,
+		AbilityIndex: item,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.DropItem = function(ent, item, xyz, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_DROP_ITEM
-	order.UnitIndex = ent
-	order.Position = xyz
-	order.AbilityIndex = item
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_DROP_ITEM,
+		UnitIndex: ent,
+		Position: xyz,
+		AbilityIndex: item,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.PickupItem = function(ent, item, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_ITEM
-	order.UnitIndex = ent
-	order.TargetIndex  = item
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_ITEM,
+		UnitIndex: ent,
+		TargetIndex: item,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
+}
+
+Game.PuckupRune = function(ent, rune, queue) {
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_RUNE,
+		UnitIndex: ent,
+		TargetIndex: rune,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.ItemLock = function(ent, item, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK
-	order.UnitIndex = ent
-	order.TargetIndex  = item
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
-}
-
-Game.PuckupRune = function(ent, rune, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_ITEM
-	order.UnitIndex = ent
-	order.TargetIndex  = rune
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
-}
-
-Game.PuckupRune = function(ent, rune, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_RUNE
-	order.UnitIndex = ent
-	order.TargetIndex  = rune
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK,
+		UnitIndex: ent,
+		TargetIndex: item,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 Game.PurchaseItem = function(ent, itemid, queue) {
-	var order = {}
-	order.OrderType = dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM
-	order.UnitIndex = ent
-	order.AbilityIndex = itemid
-	order.Queue = queue
-	order.ShowEffects = false
-	Game.PrepareUnitOrders(order)
+	Game.PrepareUnitOrders({
+		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM,
+		UnitIndex: ent,
+		AbilityIndex: itemid,
+		Queue: queue,
+		ShowEffects: Fusion.debugAnimations
+	})
 }
 
 //Получение расстояния между двумя точками в пространстве, высшая математика епта
