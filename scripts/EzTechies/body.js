@@ -46,7 +46,7 @@ function RemoteMines(MyEnt, ents) {
 	
 	var NeedMagicDmg = -1
 	ents.forEach(function(ent) {
-		var need = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent))
+		var need = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 5)
 		if(need > NeedMagicDmg)
 			NeedMagicDmg = need
 	})
@@ -149,7 +149,7 @@ function init() {
 
 Fusion.Commands.EzTechies = function() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var ents = Game.GetEntitiesInRange(MyEnt, TriggerRadius, true)
+	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), TriggerRadius, true)
 	
 	RemoteMines(MyEnt, ents.filter(function(ent) {
 		return Fusion.GetMagicMultiplier(MyEnt, ent) !== 0 // filter out immune units
