@@ -206,36 +206,29 @@ Game.RotationTime = function(angle, rotspeed) { // MovementTurnRate
 	return (Fusion.MyTick * angle / rotspeed)
 }
 
-Game.ClosetToMouse = function(MyEnt, range, enemy) {
-	var pos = Game.GetScreenCursonWorldVec()
-	var enemyTeam = Game.PlayersHeroEnts()
-	if(enemy)
-		enemyTeam = enemyTeam.filter(function(ent) {
-			return Entities.IsEnemy(ent) && Entities.IsAlive(ent) && !Entities.IsBuilding(ent) && !Entities.IsInvulnerable(ent)
-		})
+Game.GetEntitiesInRange = function(pos, range, onlyEnemies) {
+	return Game.PlayersHeroEnts().filter(function(ent) {
+		return onlyEnemies ? Entities.IsEnemy(ent) : true
+				&& Entities.IsAlive(ent)
+				&& !Entities.IsBuilding(ent)
+				&& !Entities.IsInvulnerable(ent)
+				&& Game.PointDistance(pos, Entities.GetAbsOrigin(ent)) < range
+	})
+}
 
-	if(enemyTeam.length > 0)
-		return enemyTeam.map(function(ent) {
-			var enemyXY = Entities.GetAbsOrigin(ent)
-			var distance = Game.PointDistance(pos, enemyXY)
-			if(distance < range)
-				return ent
-			else
-				return undefined
-		}).filter(function(ent) {
-			return ent !== undefined
-		}).sort(function(ent1, ent2) {
-			var dst1 = Game.PointDistance(ent1, MyEnt),
-				dst2 = Game.PointDistance(ent2, MyEnt)
-			if(dst1 > dst2)
-				return 1
-			else if(dst1 < dst2)
-				return -1
-			else
-				return 0
-		})[0]
-	else
-		return undefined
+Game.ClosetToMouse = function(MyEnt, range, onlyEnemies) {
+	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), range, onlyEnemies).sort(function(ent1, ent2) {
+		var dst1 = Game.PointDistance(ent1, MyEnt),
+			dst2 = Game.PointDistance(ent2, MyEnt)
+		if(dst1 > dst2)
+			return 1
+		else if(dst1 < dst2)
+			return -1
+		else
+			return 0
+	})
+	
+	return ents.length > 0 ? ents[0] : undefined
 }
 
 Game.GetAbilityByName = function(ent, name) {
@@ -601,8 +594,7 @@ Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
 	var transitionString = durationString + " " + easeString + " " + delayString
 	var i = 0
 	var finalTransition = ""
-	for (var property in values)
-	{
+	for (var property in values) {
 		finalTransition = finalTransition + (i > 0 ? ", " : "") + property + " " + transitionString
 		i++
 	}

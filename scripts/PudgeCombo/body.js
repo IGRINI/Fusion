@@ -57,7 +57,7 @@ function Urn() {
 }
 
 function Dismember() {
-	var dismember = Game.GetAbilityByName(MyEnt,"pudge_dismember")
+	var dismember = Game.GetAbilityByName(MyEnt, "pudge_dismember")
 
 	Game.CastTarget(MyEnt, dismember, ent, false)
 }
