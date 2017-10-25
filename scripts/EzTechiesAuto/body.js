@@ -79,7 +79,7 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 			RMinesDmg += dmg
 			if(RMinesDmg > (NeedMagicDmg + dmg)) {
 				if(debug)
-					Game.ScriptLogMsg("[EzTechies] There's " + RMinesDmg + ", needed " + NeedMagicDmg + " for " + Entities.GetUnitName(ent), "#0000ff")
+					$.Msg("[EzTechies] There's " + RMinesDmg + ", needed " + NeedMagicDmg + " for " + Entities.GetUnitName(ent))
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return true
 			}

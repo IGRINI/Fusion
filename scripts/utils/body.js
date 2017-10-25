@@ -51,7 +51,7 @@ Fusion.DeepEquals = function (x, y) {
 }
 
 Game.GetScreenCursonWorldVec = function() {
-	var curPos = GameUI.GetCursorPosition
+	var curPos = GameUI.GetCursorPosition()
 	return Game.ScreenXYToWorld(curPos[0], curPos[1])
 }
 
@@ -485,7 +485,7 @@ Game.PurchaseItem = function(ent, itemid, queue) {
 
 //Получение расстояния между двумя точками в пространстве, высшая математика епта
 Game.PointDistance = function(a,b) {
-	return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2)+Math.pow(a[1]-b[1],2))
+	return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[1] - b[1], 2))
 }
 
 //"округление" числа до определенного кол-ва знаков после запятой

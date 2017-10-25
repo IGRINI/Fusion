@@ -69,40 +69,6 @@ function destroy(){
 		try{Particles.DestroyParticleEffect(Fusion.Particles.AncientCreepStack[i],Fusion.Particles.AncientCreepStack[i])}catch(e){}
 	Fusion.Particles.AncientCreepStack = []
 }
-function create(){
-	myid = Players.GetLocalPlayer()
-	team = Players.GetTeam(myid)-2
-	camp = camps[team]
-	status = 0
-	ent = Players.GetLocalPlayerPortraitUnit()
-	if(!(Entities.IsControllableByPlayer(ent,myid)&&Entities.IsCreep(ent)&&Entities.IsValidEntity(ent)&&Entities.IsAlive(ent)&&Entities.IsRangedAttacker(ent))){
-		GameEvents.SendEventClientSide("antiaddiction_toast", {
-			"message": "Выбранный юнит не является союзным подконтрольным крипом дальнего боя :(\nДоступна команда: __AncientCreepStack_Activate",
-			"duration": "5"
-		})
-		AncientCreepStack.checked = false
-		return
-	}
-	DrawBox(spots[team])
-	Fusion.Subscribes.AncientCreepStack = GameEvents.Subscribe("entity_hurt", function(a){
-		if(a.entindex_attacker==ent)
-			b=true
-	})
-	Fusion.Panels.AncientCreepStack = $.CreatePanel( "Panel", Fusion.Panels.Main, "AncientCreepStack" )
-	Fusion.Panels.AncientCreepStack.BLoadLayoutFromString("\
-<root>\
-	<styles>\
-		<include src='s2r://panorama/styles/dotastyles.vcss_c' />\
-	</styles>\
-	<Panel style='padding: 3px; border-radius: 5px; flow-children: down; background-color: #000000EE; border: 1px solid white;'>\
-		<Label style='color:white;font-size:16px;'/>\
-		<Label style='color:white;font-size:16px;'/>\
-		<Label style='color:white;font-size:16px;'/>\
-	</Panel>\
-</root>", false, false)
-	Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg );"}, 0.3, "ease-in", 0)
-	Game.ScriptLogMsg("Script enabled: AncientCreepStack", "#00ff00")
-}
 
 function DrawBox(box){
 	Fusion.Particles.AncientCreepStack.push(DrawLineInGameWorld( [ box[0], box[1], box[4] ], [ box[0], box[3], box[4] ]))
@@ -236,20 +202,60 @@ function AncientCreepStackOnCheckBoxClick() {
 		Game.ScriptLogMsg("Script disabled: AncientCreepStack", "#ff0000")
 		return
 	}
-	create()
-	function f(){ $.Schedule( interval,function(){
-		AncientCreepStackF()
-		if(AncientCreepStack.checked)
-			f()
-	})}
+	Fusion.Commands.AncientCreepStack()
+	function f() {
+		$.Schedule(interval, function() {
+			AncientCreepStackF()
+			if(AncientCreepStack.checked)
+				f()
+		}
+	)}
 	f()
-	function u(){ $.Schedule( 0,function(){
-		AncientCreepStackU()
-		if(AncientCreepStack.checked)
-			u()
-	})}
+	function u() {
+		$.Schedule(0, function() {
+			AncientCreepStackU()
+			if(AncientCreepStack.checked)
+				u()
+		}
+	)}
 	u()
 }
 
 var AncientCreepStack = Game.AddScript("AncientCreepStack", AncientCreepStackOnCheckBoxClick)
-Game.AddCommand("__AncientCreepStack_Activate", create, "", 0)
+if(!Fusion.Commands.AncientCreepStack) {
+	Fusion.Commands.AncientCreepStack = function() {
+		myid = Players.GetLocalPlayer()
+		team = Players.GetTeam(myid)-2
+		camp = camps[team]
+		status = 0
+		ent = Players.GetLocalPlayerPortraitUnit()
+		if(!(Entities.IsControllableByPlayer(ent,myid)&&Entities.IsCreep(ent)&&Entities.IsValidEntity(ent)&&Entities.IsAlive(ent)&&Entities.IsRangedAttacker(ent))){
+			GameEvents.SendEventClientSide("antiaddiction_toast", {
+				"message": "Выбранный юнит не является союзным подконтрольным крипом дальнего боя :(\nДоступна команда: __AncientCreepStack_Activate",
+				"duration": "5"
+			})
+			AncientCreepStack.checked = false
+			return
+		}
+		DrawBox(spots[team])
+		Fusion.Subscribes.AncientCreepStack = GameEvents.Subscribe("entity_hurt", function(a){
+			if(a.entindex_attacker==ent)
+				b=true
+		})
+		Fusion.Panels.AncientCreepStack = $.CreatePanel( "Panel", Fusion.Panels.Main, "AncientCreepStack" )
+		Fusion.Panels.AncientCreepStack.BLoadLayoutFromString("\
+<root>\
+	<styles>\
+		<include src='s2r://panorama/styles/dotastyles.vcss_c' />\
+	</styles>\
+	<Panel style='padding: 3px; border-radius: 5px; flow-children: down; background-color: #000000EE; border: 1px solid white;'>\
+		<Label style='color:white;font-size:16px;'/>\
+		<Label style='color:white;font-size:16px;'/>\
+		<Label style='color:white;font-size:16px;'/>\
+	</Panel>\
+</root>", false, false)
+		Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg );"}, 0.3, "ease-in", 0)
+		Game.ScriptLogMsg("Script enabled: AncientCreepStack", "#00ff00")
+	}
+	Game.AddCommand("__AncientCreepStack_Activate", Fusion.Commands.AncientCreepStack, "", 0)
+}

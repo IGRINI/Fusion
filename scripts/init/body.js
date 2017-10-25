@@ -140,29 +140,6 @@ Fusion.LoadFusion = function(callback) {
 		
 		
 		Fusion.SteamID = Game.GetLocalPlayerInfo().player_steamid
-		Game.AddCommand( "__ReloadFusionVanilla", Fusion.ReloadFusionVanilla, "", 0)
-		Game.AddCommand( "__ReloadFusionCustomGames", Fusion.ReloadFusionCustomGames, "", 0)
-		Game.AddCommand("__TogglePanel", function() {
-			Fusion.Panels.MainPanel.ToggleClass("Popup")
-		}, "",0)
-		Game.AddCommand("__ToggleMinimapActs", function() {
-			var panel = Fusion.Panels.Main.HUDElements
-			
-			if(panel = panel.FindChild("minimap_container").FindChild("GlyphScanContainer"))
-				if(Fusion.MinimapActsEnabled = !Fusion.MinimapActsEnabled)
-						panel.style.visibility = ""
-					else
-						panel.style.visibility = "collapse"
-		}, "",0)
-		Game.AddCommand("__ToggleStats", function() {
-			var panel = Fusion.Panels.Main.HUDElements
-			
-			if(panel = panel.FindChild("quickstats"))
-				if(Fusion.StatsEnabled = !Fusion.StatsEnabled)
-					panel.style.visibility = ""
-				else
-					panel.style.visibility = "collapse"
-		}, "",0)
 		Fusion.Panels.MainPanel.ToggleClass("Popup")
 		if(callback !== undefined)
 			callback()
@@ -187,9 +164,33 @@ function WaitForGameStart() {
 	$.Schedule (
 		0.04,
 		function() {
-			if(Players.GetLocalPlayer() !== -1)
+			if(Players.GetLocalPlayer() !== -1) {
+				Game.AddCommand( "__ReloadFusionVanilla", Fusion.ReloadFusionVanilla, "", 0)
+				Game.AddCommand( "__ReloadFusionCustomGames", Fusion.ReloadFusionCustomGames, "", 0)
+				Game.AddCommand("__TogglePanel", function() {
+					Fusion.Panels.MainPanel.ToggleClass("Popup")
+				}, "",0)
+				Game.AddCommand("__ToggleMinimapActs", function() {
+					var panel = Fusion.Panels.Main.HUDElements
+					
+					if(panel = panel.FindChild("minimap_container").FindChild("GlyphScanContainer"))
+						if(Fusion.MinimapActsEnabled = !Fusion.MinimapActsEnabled)
+								panel.style.visibility = ""
+							else
+								panel.style.visibility = "collapse"
+				}, "",0)
+				Game.AddCommand("__ToggleStats", function() {
+					var panel = Fusion.Panels.Main.HUDElements
+					
+					if(panel = panel.FindChild("quickstats"))
+						if(Fusion.StatsEnabled = !Fusion.StatsEnabled)
+							panel.style.visibility = ""
+						else
+							panel.style.visibility = "collapse"
+				}, "",0)
+				
 				Fusion.ReloadFusionVanilla()
-			else
+			} else
 				WaitForGameStart()
 		}
 	)

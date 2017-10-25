@@ -3,50 +3,6 @@
 	GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.EzProcastonchatmsg))
 } catch(e) {  }
 
-function EzProcastF() {
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var EntOnCursor = GameUI.FindScreenEntities( GameUI.GetCursorPosition() )
-	var pos = Game.GetScreenCursonWorldVec()
-	var items = Fusion.Panels.EzProcast.Children()[2].Children()
-	var abils = []
-	for(i in items)
-		if(items[i].Children()[0].paneltype === "DOTAAbilityImage")
-			abils.push(items[i].Children()[0].abilityname)
-		else
-			if(items[i].Children()[0].paneltype === "DOTAItemImage")
-				abils.push(items[i].Children()[0].itemname)
-	$.Msg("Abils: "+abils)
-	Game.EntStop(MyEnt)
-	for(i in abils){
-		var AbName = abils[i]
-		var Abil = Game.GetAbilityByName(MyEnt,abils[i])
-		var EzPBeh = Game.Behaviors(Abil)
-		var EzPDUTT = Abilities.GetAbilityTargetTeam(Abil)
-		$.Msg("Team Target: "+EzPDUTT)
-		$.Msg("Ability Behavior: "+EzPBeh)
-		if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_TOGGLE) !== -1)
-			Game.ToggleAbil(MyEnt, Abil)
-		else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
-			Game.CastNoTarget(MyEnt, Abil)
-		else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
-			Game.CastPosition(MyEnt, Abil, pos)
-		else if(AbName=="item_ethereal_blade") {
-			if(EntOnCursor.length!=0)
-				Game.CastTarget(MyEnt, Abil, EntOnCursor[0].entityIndex)
-			else
-				Game.CastTarget(MyEnt, Abil, MyEnt)
-		} else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || EzPBeh.length === 0) {
-			if( parseInt(EzPDUTT)==3 || parseInt(EzPDUTT)==1 ){
-				Game.CastTarget(MyEnt, Abil, MyEnt)
-			}else if( parseInt(EzPDUTT)!=-1 || parseInt(EzPDUTT)==4 ){
-				Game.CastTarget(MyEnt, Abil, MyEnt)
-			}else{
-				Game.CastTarget(MyEnt, Abil, MyEnt)
-			}
-		}
-	}
-}
-
 function EzProcast01OnOffLoad() {
 	Fusion.GetXML("EzProcast/panel", function(a){
 		Fusion.Panels.EzProcast = $.CreatePanel("Panel", Fusion.Panels.Main, "EzProcast")
@@ -128,9 +84,53 @@ function EzProcast01OnOff(){
 		Game.ScriptLogMsg("Script enabled: EzProcast", "#00ff00")
 	}
 }
-Game.AddCommand("__EzProcast", function() {
-	EzProcastF()
-}, "",0)
+
+if(!Fusion.Commands.EzProcastF) {
+	Fusion.Commands.EzProcastF = function() {
+		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+		var EntOnCursor = GameUI.FindScreenEntities( GameUI.GetCursorPosition() )
+		var pos = Game.GetScreenCursonWorldVec()
+		var items = Fusion.Panels.EzProcast.Children()[2].Children()
+		var abils = []
+		for(i in items)
+			if(items[i].Children()[0].paneltype === "DOTAAbilityImage")
+				abils.push(items[i].Children()[0].abilityname)
+			else
+				if(items[i].Children()[0].paneltype === "DOTAItemImage")
+					abils.push(items[i].Children()[0].itemname)
+		$.Msg("Abils: "+abils)
+		Game.EntStop(MyEnt)
+		for(var i in abils){
+			var AbName = abils[i]
+			var Abil = Game.GetAbilityByName(MyEnt,abils[i])
+			var EzPBeh = Game.Behaviors(Abil)
+			var EzPDUTT = Abilities.GetAbilityTargetTeam(Abil)
+			$.Msg("Team Target: "+EzPDUTT)
+			$.Msg("Ability Behavior: "+EzPBeh)
+			if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_TOGGLE) !== -1)
+				Game.ToggleAbil(MyEnt, Abil)
+			else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
+				Game.CastNoTarget(MyEnt, Abil)
+			else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
+				Game.CastPosition(MyEnt, Abil, pos)
+			else if(AbName=="item_ethereal_blade") {
+				if(EntOnCursor.length!=0)
+					Game.CastTarget(MyEnt, Abil, EntOnCursor[0].entityIndex)
+				else
+					Game.CastTarget(MyEnt, Abil, MyEnt)
+			} else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || EzPBeh.length === 0) {
+				if( parseInt(EzPDUTT)==3 || parseInt(EzPDUTT)==1 ){
+					Game.CastTarget(MyEnt, Abil, MyEnt)
+				}else if( parseInt(EzPDUTT)!=-1 || parseInt(EzPDUTT)==4 ){
+					Game.CastTarget(MyEnt, Abil, MyEnt)
+				}else{
+					Game.CastTarget(MyEnt, Abil, MyEnt)
+				}
+			}
+		}
+	}
+	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
+}
 var EzProcast01 = Game.AddScript("EzProcast", EzProcast01OnOff)
 
 /*

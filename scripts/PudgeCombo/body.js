@@ -70,12 +70,14 @@ function Combo() {
 	})
 }
 
-Fusion.Commands.PudgeCombo = function() {
-	MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	ent = Game.ClosetToMouse(MyEnt, 1000, true)
-	if(ent === undefined)
-		return
-	Combo()
-}
+if(!Fusion.Commands.PudgeCombo) {
+	Fusion.Commands.PudgeCombo = function() {
+		MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+		ent = Game.ClosetToMouse(MyEnt, 1000, true)
+		if(ent === undefined)
+			return
+		Combo()
+	}
 
-Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
+	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
+}

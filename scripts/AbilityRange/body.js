@@ -135,15 +135,19 @@ function AbilityRangeF() {
 			Fusion.Panels.AbilityRange.style.position = config.MainPanel.x + " " + config.MainPanel.y + " 0"
 			Fusion.Panels.AbilityRange.style.flowChildren = config.MainPanel.flow
 		})
-		Game.AddCommand( "__AbilityRange_Rotate", function() {
-			var panel = Fusion.Panels.AbilityRange
-			if (panel.style.flowChildren == "right")
-				panel.style.flowChildren = "down"
-			else
-				panel.style.flowChildren = "right"
-			Fusion.Configs.AbilityRange.MainPanel.flow = panel.style.flowChildren
-			Fusion.SaveConfig("AbilityRange", Fusion.Configs.AbilityRange)
-		}, "",0)
+		if(!Fusion.Commands.AbilityRange_Rotate) {
+			Fusion.Commands.AbilityRange_Rotate = function() {
+				var panel = Fusion.Panels.AbilityRange
+				if (panel.style.flowChildren == "right")
+					panel.style.flowChildren = "down"
+				else
+					panel.style.flowChildren = "right"
+				Fusion.Configs.AbilityRange.MainPanel.flow = panel.style.flowChildren
+				Fusion.SaveConfig("AbilityRange", Fusion.Configs.AbilityRange)
+			}
+			
+			Game.AddCommand( "__AbilityRange_Rotate", Fusion.Commands.AbilityRange_Rotate, "",0)
+		}
 	} else {
 		Game.ScriptLogMsg("Script disabled: AbilityRange", "#ff0000")
 		Destroy()
