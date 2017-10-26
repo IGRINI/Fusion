@@ -9,10 +9,36 @@ function SummonParticle(range, ent) {
 	Particles.SetParticleControl(par, 1, [range, 0, 0])
 }
 
+var rmineTimeout = 598 // 600 is mine duration
+function ScheduleExplode(rmine) {
+	var time = parseInt(Game.GetGameTime())
+	var delta = time - rmineTimeout + Fusion.MyTick
+	Game.GetBuffs(rmine).some(function(buff) {
+		if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine") {
+			delta = time - Buffs.GetCreationTime(rmine, buff)
+			return true
+		}
+		
+		return false
+	})
+
+	$.Msg(delta + rmineTimeout)
+	$.Schedule(delta + rmineTimeout, function() {
+		if(Fusion.EzTechies.RMines.indexOf(rmine) < 0)
+			return
+		
+		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+		GameUI.SelectUnit(rmine, false)
+		Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
+		GameUI.SelectUnit(MyEnt, false)
+	})
+}
+
 function HandleEntity(ent) {
 	if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine") {
 		var range = TriggerRadius
 		Fusion.EzTechies.RMines.push(ent)
+		ScheduleExplode(ent)
 	} else if(Entities.GetUnitName(ent) === "npc_dota_techies_land_mine")
 		var range = 400
 	else
@@ -46,26 +72,21 @@ function RemoteMines(MyEnt, ents) {
 	var RMinesToBlow = []
 	var RMinesDmg = 0
 	Fusion.EzTechies.RMines.some(function(rmine) {
-		var buffs = Game.GetBuffs(rmine)
-		if(buffs.length === 0)
-			return false
-		
 		var time = -1
-		for(var k in buffs)
-			if(Buffs.GetName(rmine, buffs[k]) === "modifier_techies_remote_mine")
-				var time = Buffs.GetCreationTime(rmine, buffs[k])
+		Game.GetBuffs(rmine).some(function(buff) {
+			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine") {
+				time = Buffs.GetCreationTime(rmine, buff)
+				return true
+			}
+			return false
+		})
 		if(time === -1)
 			return false
 		
-		var dmg = 0
+		var dmg = -1
 		for(var z = Fusion.EzTechies.LVLUp.length; z >= 0; z--)
-			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z]) {
-				if(Entities.HasScepter(MyEnt))
-					dmg = RMinesDamageScepter[z]
-				else
-					dmg = RMinesDamage[z]
-				break
-			}
+			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z])
+				dmg = Entities.HasScepter(MyEnt) ? RMinesDamageScepter[z] : RMinesDamage[z]
 		if(ents.some(function(ent) {
 			return Entities.GetRangeToUnit(rmine, ent) <= TriggerRadius
 		})) {

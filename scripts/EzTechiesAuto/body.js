@@ -26,13 +26,8 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 		
 		var dmg = 0
 		for(var z = Fusion.EzTechies.LVLUp.length; z >= 0; z--)
-			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z]) {
-				if(Entities.HasScepter(MyEnt))
-					dmg = RMinesDamageScepter[z]
-				else
-					dmg = RMinesDamage[z]
-				break
-			}
+			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z])
+				dmg = Entities.HasScepter(MyEnt) ? RMinesDamageScepter[z] : RMinesDamage[z]
 		
 		if(callback(MyEnt, ent, rmine)) {
 			RMinesToBlow.push(rmine)
