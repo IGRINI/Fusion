@@ -1,13 +1,12 @@
-﻿// pros will love this script
+﻿// pros would like this script
 var TriggerRadius = 425
 var RMinesDamage = [300, 450, 600]
 var RMinesDamageScepter = [450, 600, 750]
 var debug = true
 
 function SummonParticle(range, ent) {
-	var radius = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent)
-	Particles.SetParticleControl(radius, 1, [range, 0, 0])
-	Fusion.Particles.EzTechies[ent] = parseInt(radius)
+	var par = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent)
+	Particles.SetParticleControl(par, 1, [range, 0, 0])
 }
 
 function HandleEntity(ent) {
@@ -22,7 +21,7 @@ function HandleEntity(ent) {
 	SummonParticle(range, ent)
 }
 
-function RespawnParticles() {
+function RehandleMines() {
 	Entities.GetAllEntities().map(function(ent) {
 		return parseInt(ent)
 	}).filter(function(ent) {
@@ -120,15 +119,12 @@ function init() {
 			RMines: [],
 			RemoveRMine: function(rmine) {
 				Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
-				Particles.DestroyParticleEffect(Fusion.Particles.EzTechies[rmine], true)
-				Fusion.Particles.EzTechies.splice(rmine, 1)
 			}
 		}
-		Fusion.Particles.EzTechies = []
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
 		Fusion.EzTechies.LVLUp[lvl] = 0
-		RespawnParticles()
+		RehandleMines()
 	}
 
 	SubscribeEvents()
