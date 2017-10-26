@@ -94,48 +94,40 @@ function RemoteMines(MyEnt, ents) {
 	})
 }
 
-function UnsubscribeEvents() {
-	if(Fusion.Subscribes.EzTechiesMinesSpawn)
-		GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.EzTechiesMinesSpawn))
-
-	if(Fusion.Subscribes.UltiUp)
-		GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.UltiUp))
-	
-	if(Fusion.Subscribes.EzTechiesMineDeath)
-		GameEvents.Unsubscribe(parseInt(Fusion.Subscribes.EzTechiesMineDeath))
-}
-
 function SubscribeEvents() {
-	Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", function(event) {
-		if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname != "techies_remote_mines")
-			return
-		
-		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-		Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
-	})
-	Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", function(event) {
-		var ent = parseInt(event.entindex)
-		if(Entities.IsEnemy(ent))
-			return
-		HandleEntity(ent)
-	})
-	Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", function(event) {
-		var ent = parseInt(event.entindex_killed)
-		if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
-			RemoveRMine(ent)
-	})
+	if(!Fusion.Subscribes.UltiUp)
+		Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", function(event) {
+			if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname != "techies_remote_mines")
+				return
+			
+			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+			var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
+			Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
+		})
+
+	if(!Fusion.Subscribes.EzTechiesMinesSpawn)
+		Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", function(event) {
+			var ent = parseInt(event.entindex)
+			if(Entities.IsEnemy(ent))
+				return
+			HandleEntity(ent)
+		})
+
+	if(!Fusion.Subscribes.EzTechiesMineDeath)
+		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", function(event) {
+			var ent = parseInt(event.entindex_killed)
+			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
+				RemoveRMine(ent)
+		})
 }
 
 function init() {
-	UnsubscribeEvents()
-	
 	if(!Fusion.EzTechiesLVLUp) {
 		Fusion.EzTechiesLVLUp = [-1, -1, -1]
 
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-		Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
+		Fusion.EzTechiesLVLUp[lvl] = 0
 	}
 	if(!Fusion.Particles.EzTechies || !Fusion.RMines) {
 		Fusion.Particles.EzTechies = []

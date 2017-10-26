@@ -1,3 +1,10 @@
+if(!Fusion.Commands.Eval) {
+	Fusion.Commands.Eval = function(name, arg1) {
+		eval(arg1)
+	}
+	Game.AddCommand('__eval', Fusion.Commands.Eval, '', 0)
+}
+
 if(!Fusion.Commands.DumpEnemyAbilities) {
 	var lastBuffs = []
 	Fusion.Commands.DumpEnemyAbilities = function() {
@@ -53,10 +60,4 @@ if(!Fusion.Commands.ModifierDebugging.Command) {
 		}
 	]
 	Game.AddCommand('__StartModifierDebugging', Fusion.Commands.ModifierDebugging.Command, '', 0)
-}
-if(!Fusion.Commands.Eval) {
-	Fusion.Commands.Eval = function(name, arg1) {
-		eval(arg1)
-	}
-	Game.AddCommand('__eval', Fusion.Commands.Eval, '', 0)
 }
