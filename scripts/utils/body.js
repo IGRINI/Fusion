@@ -103,6 +103,14 @@ Fusion.IgnoreBuffs = [
 	"modifier_tusk_snowball_movement",
 	"modifier_tusk_snowball_movement_friendly"
 ]
+Fusion.GetMagicMultiplier = function(entFrom, entTo) {
+	var multiplier = Entities.GetMagicalArmorValue(entTo)
+	
+	if(Game.IntersecArrays(Game.GetBuffsNames(entTo), Fusion.IgnoreBuffs) || multiplier == 1)
+		return 0
+	
+	return 1 + multiplier
+}
 
 Fusion.BuffsAbsorbMagicDmg = [
 	["modifier_item_pipe_barrier", 400],
@@ -111,71 +119,6 @@ Fusion.BuffsAbsorbMagicDmg = [
 	["modifier_abaddon_aphotic_shield", [110,140,170,200]],
 	["modifier_ember_spirit_flame_guard", [50,200,350,500]]
 ]
-
-Fusion.BuffsAddMagicDmgForMe = [
-	["item_aether_lens", 1.05],
-	["modifier_bloodseeker_bloodrage", [1.25,1.3,1.35,1.4]]
-]
-
-Fusion.DebuffsAddMagicDmg = [
-	//в большую сторону (1 + perc)
-	["modifier_item_veil_of_discord_debuff", 1.25],
-	["modifier_bloodthorn_debuff", 1.3],
-	["modifier_orchid_malevolence_debuff", 1.3],
-	["modifier_item_ethereal_blade_ethereal", 1.4],
-	["modifier_item_mask_of_madness_berserk", 1.25],
-	["modifier_ghost_state", 1.4],
-	["modifier_ice_vortex", [1.15, 1.2, 1.25, 1.3]],
-	["modifier_skywrath_mage_ancient_seal", [1.3, 1.35, 1.4, 1.45]],
-	["modifier_bloodseeker_bloodrage", [1.25, 1.3, 1.35, 1.4]],
-	["modifier_shadow_demon_soul_catcher", [1.2, 1.3, 1.4, 1.5]],
-	["modifier_pugna_decrepify", [1.3, 1.4, 1.5, 1.6]],
-	["modifier_necrolyte_sadist_active", 1.25],
-	
-	//в меньшую сторону (1 - perc)
-	["modifier_item_pipe", 0.7],
-	["modifier_item_pipe_aura", 0.9],
-	["modifier_ursa_enrage", 0.2],
-	["modifier_item_hood_of_defiance", 0.7],
-	["modifier_item_planeswalkers_cloak", 0.85],
-	["modifier_item_glimmer_cape", 0.85],
-	["item_glimmer_cape_fade", 0.55],
-	["modifier_wisp_overcharge", [0.95, 0.9, 0.85, 0.8]],
-	["modifier_pudge_flesh_heap", [0.94, 0.92, 0.9, 0.88]],
-	["modifier_rubick_null_field_effect", [0.9, 0.86, 0.82, 0.78]],
-	["modifier_antimage_spell_shield", [0.74, 0.66, 0.58, 0.5]]
-]
-
-Fusion.GetMagicMultiplier = function(entFrom, entTo) {
-	var multiplier = 1.0
-	var buffsnames = Game.GetBuffsNames(entTo)
-	
-	if (Game.IntersecArrays(buffsnames, Fusion.IgnoreBuffs) || Entities.IsMagicImmune(entTo))
-		return 0.0
-	
-	var enemyBuffs = Game.GetBuffs(entTo)
-	var myBuffs = Game.GetBuffs(entFrom)
-	for(var i in enemyBuffs)
-		for(var k in Fusion.DebuffsAddMagicDmg)
-			if(Buffs.GetName(entTo, enemyBuffs[i]) === Fusion.DebuffsAddMagicDmg[k][0])
-				if(Array.isArray(Fusion.DebuffsAddMagicDmg[k][1]))
-					multiplier *= Fusion.DebuffsAddMagicDmg[k][1][Abilities.GetLevel(Buffs.GetAbility(entTo, enemyBuffs[i])) - 1]
-				else
-					multiplier *= Fusion.DebuffsAddMagicDmg[k][1]
-	
-	for(var i in myBuffs)
-		for(var k in Fusion.BuffsAddMagicDmgForMe)
-			if(Buffs.GetName(entFrom, myBuffs[i]) === Fusion.BuffsAddMagicDmgForMe[k][0])
-				if(Array.isArray(Fusion.BuffsAddMagicDmgForMe[k][1]))
-					multiplier *= Fusion.BuffsAddMagicDmgForMe[k][1][Abilities.GetLevel(Buffs.GetAbility(entFrom, myBuffs[i])) - 1]
-				else
-					multiplier *= Fusion.BuffsAddMagicDmgForMe[k][1]
-	
-	multiplier += Entities.GetArmorReductionForDamageType(entTo, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
-	
-	return multiplier
-}
-
 Fusion.GetNeededMagicDmg = function(entFrom, entTo, dmg) {
 	Game.GetBuffs(entTo).forEach(function(enemyBuff) {
 		Fusion.BuffsAbsorbMagicDmg.forEach(function(absorbBuff) {

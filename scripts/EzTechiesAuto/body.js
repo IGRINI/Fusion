@@ -17,9 +17,10 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 			return false
 		
 		var time = -1
-		for(var k in buffs)
-			if(Buffs.GetName(rmine, buffs[k]) === "modifier_techies_remote_mine")
-				var time = Buffs.GetCreationTime(rmine, buffs[k])
+		buffs.forEach(function(buff) {
+			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine")
+				time = Buffs.GetCreationTime(rmine, buff)
+		})
 		if(time === -1)
 			return false
 		
@@ -38,7 +39,7 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 			RMinesDmg += dmg
 			if(RMinesDmg > (NeedMagicDmg + dmg)) {
 				if(debug)
-					$.Msg("[EzTechies] There's " + RMinesDmg + ", needed " + NeedMagicDmg + " for " + Entities.GetUnitName(ent))
+					$.Msg("[EzTechies] There's " + RMinesDmg + ", needed ~" + NeedMagicDmg + " for " + Entities.GetUnitName(ent))
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return true
 			}
