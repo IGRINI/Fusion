@@ -71,7 +71,7 @@ function AlertTarget(modifier, ent) {
 		A.DeleteAsync(modifier[1])
 		panels[ent] = A
 		$.Schedule(modifier[1], function() {
-			delete panels[ent]
+			panels.splice(ent, 1)
 		})
 	}
 	if(Fusion.Configs.SkillAlert.EmitSound === "true")
@@ -94,7 +94,7 @@ function AlertPosition(modifier, vec, thinker) {
 		A.DeleteAsync(modifier[0])
 		panels[thinker] = A
 		$.Schedule(modifier[0], function() {
-			delete panels[thinker]
+			panels.splice(thinker, 1)
 		})
 	}
 	if (Fusion.Configs.SkillAlert.EmitSound === "true")
@@ -110,8 +110,8 @@ function CreateFollowParticle(particlepath, time, ent) {
 	$.Schedule (
 		time + Fusion.MyTick,
 		function() {
-			Particles.DestroyParticleEffect(p,p)
-			z.splice(z.indexOf(ent), 1)
+			Particles.DestroyParticleEffect(p, true)
+			Fusion.arrayRemove(z, ent)
 		}
 	)
 }
@@ -125,8 +125,8 @@ function CreateTimerParticle(vec, time, ent) {
 	$.Schedule (
 		time + Fusion.MyTick,
 		function() {
-			Particles.DestroyParticleEffect(p,p)
-			z.splice(z.indexOf(ent), 1)
+			Particles.DestroyParticleEffect(p, true)
+			Fusion.arrayRemove(z, ent)
 		}
 	)
 }

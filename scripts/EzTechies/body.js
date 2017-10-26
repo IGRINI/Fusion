@@ -1,15 +1,8 @@
-﻿var TriggerRadius = 425
+﻿// pros will love this script
+var TriggerRadius = 425
 var RMinesDamage = [300, 450, 600]
 var RMinesDamageScepter = [450, 600, 750]
 var debug = true
-
-function RemoveRMine(rmine) {
-	var i = Fusion.RMines.indexOf(rmine)
-	if(i >= 0) {
-		Fusion.RMines.splice(i, 1)
-		Particles.DestroyParticleEffect(Fusion.Particles.EzTechies[rmine], true)
-	}
-}
 
 function SummonParticle(range, ent) {
 	var radius = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent)
@@ -20,7 +13,7 @@ function SummonParticle(range, ent) {
 function HandleEntity(ent) {
 	if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine") {
 		var range = TriggerRadius
-		Fusion.RMines.push(ent)
+		Fusion.EzTechies.RMines.push(ent)
 	} else if(Entities.GetUnitName(ent) === "npc_dota_techies_land_mine")
 		var range = 400
 	else
@@ -53,7 +46,7 @@ function RemoteMines(MyEnt, ents) {
 		return
 	var RMinesToBlow = []
 	var RMinesDmg = 0
-	Fusion.RMines.some(function(rmine) {
+	Fusion.EzTechies.RMines.some(function(rmine) {
 		var buffs = Game.GetBuffs(rmine)
 		if(buffs.length === 0)
 			return false
@@ -66,8 +59,8 @@ function RemoteMines(MyEnt, ents) {
 			return false
 		
 		var dmg = 0
-		for(var z = Fusion.EzTechiesLVLUp.length; z >= 0; z--)
-			if(Fusion.EzTechiesLVLUp[z] !== -1 && time > Fusion.EzTechiesLVLUp[z]) {
+		for(var z = Fusion.EzTechies.LVLUp.length; z >= 0; z--)
+			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z]) {
 				if(Entities.HasScepter(MyEnt))
 					dmg = RMinesDamageScepter[z]
 				else
@@ -85,7 +78,6 @@ function RemoteMines(MyEnt, ents) {
 				RMinesToBlow.forEach(function(rmine) {
 					GameUI.SelectUnit(rmine, false)
 					Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
-					RemoveRMine(rmine)
 				})
 				GameUI.SelectUnit(MyEnt, false)
 				return
@@ -102,7 +94,7 @@ function SubscribeEvents() {
 			
 			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 			var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-			Fusion.EzTechiesLVLUp[lvl] = Game.GetGameTime()
+			Fusion.EzTechies.LVLUp[lvl] = Game.GetGameTime()
 		})
 
 	if(!Fusion.Subscribes.EzTechiesMinesSpawn)
@@ -117,37 +109,41 @@ function SubscribeEvents() {
 		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", function(event) {
 			var ent = parseInt(event.entindex_killed)
 			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
-				RemoveRMine(ent)
+				Fusion.EzTechies.RemoveRMine(ent)
 		})
 }
 
 function init() {
-	if(!Fusion.EzTechiesLVLUp) {
-		Fusion.EzTechiesLVLUp = [-1, -1, -1]
-
+	if(!Fusion.EzTechies) {
+		Fusion.EzTechies = {
+			LVLUp: [-1, -1, -1],
+			RMines: [],
+			RemoveRMine: function(rmine) {
+				Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
+				Particles.DestroyParticleEffect(Fusion.Particles.EzTechies[rmine], true)
+				Fusion.Particles.EzTechies.splice(rmine, 1)
+			}
+		}
+		Fusion.Particles.EzTechies = []
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-		Fusion.EzTechiesLVLUp[lvl] = 0
-	}
-	if(!Fusion.Particles.EzTechies || !Fusion.RMines) {
-		Fusion.Particles.EzTechies = []
-		Fusion.RMines = []
+		Fusion.EzTechies.LVLUp[lvl] = 0
 		RespawnParticles()
 	}
 
 	SubscribeEvents()
-}
-
-if(!Fusion.Commands.EzTechies) {
-	Fusion.Commands.EzTechies = function() {
-		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), TriggerRadius, true)
-		
-		RemoteMines(MyEnt, ents.filter(function(ent) {
-			return Fusion.GetMagicMultiplier(MyEnt, ent) !== 0 // filter out immune units
-		}))
+	
+	if(!Fusion.Commands.EzTechies) {
+		Fusion.Commands.EzTechies = function() {
+			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+			var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), TriggerRadius, true)
+			
+			RemoteMines(MyEnt, ents.filter(function(ent) {
+				return Fusion.GetMagicMultiplier(MyEnt, ent) !== 0 // filter out immune units
+			}))
+		}
+		Game.AddCommand("__EzTechies", Fusion.Commands.EzTechies, "", 0)
 	}
-	Game.AddCommand("__EzTechies", Fusion.Commands.EzTechies, "", 0)
 }
 
 init()

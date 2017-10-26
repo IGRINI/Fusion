@@ -1,6 +1,12 @@
 ﻿Fusion.LenseBonusRange = 200
 Fusion.ForceStaffUnits = 600
 
+Fusion.arrayRemove = function(ar, obj) {
+	var i = ar.indexOf(obj)
+	if(i >= 0)
+		ar.splice(i, 1)
+}
+
 Fusion.GetBuffByName = function(ent, buffName) {
 	var ret
 	Game.GetBuffs(ent).some(function(buff) {
@@ -260,22 +266,6 @@ Game.VelocityWaypoint = function(ent, time, movespeed) {
 
 	return [zxc[0] + (forward[0] * movespeed * time),zxc[1] + (forward[1] * movespeed * time),zxc[2]]
 }
-
-if(Array.isArray(Fusion.Subscribes)) {
-	Fusion.Subscribes.forEach(function(sub) {
-		if (typeof sub === "number")
-			try {
-				GameEvents.Unsubscribe(sub)
-			} catch(e) {}
-		else if(typeof sub === "object")
-			sub.forEach(function(sub2) {
-				try {
-					GameEvents.Unsubscribe(sub2)
-				} catch(e) {}
-			})
-	})
-}
-
 
 //сообщение в боковую панель
 Game.ScriptLogMsg = function(msg, color) {

@@ -60,13 +60,20 @@ var ancients = {
 	npc_dota_neutral_big_thunder_lizard:[223,393],
 	npc_dota_neutral_granite_golem:[230,393]
 }
-var spots = [[-3307, 383, -2564, -413, 400],[3456, -384, 4543, -1151, 300]]
-function destroy(){
-	if(typeof Fusion.Subscribes.AncientCreepStack != "undefined")
+var spots = [
+	[-3307, 383, -2564, -413, 400],
+	[3456, -384, 4543, -1151, 300]
+]
+function destroy() {
+	if(Fusion.Subscribes.AncientCreepStack !== undefined)
 		GameEvents.Unsubscribe(Fusion.Subscribes.AncientCreepStack)
-	try{Fusion.Panels.AncientCreepStack.DeleteAsync(0)}catch(e){}
+	try {
+		Fusion.Panels.AncientCreepStack.DeleteAsync(0)
+	} catch(e) {}
 	for(i in Fusion.Particles.AncientCreepStack)
-		try{Particles.DestroyParticleEffect(Fusion.Particles.AncientCreepStack[i],Fusion.Particles.AncientCreepStack[i])}catch(e){}
+		try {
+			Particles.DestroyParticleEffect(Fusion.Particles.AncientCreepStack[i], true)
+		} catch(e) {}
 	Fusion.Particles.AncientCreepStack = []
 }
 

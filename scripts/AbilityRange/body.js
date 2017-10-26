@@ -1,14 +1,4 @@
-﻿try{ Fusion.Panels.AbilityRange.DeleteAsync(0) }catch(e){}
-for (var i in Fusion.Subscribes.AbilityRange)
-	try{ GameEvents.Unsubscribe( Fusion.Subscribes.AbilityRange[i] ) }catch(e){}
-for(var i in Fusion.Particles.AbilityRange)
-	try{ Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[i],Fusion.Particles.AbilityRange[i]) }catch(e){}
-
-Fusion.Particles.AbilityRange = []
-Fusion.Subscribes.AbilityRange = []
-Fusion.Panels.AbilityRange = []
-
-function GetAbilityRange(Abil) {
+﻿function GetAbilityRange(Abil) {
 	var abil = parseInt(Abil)
 	return Abilities.GetCastRangeFix(abil)
 }
@@ -24,7 +14,7 @@ function InventoryChanged(data) {
 		return
 	for(var i in Fusion.Particles.AbilityRange){
 		Range = GetAbilityRange(i)
-		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[i],Fusion.Particles.AbilityRange[i])
+		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[i], true)
 		if ( !Range || Range <= 0 )
 			return
 		Fusion.Particles.AbilityRange[i] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
@@ -33,11 +23,14 @@ function InventoryChanged(data) {
 }
 
 function Destroy() {
-	try{ Fusion.Panels.AbilityRange.DeleteAsync(0) }catch(e){}
-	for (var i in Fusion.Subscribes.AbilityRange.length)
-		try{ GameEvents.Unsubscribe( Fusion.Subscribes.AbilityRange[i] ) }catch(e){}
-	for(var i in Fusion.Particles.AbilityRange)
-		try{ Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[i],Fusion.Particles.AbilityRange[i]) }catch(e){}
+	if(Fusion.Panels.AbilityRange)
+		Fusion.Panels.AbilityRange.DeleteAsync(0)
+	if(Fusion.Subscribes.AbilityRange)
+		Fusion.Subscribes.AbilityRange.forEach(GameEvents.Unsubscribe)
+	if(Fusion.Particles.AbilityRange)
+		Fusion.Particles.AbilityRange.forEach(function(par) {
+			Particles.DestroyParticleEffect(par, true)
+		})
 	Fusion.Subscribes.AbilityRange = []
 	Fusion.Particles.AbilityRange = []
 }
@@ -54,7 +47,7 @@ function SkillLearned(data) {
 	if ( data.abilityname == "attribute_bonus" || Range <= 0 )
 		return
 	if (Fusion.Particles.AbilityRange[LearnedAbil]){
-		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[LearnedAbil],Fusion.Particles.AbilityRange[LearnedAbil])
+		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[LearnedAbil], true)
 		Fusion.Particles.AbilityRange[LearnedAbil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
 		Particles.SetParticleControl(Fusion.Particles.AbilityRange[LearnedAbil], 1,  [Range,0,0])
 	}
@@ -97,8 +90,8 @@ function chkboxpressed() {
 			}
 		}else{
 			if (Fusion.Particles.AbilityRange[Abil]){
-				Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[Abil],Fusion.Particles.AbilityRange[Abil])
-				delete Fusion.Particles.AbilityRange[Abil]
+				Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[Abil], true)
+				Fusion.Particles.AbilityRange.splice(Abil, i)
 			}
 		}
 	}
@@ -178,11 +171,10 @@ function AbilityRangeF() {
 		CheckB.SetAttributeInt("Skill", Abil)
 		CheckB.SetPanelEvent( "onactivate", chkboxpressed )
 	}
-	Fusion.Subscribes.AbilityRange.push( GameEvents.Subscribe("dota_player_learned_ability", SkillLearned) )
-	Fusion.Subscribes.AbilityRange.push( GameEvents.Subscribe("dota_inventory_changed", InventoryChanged) )
+	Fusion.Subscribes.AbilityRange.push(GameEvents.Subscribe("dota_player_learned_ability", SkillLearned))
+	Fusion.Subscribes.AbilityRange.push(GameEvents.Subscribe("dota_inventory_changed", InventoryChanged))
 	Game.ScriptLogMsg("Script enabled: AbilityRange", "#00ff00")
 }
 
-var AbilityRange = Game.AddScript("AbilityRange", AbilityRangeF)
 Destroy()
-AbilityRange.checked = false
+var AbilityRange = Game.AddScript("AbilityRange", AbilityRangeF)

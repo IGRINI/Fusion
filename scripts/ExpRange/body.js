@@ -2,12 +2,15 @@
 var DaggerRange = 1200
 
 function DestroyParticles() {
-	try {
-		if(Fusion.Particles.ExpRange)
-			Particles.DestroyParticleEffect(Fusion.Particles.ExpRange, Fusion.Particles.ExpRange)
-		if(Fusion.Particles.DaggerRange)
-			Particles.DestroyParticleEffect(Fusion.Particles.DaggerRange, Fusion.Particles.DaggerRange)
-	} catch(e) {  }
+	if(Fusion.Particles.ExpRange) {
+		Particles.DestroyParticleEffect(Fusion.Particles.ExpRange, true)
+		delete Fusion.Particles.ExpRange
+	}
+
+	if(Fusion.Particles.DaggerRange) {
+		Particles.DestroyParticleEffect(Fusion.Particles.DaggerRange, true)
+		delete Fusion.Particles.DaggerRange
+	}
 }
 
 function ExpRangeEnable() {

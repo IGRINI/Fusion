@@ -11,7 +11,7 @@ function DeleteAll() {
 	try {
 		Fusion.Particles.EnemyManaBars.forEach(function(par) {
 			try {
-				Particles.DestroyParticleEffect(par, par)
+				Particles.DestroyParticleEffect(par, true)
 			} catch(e) {  }
 		})
 	} catch(e) {  }
