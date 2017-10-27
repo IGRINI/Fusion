@@ -166,8 +166,8 @@ function WaitForGameStart() {
 		function() {
 			if(Players.GetLocalPlayer() !== -1) {
 				InstallMainHUD()
-				Game.SetCameraPitchMin(60)
-				Game.SetCameraPitchMax(60)
+				GameUI.SetCameraPitchMin(60)
+				GameUI.SetCameraPitchMax(60)
 				
 				Game.AddCommand( "__ReloadFusionVanilla", Fusion.ReloadFusionVanilla, "", 0)
 				Game.AddCommand( "__ReloadFusionCustomGames", Fusion.ReloadFusionCustomGames, "", 0)
