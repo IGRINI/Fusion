@@ -40,7 +40,7 @@ if(!Fusion.Commands.DumpEnemyAbilities) {
 	Game.AddCommand('__DumpEnemyAbilities', Fusion.Commands.DumpEnemyAbilities, '', 0)
 }
 
-if(!Fusion.Commands.ModifierDebugging.Command) {
+if(!Fusion.Commands.ModifierDebugging) {
 	var ModifierDebuggingEnabled = false
 	Fusion.Commands.ModifierDebugging = [
 		Command = function() {
