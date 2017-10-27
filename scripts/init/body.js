@@ -162,9 +162,13 @@ function InstallMainHUD() {
 
 function WaitForGameStart() {
 	$.Schedule (
-		0.04,
+		Fusion.MyTick,
 		function() {
 			if(Players.GetLocalPlayer() !== -1) {
+				InstallMainHUD()
+				Fusion.SetCameraPitchMin(60)
+				Fusion.SetCameraPitchMax(60)
+				
 				Game.AddCommand( "__ReloadFusionVanilla", Fusion.ReloadFusionVanilla, "", 0)
 				Game.AddCommand( "__ReloadFusionCustomGames", Fusion.ReloadFusionCustomGames, "", 0)
 				Game.AddCommand("__TogglePanel", function() {
@@ -196,5 +200,4 @@ function WaitForGameStart() {
 	)
 }
 
-InstallMainHUD()
 WaitForGameStart()
