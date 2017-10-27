@@ -6,7 +6,7 @@ var BlowDelay = 0.25 + Fusion.MyTick * 10
 var debug = false
 
 function CallMines(MyEnt, ent, callback, explosionCallback) {
-	var NeedMagicDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 5)
+	var NeedMagicDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 0.5)
 	var RMinesToBlow = []
 	var RMinesDmg = 0
 	if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)

@@ -67,7 +67,7 @@ function RemoteMines(MyEnt, ents) {
 	
 	var NeedMagicDmg = -1
 	ents.forEach(function(ent) {
-		var need = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 5)
+		var need = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 0.5)
 		if(need > NeedMagicDmg)
 			NeedMagicDmg = need
 	})
