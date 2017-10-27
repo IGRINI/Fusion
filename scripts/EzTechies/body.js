@@ -2,7 +2,7 @@
 var TriggerRadius = 425
 var RMinesDamage = [300, 450, 600]
 var RMinesDamageScepter = [450, 600, 750]
-var debug = true
+var debug = false
 var RMineSetupTime = 2
 
 function SummonParticle(range, ent) {
@@ -23,8 +23,9 @@ function ScheduleExplode(rmine) {
 			
 			return false
 		})
-	
-		$.Msg(delta + rmineTimeout)
+		
+		if(debug)
+			$.Msg("RMine will be deleted after " + delta + rmineTimeout + "s")
 		$.Schedule(delta + rmineTimeout, function() {
 			if(Fusion.EzTechies.RMines.indexOf(rmine) < 0)
 				return

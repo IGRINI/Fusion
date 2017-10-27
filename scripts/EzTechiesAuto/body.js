@@ -3,7 +3,7 @@ var RMinesDamage		= [300, 450, 600]
 var RMinesDamageScepter = [450, 600, 750]
 var NoTarget = []
 var BlowDelay = 0.25 + Fusion.MyTick * 10
-var debug = true
+var debug = false
 
 function CallMines(MyEnt, ent, callback, explosionCallback) {
 	var NeedMagicDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent))
