@@ -22,7 +22,7 @@ function ScheduleExplode(rmine) {
 		return false
 	})
 
-	$.Msg(delta + rmineTimeout)
+	//$.Msg(delta + rmineTimeout)
 	$.Schedule(delta + rmineTimeout, function() {
 		if(Fusion.EzTechies.RMines.indexOf(rmine) < 0)
 			return

@@ -24,7 +24,7 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 		if(time === -1)
 			return false
 		
-		var dmg = 0
+		var dmg = -1
 		for(var z = Fusion.EzTechies.LVLUp.length; z >= 0; z--)
 			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z])
 				dmg = Entities.HasScepter(MyEnt) ? RMinesDamageScepter[z] : RMinesDamage[z]
@@ -48,6 +48,10 @@ function DenyMines(MyEnt) {
 	Fusion.EzTechies.RMines.filter(function(ent) {
 		return Entities.GetHealthPercent(ent) !== 100
 	}).forEach(function(rmine) {
+		if(!Entities.IsAlive(rmine)) {
+			Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
+			return
+		}
 		GameUI.SelectUnit(rmine, false)
 		Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 		selected = true

@@ -14,15 +14,6 @@ function SnatcherF() {
 			Game.PickupItem(MyEnt, Rune, false) // Aegis
 		}
 	})
-	/*Entities.GetAllEntities().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Game.PointDistance(Entities.GetAbsOrigin(ent), myVec) <= RuneRadius && Entities.GetUnitName(ent) === ""
-	}).forEach(function(ent) {
-		$.Msg(ent)
-		Game.PuckupRune(MyEnt, ent, false) // Rune
-		Game.PickupItem(MyEnt, ent, false) // Aegis
-	})*/
 }
 
 function SnatcherToggle() {

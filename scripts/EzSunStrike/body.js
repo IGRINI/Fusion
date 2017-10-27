@@ -39,7 +39,7 @@ function EzSunstrikeOnInterval() {
 				var SunStrikePos2 = SunStrikePos = Game.VelocityWaypoint(ent, time)
 				if(Game.PointDistance(SunStrikePos, SunStrikePos2) > SunStrikeRadius) {
 					Game.EntStop(MyEnt, false)
-					$.Msg("cancel. " + Game.PointDistance(SunStrikePos, SunStrikePos2))
+					//$.Msg("Cancelled sunstrike, distance is " + Game.PointDistance(SunStrikePos, SunStrikePos2))
 				}
 			})
 		}

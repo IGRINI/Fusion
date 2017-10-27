@@ -96,15 +96,15 @@ if(!Fusion.Commands.EzProcastF) {
 			else
 				if(items[i].Children()[0].paneltype === "DOTAItemImage")
 					abils.push(items[i].Children()[0].itemname)
-		$.Msg("Abils: "+abils)
+		//$.Msg("Abils: "+abils)
 		Game.EntStop(MyEnt)
 		for(var i in abils){
 			var AbName = abils[i]
 			var Abil = Game.GetAbilityByName(MyEnt,abils[i])
 			var EzPBeh = Game.Behaviors(Abil)
 			var EzPDUTT = Abilities.GetAbilityTargetTeam(Abil)
-			$.Msg("Team Target: "+EzPDUTT)
-			$.Msg("Ability Behavior: "+EzPBeh)
+			//$.Msg("Team Target: "+EzPDUTT)
+			//$.Msg("Ability Behavior: "+EzPBeh)
 			if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_TOGGLE) !== -1)
 				Game.ToggleAbil(MyEnt, Abil)
 			else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
