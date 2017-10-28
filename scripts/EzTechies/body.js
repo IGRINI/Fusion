@@ -43,7 +43,7 @@ function HandleEntity(ent) {
 		var range = TriggerRadius
 		Fusion.EzTechies.RMines.push(ent)
 		ScheduleExplode(ent)
-	} else if(Entities.GetUnitName(ent) === "npc_dota_techies_land_mine")
+	} else if(Entities.GetUnitName(ent) === "npc_dota_techies_land_mine" || Entities.GetUnitName(ent) === "npc_dota_techies_stasis_trap")
 		var range = 400
 	else
 		return
