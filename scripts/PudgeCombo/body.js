@@ -50,7 +50,7 @@ function Rot() {
 
 function Urn() {
 	var urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
-		urncharges = Items.GetCurrentCharges(urn)
+		urncharges = urn === undefined ? -1 : Items.GetCurrentCharges(urn)
 		
 	if(urncharges > 0)
 		Game.CastTarget(MyEnt, urn, ent, false)

@@ -19,7 +19,7 @@ function SnatcherF() {
 }
 
 function SnatcherToggle() {
-	if (Snatcher.checked) {
+	if(Snatcher.checked) {
 		SnatcherF()
 		Game.ScriptLogMsg("Script enabled: Snatcher", "#00ff00")
 	} else
