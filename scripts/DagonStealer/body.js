@@ -24,7 +24,7 @@ function AutoDagon(MyEnt, HEnts) {
 			return
 		var ent = parseInt(HEnts[i])
 		
-		if(!Entities.IsAlive(ent) || Entities.IsMagicImmune(ent))
+		if(!Entities.IsAlive(ent) || Entities.IsMagicImmune(ent) || Fusion.HasLinkenAtTime(ent, 0))
 			continue
 		if(Entities.GetRangeToUnit(MyEnt, ent) > DagonRange)
 			continue

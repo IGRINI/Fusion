@@ -46,7 +46,6 @@
 			<DOTARiverVial id="river_vial" hittest="false" class="VisGroup_Top" />
 			<DOTAKillCam id="KillCam" class="VisGroup_Top"/>
 			<DOTAHUDShop id="shop" class="VisGroup_Top" />
-			<DOTAGuideBrowser id="GuideBrowser" class="VisGroup_Top" />
 			<DOTAHUDInspect id="inspect" class="VisGroup_Top" />			
 			<DOTAHUDCursorCooldown id="CursorCooldown" hittest="false"  class="VisGroup_Top"/>
 			<DOTAChat id="HudChat" class="HudChat VisGroup_Top" chatstyle="hud" oncancel="DOTAChatCancelMessageMode()" hittest="false"/>			
@@ -64,6 +63,7 @@
 				</Panel>
 			</Panel>
 
+			<Panel id="splash_screen"></Panel>
 			<Panel id="lower_hud" hittest="false" disallowedstyleflags="hover,descendantfocus">
 				<Panel id="StatBranchDrawer" hittest="false">
 					<DOTAStatBranch id="statbranchdialog" hittest="false" />
@@ -86,6 +86,7 @@
 							<DOTAPortrait id="portraitHUD" class="PortraitLocation" />
 							<DOTAPortrait id="portraitHUDOverlay" class="PortraitLocation"/>
 							<Panel id="SilenceIcon" hittest="false" always-cache-composition-layer="true" />
+							<Panel id="MutedIcon" hittest="false" always-cache-composition-layer="true" />
 							<Panel id="DeathGradient"/>
 						</Panel>
 						<DOTAHUDDeathPanel id="death_panel_buyback" />
@@ -153,7 +154,6 @@
 		<DOTACustomUIRoot id="CustomUIRoot" hittest="false"/>
 		<DOTAQuestPicker id="QuestPicker"/>
 		<DOTAHudPreGame id="PreGame" />
-		<DOTASpectateHeroSelection id="SpectateHeroSelection" />
 		<DOTAVoiceChat id="VoiceChat"/>
 		<DOTAKillGraph id="KillGraph"  class="VisGroup_Top"/>
 		<DOTAKillStreak id="KillStreak"  class="VisGroup_Top"/>
@@ -162,23 +162,29 @@
 		<DOTAPingWheel id="PingWheel" hittest="false"  class="VisGroup_Top"/>
 		<DOTASpectatorItems id="SpectatorItems"  class="VisGroup_Top"/>
 		<DOTAPaused id="PausedInfo"  class="VisGroup_Top"/>
+		<DOTAGuideBrowser id="GuideBrowser" acceptsinput="true" class="SmallMode VisGroup_Top" />
 		<DOTAHUDCharms id="Charms" />
 		<DOTAHeroDisplay id="HeroDisplay" />
 		<DOTACameraman id="Cameraman" />
 		<DOTAHudBotDebug id="BotDebug" />
 		<DOTASpectatorDVR id="spectator_dvr" />
 		<DOTABroadcaster id="BroadcasterSelection"/>
+		<DOTAProjectionDebug id="ProjectionDebug" />
+
 
 		<Panel id="GameEndContainer" hittest="false" class="FullScreen" />  <!-- real game end will be constructed and parented to GameEndContainer -->
 
 		<!-- These should be high in the z-order so that they appear on top of everything correctly -->
-		<PopupManager id="PopupManager" />
-		<DOTATipsReceived id="TipsReceived" hittest="false" />
+    <Panel class="GreenScreen" />
+    <PopupManager id="PopupManager" />
+    <DOTATipsReceived id="TipsReceived" hittest="false" />
 		<DOTAContextMenuManager id="ContextMenuManager" />
+		<DOTAHelpTipsManager id="HelpTipsManager" oncancel="DropInputFocus()" />
 		<DOTATooltipManager id="Tooltips" hittest="false" />
 		<DOTAIngamePredictionsContainer id="IngamePredictionsContainer" />
 		<ToastManager id="PredictionToastManager" hittest="false" toastduration="7s" maxtoastsvisible="3"/>
-		<ToastManager id="BroadcastToastManager" hittest="false" toastduration="5s" maxtoastsvisible="1" maxtoastbehavior="deleteoldest" />
+    <ToastManager id="BroadcastToastManager" class="BroadcastToastManager" hittest="false" toastduration="500s" maxtoastsvisible="1" maxtoastbehavior="deleteoldest" />
+    <ToastManager id="BroadcastToastManagerAlpha" class="BroadcastToastManager" hittest="false" toastduration="500s" maxtoastsvisible="1" maxtoastbehavior="deleteoldest" />
 		<ToastManager id="SpectatorToastManager" hittest="false" toastduration="4s" maxtoastsvisible="5" maxtoastbehavior="deleteoldest" />
 	</DOTAHud>
 </root>
