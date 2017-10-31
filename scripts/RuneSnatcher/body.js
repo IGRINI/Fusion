@@ -5,31 +5,25 @@ function SnatcherF() {
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	var myVec = Entities.GetAbsOrigin(MyEnt)
-	var EntsOnCursor = GameUI.FindScreenEntities(GameUI.GetCursorPosition())
-	EntsOnCursor.forEach(function(entObj) {
+	GameUI.FindScreenEntities(GameUI.GetCursorPosition()).forEach(function(entObj) {
 		var Rune = entObj.entityIndex
 		var RuneName = Entities.GetUnitName(Rune)
-		if(RuneName === "" && !Entities.IsBuilding(Rune) && Game.PointDistance(Entities.GetAbsOrigin(Rune), myVec) > RuneRadius) {
+		if(RuneName === "" && !Entities.IsBuilding(Rune) && Game.PointDistance(Entities.GetAbsOrigin(Rune), myVec) <= RuneRadius) {
 			Game.PuckupRune(MyEnt, Rune, false) // Rune
 			Game.PickupItem(MyEnt, Rune, false) // Aegis
 		}
 	})
+
+	if (Snatcher.checked)
+		$.Schedule(Fusion.MyTick, SnatcherToggle)
 }
 
 function SnatcherToggle() {
-	if (!Snatcher.checked) {
-		Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
-		return
-	} else {
-		function L() {
-			if (Snatcher.checked) {
-				SnatcherF()
-				$.Schedule(Fusion.MyTick, L)
-			}
-		}
-		L()
+	if (Snatcher.checked) {
+		SnatcherToggle()
 		Game.ScriptLogMsg("Script enabled: Snatcher", "#00ff00")
-	}
+	} else
+		Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
 }
 
 var Snatcher = Game.AddScript("Snatcher", SnatcherToggle)
