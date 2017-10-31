@@ -15,7 +15,7 @@ function SnatcherF() {
 	})
 
 	if (Snatcher.checked)
-		$.Schedule(Fusion.MyTick, SnatcherToggle)
+		$.Schedule(Fusion.MyTick, SnatcherF)
 }
 
 function SnatcherToggle() {
