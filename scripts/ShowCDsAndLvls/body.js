@@ -1,10 +1,7 @@
 ﻿function ShowCDsAndLvlsF() {
-	if(!ShowCDsAndLvls.checked)
-		return
 	
-	
-	
-	$.Schedule(Fusion.MyTick, ShowCDsAndLvlsF)
+	if(ShowCDsAndLvls.checked)
+		$.Schedule(Fusion.MyTick, ShowCDsAndLvlsF)
 }
 
 function ShowCooldownsToggle() {
@@ -17,4 +14,3 @@ function ShowCooldownsToggle() {
 }
 
 var ShowCDsAndLvls = Game.AddScript("ShowCDsAndLvls", ShowCooldownsToggle)
-ShowCDsAndLvlsF(Fusion.MyTick)
