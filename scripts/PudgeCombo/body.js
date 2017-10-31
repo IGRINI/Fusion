@@ -44,7 +44,7 @@ function Rot() {
 		MyEntbuffs = Game.GetBuffsNames(MyEnt),
 		distance = Entities.GetRangeToUnit(MyEnt, ent)
 
-	if(!Game.IntersecArrays(MyEntbuffs, ["modifier_pudge_rot"]))
+	if(MyEntbuffs.indexOf("modifier_pudge_rot") === -1)
 		Abilities.ExecuteAbility(rot, MyEnt, false)
 }
 
