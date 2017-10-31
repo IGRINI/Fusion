@@ -5,18 +5,19 @@ S = soon
 XG1 = X Group 1 = can't debug what this uses
 
 ToDo:
-[S] Finiah school & make Fusion site
 [S] ColoredHPBar
 [S] Make "friendly maphack" for custom games & make custom games replays
 [S] AutoArmlet - press armlet to make many more HP
 [S] Add WTF combos
 [S] Combos for some heroes
 [S] Good GUI with config changing
+[S] Rework rubick autosteal
+[S] InvokerCombo
 
-[D] Make server based on NIO (non-blocking IO)
-[D] Rework rubick autosteal
+[D] Make Fusion site, native support
+[D] Make server based on fasthttp written in Go
 
-[R] InvokerCombo
+[R] Make server based on NIO (non-blocking IO)
 [R] RuneSnatcher
 [R] AutoBottle
 [R] DagonStealer

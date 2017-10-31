@@ -141,40 +141,43 @@ function AbilityRangeF() {
 			
 			Game.AddCommand( "__AbilityRange_Rotate", Fusion.Commands.AbilityRange_Rotate, "",0)
 		}
+		AbilityRangePanel = Fusion.Panels.Main.FindChildrenWithClassTraverse("AbilityRangePanel")[0]
+		for ( i = 0; i < Entities.GetAbilityCount(MyEnt ); i++){
+			Abil = Entities.GetAbility(MyEnt,i)
+			if ( Abil == -1 )
+				continue
+			Range = GetAbilityRange( Abil )
+			if (Abilities.GetAbilityName(Abil) == "attribute_bonus" || Range<=0 )
+				continue
+			Behavior = Abilities.GetBehavior( Abil )
+			CheckB = $.CreatePanel( "ToggleButton", AbilityRangePanel, "AbilityRangeSkill" )
+			CheckB.BLoadLayoutFromString("\
+	<root>\
+		<styles>\
+			<include src='s2r://panorama/styles/magadan.css'/>\
+			<include src='s2r://panorama/styles/dotastyles.vcss_c'/>\
+		</styles>\
+		<Panel>\
+			<ToggleButton class='CheckBox' style='vertical-align:center;'/>\
+			<DOTAAbilityImage style='width:30px;margin:3px;border-radius:15px;'/>\
+		</Panel>\
+	</root>", false, false)
+			CheckB.Children()[1].abilityname = Abilities.GetAbilityName(Abil)
+			CheckB.SetAttributeInt("Skill", Abil)
+			CheckB.SetPanelEvent( "onactivate", chkboxpressed )
+		}
+		Fusion.Subscribes.AbilityRange.push(GameEvents.Subscribe("dota_player_learned_ability", SkillLearned))
+		Fusion.Subscribes.AbilityRange.push(GameEvents.Subscribe("dota_inventory_changed", InventoryChanged))
+		Game.ScriptLogMsg("Script enabled: AbilityRange", "#00ff00")
 	} else {
-		Game.ScriptLogMsg("Script disabled: AbilityRange", "#ff0000")
 		Destroy()
-		return
+		Game.ScriptLogMsg("Script disabled: AbilityRange", "#ff0000")
 	}
-	AbilityRangePanel = Fusion.Panels.Main.FindChildrenWithClassTraverse("AbilityRangePanel")[0]
-	for ( i = 0; i < Entities.GetAbilityCount(MyEnt ); i++){
-		Abil = Entities.GetAbility(MyEnt,i)
-		if ( Abil == -1 )
-			continue
-		Range = GetAbilityRange( Abil )
-		if (Abilities.GetAbilityName(Abil) == "attribute_bonus" || Range<=0 )
-			continue
-		Behavior = Abilities.GetBehavior( Abil )
-		CheckB = $.CreatePanel( "ToggleButton", AbilityRangePanel, "AbilityRangeSkill" )
-		CheckB.BLoadLayoutFromString("\
-<root>\
-	<styles>\
-		<include src='s2r://panorama/styles/magadan.css'/>\
-		<include src='s2r://panorama/styles/dotastyles.vcss_c'/>\
-	</styles>\
-	<Panel>\
-		<ToggleButton class='CheckBox' style='vertical-align:center;'/>\
-		<DOTAAbilityImage style='width:30px;margin:3px;border-radius:15px;'/>\
-	</Panel>\
-</root>", false, false)
-		CheckB.Children()[1].abilityname = Abilities.GetAbilityName(Abil)
-		CheckB.SetAttributeInt("Skill", Abil)
-		CheckB.SetPanelEvent( "onactivate", chkboxpressed )
-	}
-	Fusion.Subscribes.AbilityRange.push(GameEvents.Subscribe("dota_player_learned_ability", SkillLearned))
-	Fusion.Subscribes.AbilityRange.push(GameEvents.Subscribe("dota_inventory_changed", InventoryChanged))
-	Game.ScriptLogMsg("Script enabled: AbilityRange", "#00ff00")
+}
+
+function Dummy() {
+	Game.ScriptLogMsg("AbilityRange now aren't working, as it's crashing DotA 2", "#ff0000")
 }
 
 Destroy()
-var AbilityRange = Game.AddScript("AbilityRange", AbilityRangeF)
+var AbilityRange = Game.AddScript("AbilityRange", Dummy)
