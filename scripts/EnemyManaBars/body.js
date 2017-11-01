@@ -44,9 +44,7 @@ function EMBEvery() {
 			return
 		}
 		var xyz = Entities.GetAbsOrigin(ent)
-		var healthbaroffsetGround = 200
-		var healthbaroffsetFlying = 300
-		var healthbaroffset = (FlyingHeroes.indexOf(Entities.GetUnitName(ent)) > -1) ? healthbaroffsetFlying : healthbaroffsetGround
+		var healthbaroffset = Entities.GetHealthBarOffset(ent)
 		if (!xyz || !healthbaroffset) {
 			if (Fusion.Panels.EnemyManaBars[ent])
 				Fusion.Panels.EnemyManaBars[ent].visible = false
