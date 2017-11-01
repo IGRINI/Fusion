@@ -5,18 +5,18 @@ function SnatcherF() {
 	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
+	
 	var myVec = Entities.GetAbsOrigin(MyEnt)
-	GameUI.FindScreenEntities(GameUI.GetCursorPosition()).map(function(entObj) {
-		return entObj.entityIndex
+	Entities.GetAllEntities().map(function(ent) {
+		return parseInt(ent)
 	}).filter(function(ent) {
 		return NoTarget.indexOf(ent) === -1 && Entities.GetUnitName(ent) === "" && !Entities.IsBuilding(ent) && Game.PointDistance(Entities.GetAbsOrigin(ent), myVec) <= RunePickupRadius
 	}).forEach(function(Rune) {
-		Game.PuckupRune(MyEnt, Rune, false) // Rune
-		Game.PickupItem(MyEnt, Rune, false) // Aegis
+		if(Entities.IsItemPhysical(Rune))
+			Game.PickupItem(MyEnt, Rune, false) // Aegis
+		else
+			Game.PuckupRune(MyEnt, Rune, false) // Rune
 		NoTarget.push(Rune)
-		$.Schedule(Fusion.MyTick * 5, function() {
-			Fusion.arrayRemove(NoTarget, Rune)
-		})
 	})
 
 	if (Snatcher.checked)
