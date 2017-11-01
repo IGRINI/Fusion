@@ -1,17 +1,22 @@
-var RuneRadius = 150
+var RunePickupRadius = 150
+var NoTarget = []
 
 function SnatcherF() {
 	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	var myVec = Entities.GetAbsOrigin(MyEnt)
-	GameUI.FindScreenEntities(GameUI.GetCursorPosition()).forEach(function(entObj) {
-		var Rune = entObj.entityIndex
-		var RuneName = Entities.GetUnitName(Rune)
-		if(RuneName === "" && !Entities.IsBuilding(Rune) && Game.PointDistance(Entities.GetAbsOrigin(Rune), myVec) <= RuneRadius) {
-			Game.PuckupRune(MyEnt, Rune, false) // Rune
-			Game.PickupItem(MyEnt, Rune, false) // Aegis
-		}
+	GameUI.FindScreenEntities(GameUI.GetCursorPosition()).map(function(entObj) {
+		return entObj.entityIndex
+	}).filter(function(ent) {
+		return NoTarget.indexOf(ent) === -1 && Entities.GetUnitName(ent) === "" && !Entities.IsBuilding(ent) && Game.PointDistance(Entities.GetAbsOrigin(ent), myVec) <= RunePickupRadius
+	}).forEach(function(Rune) {
+		Game.PuckupRune(MyEnt, Rune, false) // Rune
+		Game.PickupItem(MyEnt, Rune, false) // Aegis
+		NoTarget.push(Rune)
+		$.Schedule(Fusion.MyTick * 5, function() {
+			Fusion.arrayRemove(NoTarget, Rune)
+		})
 	})
 
 	if (Snatcher.checked)

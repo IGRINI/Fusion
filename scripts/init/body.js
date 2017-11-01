@@ -41,9 +41,11 @@ Fusion.ServerRequest = function(name, val, callback) {
 		type: "POST",
 		data: {},
 		complete: function(a) {
-			if (a.status === 200 && a.responseText !== null)
+			if (a.status === 200) {
+				if(a.responseText == null)
+					a.responseText = "\n"
 				callback(a.responseText.substring(0, a.responseText.length - 1))
-			else {
+			} else {
 				if(Fusion.debugLoad)
 					var log = "Can't load \"" + name + "\" @ " + val + ", returned " + JSON.stringify(a) + "."
 				if(a.status - 400 <= 0 || a.status - 400 > 99) {
