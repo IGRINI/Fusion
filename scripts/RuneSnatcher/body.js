@@ -9,6 +9,19 @@ var RunePositions = [
 	[3686.9375,-3624.8125,304]   // radiantTop
 ]
 
+function DestroyParticle() {
+	if(Fusion.Particles.RuneSnatcher) {
+		Particles.DestroyParticleEffect(Fusion.Particles.RuneSnatcher, true)
+		delete Fusion.Particles.RuneSnatcher
+	}
+}
+
+function CreateParticle() {
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+	Fusion.Particles.RuneSnatcher = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
+	Particles.SetParticleControl(Fusion.Particles.RuneSnatcher, 1, [RunePickupRadius, 0, 0])
+}
+
 function SnatcherF() {
 	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
@@ -42,15 +55,14 @@ function SnatcherF() {
 
 function SnatcherToggle() {
 	if(Snatcher.checked) {
+		CreateParticle()
 		SnatcherF()
 		Game.ScriptLogMsg("Script enabled: Snatcher", "#00ff00")
-	} else
+	} else {
+		DestroyParticle()
 		Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
+	}
 }
 
 var Snatcher = Game.AddScript("Snatcher", SnatcherToggle)
-if(!Fusion.Particles.RuneSnatcher) {
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	Fusion.Particles.RuneSnatcher = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
-	Particles.SetParticleControl(Fusion.Particles.RuneSnatcher, 1, [RunePickupRadius, 0, 0])
-}
+DestroyParticle()
