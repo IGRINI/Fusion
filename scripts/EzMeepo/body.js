@@ -40,7 +40,7 @@ if(!Fusion.Commands.MeepoAutoPoof) {
 			return
 		}
 		if(flag === 1) {
-			var EntsOnCursor = GameUI.FindScreenEntities(GameUI.GetCursorPosition())
+			var EntsOnCursor = GameUI.FindScreenEntitiesOnCurson()
 			if(EntsOnCursor.length != 0)
 				PoofAllMeeposToMeepo(playerID, EntsOnCursor[0].entityIndex, WithCheck)
 			else

@@ -1,6 +1,19 @@
 ﻿Fusion.LenseBonusRange = 200
 Fusion.ForceStaffUnits = 600
 
+Fusion.GetEntitiesOnPosition = function(vec) {
+	return GameUI.FindScreenEntities (
+		[
+			Game.WorldToScreenX(vec[0], vec[1], vec[2]),
+			Game.WorldToScreenY(vec[0], vec[1], vec[2])
+		]
+	)
+}
+
+GameUI.FindScreenEntitiesOnCurson = function() {
+	return GameUI.FindScreenEntities(GameUI.GetCursorPosition())
+}
+
 Fusion.arrayRemove = function(ar, obj) {
 	var i = ar.indexOf(obj)
 	if(i >= 0)
@@ -157,7 +170,7 @@ Game.RotationTime = function(angle, rotspeed) { // MovementTurnRate
 
 Game.GetEntitiesInRange = function(pos, range, onlyEnemies) {
 	return Game.PlayersHeroEnts().filter(function(ent) {
-		return onlyEnemies ? Entities.IsEnemy(ent) : true
+		return onlyEnemies || Entities.IsEnemy(ent)
 				&& Entities.IsAlive(ent)
 				&& !Entities.IsBuilding(ent)
 				&& !Entities.IsInvulnerable(ent)

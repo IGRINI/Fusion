@@ -49,8 +49,9 @@ function SAlertEvery() {
 			}
 		})
 	})
+
 	if(SkillAlert.checked)
-		$.Schedule(Fusion.MyTick, SAlertEvery)
+		$.Schedule(Fusion.MyTick * 5, SAlertEvery)
 }
 
 function AlertTarget(modifier, ent) {
