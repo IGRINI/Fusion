@@ -1,4 +1,4 @@
-var RunePickupRadius = 150
+var PickupRadius = 150
 var NoTarget = []
 var RunePositions = [
 	[-3149.0625,3725.8125,304],  // direTop
@@ -19,35 +19,49 @@ function DestroyParticle() {
 function CreateParticle() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	Fusion.Particles.RuneSnatcher = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
-	Particles.SetParticleControl(Fusion.Particles.RuneSnatcher, 1, [RunePickupRadius, 0, 0])
+	Particles.SetParticleControl(Fusion.Particles.RuneSnatcher, 1, [PickupRadius, 0, 0])
 }
 
-function SnatcherF() {
+function RuneSnatcherF() {
 	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
-	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
-		if(Snatcher.checked)
-			$.Schedule(1, SnatcherF)
+	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	}
 	
 	var myVec = Entities.GetAbsOrigin(MyEnt)
 	RunePositions.filter(function(RunePos) {
-		return Game.PointDistance(RunePos, myVec) <= RunePickupRadius
-	}).forEach(function(RunePos) {
-		var EntsOnPos = Fusion.GetEntitiesOnPosition(RunePos)
-		if(EntsOnPos.length === 0)
-			return
-		EntsOnPos.map(function(entData) {
-			return entData.entityIndex
-		}).some(function(ent) {
+		return Game.PointDistance(RunePos, myVec) <= PickupRadius
+	}).map(function(RunePos) {
+		var rune = undefined
+		Fusion.GetEntitiesOnPosition(RunePos).some(function(ent) {
 			if(!Entities.IsSelectable(ent)) {
-				Game.PuckupRune(MyEnt, ent, false)
+				rune = ent
 				return true
 			}
-
 			return false
 		})
+		return rune
+	}).filter(function(ent) {
+		return ent !== undefined
+	}).forEach(function(Rune) {
+		Game.PuckupRune(MyEnt, Rune, false)
 	})
+}
+
+function AegisSnatcherF() {
+	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
+	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+		return
+	
+	Entities.GetAllEntities().filter(function(ent) {
+		return Entities.Distance(ent, MyEnt) <= PickupRadius && !Entities.IsSelectable(ent) && Entities.IsItemPhysical(ent)
+	}).forEach(function(ent) {
+		Game.PickupItem(MyEnt, ent, false)
+	})
+}
+
+function SnatcherF() {
+	AegisSnatcherF()
+	RuneSnatcherF()
 
 	if(Snatcher.checked)
 		$.Schedule(Fusion.MyTick, SnatcherF)

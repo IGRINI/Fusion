@@ -92,7 +92,7 @@ function RemoteMines(MyEnt, ents) {
 			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z])
 				dmg = Entities.HasScepter(MyEnt) ? RMinesDamageScepter[z] : RMinesDamage[z]
 		if(ents.some(function(ent) {
-			return Entities.GetRangeToUnit(rmine, ent) <= TriggerRadius
+			return Entities.IsEntityInRange(rmine, ent, TriggerRadius)
 		})) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg

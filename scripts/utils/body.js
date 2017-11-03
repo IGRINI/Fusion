@@ -7,10 +7,12 @@ Fusion.GetEntitiesOnPosition = function(vec) {
 			Game.WorldToScreenX(vec[0], vec[1], vec[2]),
 			Game.WorldToScreenY(vec[0], vec[1], vec[2])
 		]
-	)
+	).map(function(entData) {
+		return entData.entityIndex
+	})
 }
 
-GameUI.FindScreenEntitiesOnCurson = function() {
+GameUI.FindScreenEntitiesAtCursor = function() {
 	return GameUI.FindScreenEntities(GameUI.GetCursorPosition())
 }
 
@@ -399,7 +401,7 @@ Game.PickupItem = function(ent, item, queue) {
 	})
 }
 
-Game.PuckupRune = function(ent, rune, queue) {
+Game.PickupRune = function(ent, rune, queue) {
 	Game.PrepareUnitOrders({
 		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_RUNE,
 		UnitIndex: ent,
@@ -430,8 +432,12 @@ Game.PurchaseItem = function(ent, itemid, queue) {
 }
 
 //Получение расстояния между двумя точками в пространстве, высшая математика епта
-Game.PointDistance = function(a,b) {
-	return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[1] - b[1], 2))
+Game.PointDistance = function(a, b) {
+	return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[2] - b[2], 2))
+}
+
+Entities.Distance = function(a, b) {
+	return Game.PointDistance(Entities.GetAbsOrigin(a), Entities.GetAbsOrigin(b))
 }
 
 //"округление" числа до определенного кол-ва знаков после запятой
