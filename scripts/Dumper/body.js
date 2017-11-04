@@ -8,7 +8,7 @@ if(!Fusion.Commands.Eval) {
 if(!Fusion.Commands.DumpEnemyAbilities) {
 	var lastBuffs = []
 	Fusion.Commands.DumpEnemyAbilities = function() {
-		var HEnts = Game.PlayersHeroEnts().filter(function(ent) {
+		var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 			return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
 		})
 		HEnts.map(function(ent) {

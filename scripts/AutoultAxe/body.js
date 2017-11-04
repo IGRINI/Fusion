@@ -10,7 +10,7 @@ function AxeUltiF() {
 	var UltiDmg = damage[UltiLvl - 1]
 	var UltiCastRange = Abilities.GetCastRangeFix(Ulti) + 75
 	
-	Game.PlayersHeroEnts().filter(function(ent) {
+	Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent) && Entities.GetRangeToUnit(MyEnt, ent) <= UltiCastRange && Entities.GetHealth(ent) <= UltiDmg
 	}).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)

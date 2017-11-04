@@ -84,7 +84,7 @@ function AntiInitiationF() {
 	if(!AntiInitiation.checked)
 		return
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Game.PlayersHeroEnts().filter(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
 	})
 	HEnts.some(function(ent) {

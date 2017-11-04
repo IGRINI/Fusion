@@ -9,7 +9,7 @@ function ZeusAutoultF() {
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Ulti))
 		return
 	
-	Game.PlayersHeroEnts().some(function(ent) {
+	Entities.PlayersHeroEnts().some(function(ent) {
 		if (!Entities.IsEnemy(ent) || Entities.IsMagicImmune(ent) || !Entities.IsAlive(ent))
 			return false
 		if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)

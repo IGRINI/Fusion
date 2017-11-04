@@ -117,7 +117,7 @@ function RemoteMines(MyEnt, HEnts) {
 
 function EzTechiesF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Game.PlayersHeroEnts().filter(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
 	}).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)
