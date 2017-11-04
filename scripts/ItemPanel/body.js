@@ -57,7 +57,7 @@ function ItemPanelEvery() {
 		for(var i = 1; i < P.Children().length; i++)
 			P.Children()[i].itemname = ""
 		for(var n in Inv)
-			P.Children()[n + 1].itemname = Abilities.GetAbilityName(Inv[n])
+			P.Children()[parseInt(n) + 1].itemname = Abilities.GetAbilityName(Inv[n])
 		k++
 	}
 	if(ItemPanel.checked)
