@@ -459,7 +459,7 @@ Game.GetInventory = function(ent) {
 }
 
 Game.IsIllusion = function(entity) {
-	return Entities.PlayersHeroEnts().indexOf(entity) > -1
+	return Entities.PlayersHeroEnts().indexOf(entity) === -1
 }
 
 Entities.PlayersHeroEnts = function() {

@@ -1,4 +1,5 @@
-var PickupRadius = 150
+var TruePickupRadius = 150
+var PickupRadius = 450
 var NoTarget = []
 var RunePositions = [
 	[-3149.0625,3725.8125,304],  // direTop
@@ -14,12 +15,20 @@ function DestroyParticle() {
 		Particles.DestroyParticleEffect(Fusion.Particles.RuneSnatcher, true)
 		delete Fusion.Particles.RuneSnatcher
 	}
+	if(Fusion.Particles.RuneSnatcherTrue) {
+		Particles.DestroyParticleEffect(Fusion.Particles.RuneSnatcherTrue, true)
+		delete Fusion.Particles.RuneSnatcher
+	}
 }
 
 function CreateParticle() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+
 	Fusion.Particles.RuneSnatcher = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
 	Particles.SetParticleControl(Fusion.Particles.RuneSnatcher, 1, [PickupRadius, 0, 0])
+
+	Fusion.Particles.RuneSnatcherTrue = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
+	Particles.SetParticleControl(Fusion.Particles.RuneSnatcherTrue, 1, [TruePickupRadius, 0, 0])
 }
 
 function RuneSnatcherF() {
