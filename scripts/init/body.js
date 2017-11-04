@@ -4,7 +4,7 @@ Fusion = {
 	Panels: {},
 	Particles: {},
 	Subscribes: {},
-	MyTick: 1 / 30,
+	MyTick: 1 / 30 * 3/*/ 3 uncomment if you have powerful pc*/,
 	debugLoad: false,
 	debugAnimations: true,
 	FusionServer: "http://localhost:4297",
@@ -108,8 +108,6 @@ Fusion.LoadFusion = function(callback) {
 		
 		Fusion.GetConfig("init", function(config) {
 			Fusion.Configs.init = config
-			if(config.isSlowPC)
-				Fusion.MyTick *= 3
 			
 			$.Msg("Initializing slider...")
 			
