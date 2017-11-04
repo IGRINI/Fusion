@@ -23,7 +23,7 @@ function CreateParticle() {
 }
 
 function RuneSnatcherF() {
-	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	
@@ -43,18 +43,19 @@ function RuneSnatcherF() {
 	}).filter(function(ent) {
 		return ent !== undefined
 	}).forEach(function(Rune) {
-		Game.PuckupRune(MyEnt, Rune, false)
+		Game.PickupRune(MyEnt, Rune, false)
 	})
 }
 
 function AegisSnatcherF() {
-	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	
 	Entities.GetAllEntities().filter(function(ent) {
 		return Entities.Distance(ent, MyEnt) <= PickupRadius && !Entities.IsSelectable(ent) && Entities.IsItemPhysical(ent)
 	}).forEach(function(ent) {
+		$.Msg(Entities.Distance(ent, MyEnt))
 		Game.PickupItem(MyEnt, ent, false)
 	})
 }
@@ -78,5 +79,5 @@ function SnatcherToggle() {
 	}
 }
 
-var Snatcher = Game.AddScript("Snatcher", SnatcherToggle)
+var Snatcher = Fusion.AddScript("Snatcher", SnatcherToggle)
 DestroyParticle()

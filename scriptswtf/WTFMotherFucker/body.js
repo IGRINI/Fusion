@@ -39,4 +39,4 @@ function WTFMotherFuckerOnToggle() {
 	}
 }
 
-var WTFMotherFucker = Game.AddScript('WTFMotherFucker', WTFMotherFuckerOnToggle)
+var WTFMotherFucker = Fusion.AddScript('WTFMotherFucker', WTFMotherFuckerOnToggle)

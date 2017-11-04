@@ -44,7 +44,7 @@ function EzProcast01OnOffLoad() {
 		}
 		var Inv = Game.GetInventory(MyEnt)
 		for(i in Inv){
-			Behaviors = Game.Behaviors(Inv[i])
+			Behaviors = Fusion.Behaviors(Inv[i])
 			if( Behaviors.indexOf(2)!=-1 )
 				continue
 			var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
@@ -101,7 +101,7 @@ if(!Fusion.Commands.EzProcastF) {
 		for(var i in abils){
 			var AbName = abils[i]
 			var Abil = Game.GetAbilityByName(MyEnt,abils[i])
-			var EzPBeh = Game.Behaviors(Abil)
+			var EzPBeh = Fusion.Behaviors(Abil)
 			var EzPDUTT = Abilities.GetAbilityTargetTeam(Abil)
 			//$.Msg("Team Target: "+EzPDUTT)
 			//$.Msg("Ability Behavior: "+EzPBeh)
@@ -112,21 +112,20 @@ if(!Fusion.Commands.EzProcastF) {
 			else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
 				Game.CastPosition(MyEnt, Abil, pos)
 			else if(AbName=="item_ethereal_blade") {
-				if(EntOnCursor.length!=0)
+				if(EntOnCursor.length != 0)
 					Game.CastTarget(MyEnt, Abil, EntOnCursor[0].entityIndex)
 				else
 					Game.CastTarget(MyEnt, Abil, MyEnt)
 			} else if(EzPBeh.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || EzPBeh.length === 0) {
-				if( parseInt(EzPDUTT)==3 || parseInt(EzPDUTT)==1 ){
+				if(parseInt(EzPDUTT) === 3 || parseInt(EzPDUTT) === 1)
 					Game.CastTarget(MyEnt, Abil, MyEnt)
-				}else if( parseInt(EzPDUTT)!=-1 || parseInt(EzPDUTT)==4 ){
+				else if(parseInt(EzPDUTT) !== -1 || parseInt(EzPDUTT) === 4)
 					Game.CastTarget(MyEnt, Abil, MyEnt)
-				}else{
+				else
 					Game.CastTarget(MyEnt, Abil, MyEnt)
-				}
 			}
 		}
 	}
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
 }
-var EzProcast01 = Game.AddScript("EzProcast", EzProcast01OnOff)
+var EzProcast01 = Fusion.AddScript("EzProcast", EzProcast01OnOff)

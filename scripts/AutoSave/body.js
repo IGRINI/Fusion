@@ -16,7 +16,7 @@ function Save(MyEnt, ent) {
 		var abil = Game.GetAbilityByName(MyEnt, ar[0])
 		if(abil === undefined)
 			return false
-		var abilBehaviors = Game.Behaviors(abil)
+		var abilBehaviors = Fusion.Behaviors(abil)
 		var speed = ar[1]
 		if(distance > Abilities.GetCastRangeFix(abil) || !Abilities.IsCooldownReady(abil) || Abilities.IsHidden(abil) || !Abilities.IsActivated(abil))
 			return false
@@ -30,12 +30,10 @@ function Save(MyEnt, ent) {
 }
 
 function AutoSaveF() {
-	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && !Entities.IsEnemy(ent)
 	}).some(function(ent) {
 		var entBuffsNames = Game.GetBuffsNames(ent)
@@ -66,4 +64,4 @@ function AutoSaveToggle() {
 	}
 }
 
-//var AutoSave = Game.AddScript("AutoSave", AutoSaveToggle)
+//var AutoSave = Fusion.AddScript("AutoSave", AutoSaveToggle)

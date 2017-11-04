@@ -6,7 +6,7 @@ function DazzleWTFHealOnInterval() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	ShadowWave(MyEnt, HEnts)
 }
@@ -54,4 +54,4 @@ function DazzleWTFHealOnToggle() {
 	}
 }
 
-var DazzleWTFHeal = Game.AddScript('DazzleWTFHeal', DazzleWTFHealOnToggle)
+var DazzleWTFHeal = Fusion.AddScript('DazzleWTFHeal', DazzleWTFHealOnToggle)

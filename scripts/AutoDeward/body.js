@@ -1,10 +1,13 @@
-﻿function AutoDewardOnInterval() {
+﻿function AutoDewardF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	var HEnts = Entities.GetAllEntities()
 	
 	Deward(MyEnt, HEnts)
+
+	if(AutoDeward.checked)
+		$.Schedule(Fusion.MyTick, AutoDewardF)
 }
 
 function Deward(MyEnt, HEnts) {
@@ -14,29 +17,27 @@ function Deward(MyEnt, HEnts) {
 		AutoDeward.checked = false
 		AutoDewardOnToggle()
 	}
+
 	var AbilRange = Abilities.GetCastRangeFix(Abil)
-	
-	
-	for (i in HEnts) {
-		var ent = parseInt(HEnts[i])
-		
+	HEnts.some(function(ent) {
 		if(!(Entities.IsAlive(ent) && Entities.IsEnemy(ent)))
-			continue
+			return false
 		if(Entities.GetRangeToUnit(MyEnt, ent) > AbilRange)
-			continue
+			return false
 		if(!AreDeward(ent))
-			continue
+			return false
 		
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)
-	}
+		return true
+	})
 }
 
 function AreDeward(ent) {
 	return Entities.IsWard(ent) || IsMine(ent)
 }
 
-var MineNames = [/*Can"t de dewarded "npc_dota_techies_land_mine",*/"npc_dota_techies_remote_mine", "npc_dota_techies_stasis_trap"]
+var MineNames = ["npc_dota_techies_remote_mine", "npc_dota_techies_stasis_trap"]
 function IsMine(ent) {
 	for(i = 0; i < MineNames.length; i++)
 		if(Entities.GetUnitName(ent) === MineNames[i])
@@ -45,7 +46,7 @@ function IsMine(ent) {
 	return false
 }
 
-var DewardItemNames = ["item_quelling_blade", "item_bfury", "item_iron_talon"]
+var DewardItemNames = ["item_quelling_blade", "item_bfury", "item_iron_talon", "item_tango"]
 function GetDewardItem(MyEnt) {
 	for(var i in DewardItemNames) {
 		var DewardItemName = DewardItemNames[i]
@@ -60,21 +61,10 @@ function GetDewardItem(MyEnt) {
 
 function AutoDewardOnToggle() {
 	if (!AutoDeward.checked) {
-		Game.ScriptLogMsg("Script disabled: AutoDeward", "#ff0000")
-	} else {
-		function intervalFunc(){
-			$.Schedule(
-				Fusion.MyTick,
-				function() {
-					AutoDewardOnInterval()
-					if(AutoDeward.checked)
-						intervalFunc()
-				}
-			)
-		}
-		intervalFunc()
+		AutoDewardF()
 		Game.ScriptLogMsg("Script enabled: AutoDeward", "#00ff00")
-	}
+	} else
+		Game.ScriptLogMsg("Script disabled: AutoDeward", "#ff0000")
 }
 
-var AutoDeward = Game.AddScript("AutoDeward", AutoDewardOnToggle)
+var AutoDeward = Fusion.AddScript("AutoDeward", AutoDewardOnToggle)

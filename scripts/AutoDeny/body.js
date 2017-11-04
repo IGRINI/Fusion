@@ -13,7 +13,7 @@ function AutoDenyOnInterval() {
 	
 	if(Entities.GetUnitName(MyEnt) === "npc_dota_hero_pudge") {
 		var Abil = Game.GetAbilityByName(MyEnt, "pudge_rot")
-		var AbilLvl = parseInt(Abilities.GetLevel(Abil))
+		var AbilLvl = Abilities.GetLevel(Abil)
 		if(Entities.GetHealth(MyEnt) <= RotDamage[AbilLvl - 1] * 2)
 			Game.ToggleAbil(MyEnt, Abil, false)
 		return
@@ -44,4 +44,4 @@ function AutoDenyOnToggle() {
 	}
 }
 
-var AutoDeny = Game.AddScript("AutoDeny", AutoDenyOnToggle)
+var AutoDeny = Fusion.AddScript("AutoDeny", AutoDenyOnToggle)

@@ -117,9 +117,7 @@ function RemoteMines(MyEnt, HEnts) {
 
 function EzTechiesF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	var HEnts = Game.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
 	}).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)
@@ -152,4 +150,4 @@ function EzTechiesCheckBoxClick() {
 		Game.ScriptLogMsg("Script disabled: EzTechies", "#ff0000")
 }
 
-var EzTechies = Game.AddScript("EzTechiesAuto", EzTechiesCheckBoxClick)
+var EzTechies = Fusion.AddScript("EzTechiesAuto", EzTechiesCheckBoxClick)

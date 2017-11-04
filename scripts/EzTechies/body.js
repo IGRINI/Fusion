@@ -13,7 +13,7 @@ function SummonParticle(range, ent) {
 var rmineTimeout = 598 // 600 is mine duration
 function ScheduleExplode(rmine) {
 	$.Schedule(RMineSetupTime + Fusion.MyTick, function() {
-		var time = parseInt(Game.GetGameTime())
+		var time = Game.GetGameTime()
 		var delta = time - rmineTimeout + Fusion.MyTick
 		Game.GetBuffs(rmine).some(function(buff) {
 			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine") {
@@ -52,9 +52,7 @@ function HandleEntity(ent) {
 }
 
 function RehandleMines() {
-	Entities.GetAllEntities().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	Entities.GetAllEntities().filter(function(ent) {
 		return !Entities.IsEnemy(ent) && Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent))
 	}).forEach(HandleEntity)
 }
@@ -123,7 +121,7 @@ function SubscribeEvents() {
 
 	if(!Fusion.Subscribes.EzTechiesMinesSpawn)
 		Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", function(event) {
-			var ent = parseInt(event.entindex)
+			var ent = event.entindex
 			if(Entities.IsEnemy(ent))
 				return
 			HandleEntity(ent)
@@ -131,7 +129,7 @@ function SubscribeEvents() {
 
 	if(!Fusion.Subscribes.EzTechiesMineDeath)
 		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", function(event) {
-			var ent = parseInt(event.entindex_killed)
+			var ent = event.entindex_killed
 			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
 				Fusion.EzTechies.RemoveRMine(ent)
 		})

@@ -67,4 +67,4 @@ function SkywrathMageWTFAutoOnToggle() {
 	}
 }
 
-var SkywrathMageWTFAuto = Game.AddScript('SkywrathMageWTFAuto', SkywrathMageWTFAutoOnToggle)
+var SkywrathMageWTFAuto = Fusion.AddScript('SkywrathMageWTFAuto', SkywrathMageWTFAutoOnToggle)

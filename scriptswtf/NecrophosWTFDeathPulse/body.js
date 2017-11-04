@@ -67,4 +67,4 @@ function NecrophosWTFDeathPulseOnToggle() {
 	}
 }
 
-var NecrophosWTFDeathPulse = Game.AddScript('NecrophosWTFDeathPulse', NecrophosWTFDeathPulseOnToggle)
+var NecrophosWTFDeathPulse = Fusion.AddScript('NecrophosWTFDeathPulse', NecrophosWTFDeathPulseOnToggle)

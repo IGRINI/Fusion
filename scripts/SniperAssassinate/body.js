@@ -1,5 +1,5 @@
 function SniperAssassinateFunc() {
-	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	
 	var Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate")
 	var Glimmer = Game.GetAbilityByName(MyEnt, "item_glimmer_cape")
@@ -12,9 +12,7 @@ function SniperAssassinateFunc() {
 	if(UltiLvl === 0 || UltiCd > 0 || UltiManaCost > Entities.GetMana(MyEnt) || Abilities.IsInAbilityPhase(Ulti))
 		return
 
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent) && Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange && !Entities.IsMagicImmune(ent)
 	}).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)
@@ -26,9 +24,7 @@ function SniperAssassinateFunc() {
 			return 1 
 		else
 			return -1
-	})
-	
-	HEnts.some(function(ent) {
+	}).some(function(ent) {
 		if(Fusion.HasLinkenAtTime(ent, 2))
 			return false
 		
@@ -69,4 +65,4 @@ function SniperAssassinateOnCheckBoxClick() {
 	Game.ScriptLogMsg("Script enabled: SniperAssassinate", "#00ff00")
 }
 
-var SniperAssassinate = Game.AddScript("SniperAssassinate", SniperAssassinateOnCheckBoxClick)
+var SniperAssassinate = Fusion.AddScript("SniperAssassinate", SniperAssassinateOnCheckBoxClick)

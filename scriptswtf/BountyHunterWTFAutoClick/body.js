@@ -8,7 +8,7 @@ function BountyHunterWTFAutoClickOnInterval() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	AutoClick(MyEnt, HEnts)
 }
@@ -48,4 +48,4 @@ function BountyHunterWTFAutoClickOnToggle() {
 	}
 }
 
-var BountyHunterWTFAutoClick = Game.AddScript('BountyHunterWTFAutoClick', BountyHunterWTFAutoClickOnToggle)
+var BountyHunterWTFAutoClick = Fusion.AddScript('BountyHunterWTFAutoClick', BountyHunterWTFAutoClickOnToggle)

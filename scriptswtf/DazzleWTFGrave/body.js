@@ -5,7 +5,7 @@ function DazzleWTFGraveOnInterval() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	ShadowGrave(MyEnt, HEnts)
 }
@@ -53,4 +53,4 @@ function DazzleWTFGraveOnToggle() {
 	}
 }
 
-var DazzleWTFGrave = Game.AddScript('DazzleWTFGrave', DazzleWTFGraveOnToggle)
+var DazzleWTFGrave = Fusion.AddScript('DazzleWTFGrave', DazzleWTFGraveOnToggle)

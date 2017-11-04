@@ -2,7 +2,7 @@
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	WhirlingAxes(MyEnt, HEnts)
 	//BattleTrance(MyEnt, HEnts)
@@ -48,4 +48,4 @@ function TrollWarlordWTF() {
 	}
 }
 
-var TrollWarlordWTF = Game.AddScript('TrollWarlordWTF', TrollWarlordWTF)
+var TrollWarlordWTF = Fusion.AddScript('TrollWarlordWTF', TrollWarlordWTF)

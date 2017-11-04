@@ -28,9 +28,7 @@ function SAlertEvery() {
 			AlertPosition(modifier, vec, thinker)
 	})
 	
-	Entities.GetAllEntities().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	Entities.GetAllEntities().filter(function(ent) {
 		return Entities.IsAlive(ent) && !Entities.IsBuilding(ent)
 	}).forEach(function(ent) {
 		var buffs = Game.GetBuffsNames(ent)
@@ -51,7 +49,7 @@ function SAlertEvery() {
 	})
 
 	if(SkillAlert.checked)
-		$.Schedule(Fusion.MyTick * 5, SAlertEvery)
+		$.Schedule(Fusion.MyTick, SAlertEvery)
 }
 
 function AlertTarget(modifier, ent) {
@@ -144,4 +142,4 @@ function SkillAlertToggle() {
 	}
 }
 
-var SkillAlert = Game.AddScript("SkillAlert", SkillAlertToggle)
+var SkillAlert = Fusion.AddScript("SkillAlert", SkillAlertToggle)

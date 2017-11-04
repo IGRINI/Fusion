@@ -5,7 +5,7 @@ var rangeCast = 600
 var StunDuration = 1.5
 
 function AutoUltNecrophosF() {
-	var MyEnt = parseInt(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()))
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	var Ulti = Entities.GetAbilityByName(MyEnt, "necrolyte_reapers_scythe")
 	var UltiRange = Abilities.GetCastRangeFix(Ulti)
 	
@@ -17,9 +17,7 @@ function AutoUltNecrophosF() {
 	if(UltiLvl==0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
 		return
 	
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange && !Entities.IsMagicImmune(ent)
 	}).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)
@@ -88,4 +86,4 @@ function AutoUltNecrophosOnCheckBoxClick() {
 	Game.ScriptLogMsg("Script enabled: AutoUltNecrophos", "#00ff00")
 }
 
-var AutoUltNecrophos = Game.AddScript("AutoUltNecrophos", AutoUltNecrophosOnCheckBoxClick)
+var AutoUltNecrophos = Fusion.AddScript("AutoUltNecrophos", AutoUltNecrophosOnCheckBoxClick)

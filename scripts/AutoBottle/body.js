@@ -27,4 +27,4 @@ function AutoBottleOnToggle() {
 	}
 }
 
-var AutoBottle = Game.AddScript("AutoBottle", AutoBottleOnToggle)
+var AutoBottle = Fusion.AddScript("AutoBottle", AutoBottleOnToggle)

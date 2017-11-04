@@ -84,9 +84,7 @@ function AntiInitiationF() {
 	if(!AntiInitiation.checked)
 		return
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	var HEnts = Game.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
 	})
 	HEnts.some(function(ent) {
@@ -126,7 +124,7 @@ function AntiInitiationF() {
 				GameUI.SelectUnit(MyEnt, false)
 				Game.EntStop(MyEnt, false)
 				
-				var Behavior = Game.Behaviors(abil)
+				var Behavior = Fusion.Behaviors(abil)
 				if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
 					Game.CastNoTarget(MyEnt, abil, false)
 				else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
@@ -187,7 +185,7 @@ function Disable(MyEnt, ent, Abil) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.EntStop(MyEnt, false)
 	
-	var Behavior = Game.Behaviors(abil)
+	var Behavior = Fusion.Behaviors(abil)
 	if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
 		Game.CastNoTarget(MyEnt, abil, false)
 	else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
@@ -222,4 +220,4 @@ function AntiInitiationToggle() {
 	}
 }
 
-var AntiInitiation = Game.AddScript("AntiInitiation", AntiInitiationToggle)
+var AntiInitiation = Fusion.AddScript("AntiInitiation", AntiInitiationToggle)

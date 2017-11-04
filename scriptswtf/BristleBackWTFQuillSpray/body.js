@@ -5,12 +5,11 @@ function BristleBackWTFQuillSprayOnInterval() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
 	
-	QuillSpray(MyEnt, HEnts)
+	QuillSpray(MyEnt)
 }
 
-function QuillSpray(MyEnt, HEnts) {
+function QuillSpray(MyEnt) {
 	var Abil = Game.GetAbilityByName(MyEnt, 'bristleback_quill_spray')
 	var AbilLvl = parseInt(Abilities.GetLevel(Abil))
 	if(AbilLvl === 0)
@@ -39,4 +38,4 @@ function BristleBackWTFQuillSprayOnToggle() {
 	}
 }
 
-var BristleBackWTFQuillSpray = Game.AddScript('BristleBackWTFQuillSpray', BristleBackWTFQuillSprayOnToggle)
+var BristleBackWTFQuillSpray = Fusion.AddScript('BristleBackWTFQuillSpray', BristleBackWTFQuillSprayOnToggle)

@@ -30,4 +30,4 @@ function PudgeInvisRotOnToggle() {
 	}
 }
 
-var PudgeInvisRot = Game.AddScript("PudgeInvisRot", PudgeInvisRotOnToggle)
+var PudgeInvisRot = Fusion.AddScript("PudgeInvisRot", PudgeInvisRotOnToggle)

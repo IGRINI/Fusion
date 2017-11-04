@@ -1,9 +1,7 @@
 Fusion.FamiliarBaseClass = "npc_dota_visage_familiar"
 function GetFamiliars() {
 	var playerID = Game.GetLocalPlayerID()
-	return Entities.GetAllEntitiesByClassname(Fusion.FamiliarBaseClass).map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	return Entities.GetAllEntitiesByClassname(Fusion.FamiliarBaseClass).filter(function(ent) {
 		return Entities.IsAlive(ent) && !Entities.IsBuilding(ent) && !Entities.IsEnemy(ent) && !Entities.IsStunned(ent) && Entities.IsControllableByPlayer(ent, playerID) && !Entities.IsIllusion(ent)
 	})
 }
@@ -35,9 +33,7 @@ function Souls(MyEnt) {
 		return
 	var AbilRange = Abilities.GetCastRangeFix(Abil)
 	var AbilCastPoint = Abilities.GetCastPoint(Abil)
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent) && Entities.GetRangeToUnit(ent, MyEnt) <= AbilRange
 	}).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)
@@ -80,4 +76,4 @@ function EzVisageOnCheckBoxClick() {
 	}
 }
 
-var EzVisage = Game.AddScript("EzVisage", EzVisageOnCheckBoxClick)
+var EzVisage = Fusion.AddScript("EzVisage", EzVisageOnCheckBoxClick)

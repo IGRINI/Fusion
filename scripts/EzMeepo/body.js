@@ -1,9 +1,7 @@
 ﻿Fusion.MeepoClassname = "npc_dota_hero_meepo"
 function GetMeepos() {
 	var playerID = Game.GetLocalPlayerID()
-	return Entities.GetAllEntitiesByClassname(Fusion.MeepoClassname).map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	return Entities.GetAllEntitiesByClassname(Fusion.MeepoClassname).filter(function(ent) {
 		return Entities.IsAlive(ent) && !Entities.IsBuilding(ent) && !Entities.IsEnemy(ent) && !Entities.IsStunned(ent) && !(WithCheck && ent === To) && Entities.IsControllableByPlayer(ent, playerID) && !Entities.IsIllusion(ent)
 	})
 }
@@ -115,9 +113,7 @@ if(!Fusion.Commands.MeepoEarthBind) {
 		var playerID = Game.GetLocalPlayerID()
 		var MyEnt = Players.GetPlayerHeroEntityIndex(playerID)
 		
-		return Entities.GetAllEntitiesByClassname(MeepoName).map(function(ent) {
-			return parseInt(ent)
-		}).filter(function(ent) {
+		return Entities.GetAllEntitiesByClassname(MeepoName).filter(function(ent) {
 			return Entities.IsAlive(ent) && !Entities.IsEnemy(ent) && !Entities.IsStunned(ent) && Entities.IsControllableByPlayer(ent, playerID) && !Entities.IsIllusion(ent)
 		}).some(function(ent) {
 			var Abil = Game.GetAbilityByName(ent, "meepo_earthbind")

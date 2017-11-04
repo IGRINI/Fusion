@@ -137,7 +137,7 @@ function AncientCreepStackF(){
 	}
 	var xy = [Game.WorldToScreenX(spots[team][2]-400,spots[team][1],spots[team][4])+50,Game.WorldToScreenY(spots[team][2]-400,spots[team][1],spots[team][4]+50)]
 	Fusion.Panels.AncientCreepStack.style.position = (xy[0]/uiw*100)+"% "+(xy[1]/uih*100)+"% 0"
-	var time = (parseInt((Game.GetDOTATime(false,false)%60)*10))/10
+	var time = Math.round(Game.GetDOTATime(false, false) % 60)
 	var entnow = Players.GetLocalPlayerPortraitUnit()
 	if(Entities.GetHealth(ent)<=400&&!hpn){
 		hpn = true
@@ -192,10 +192,10 @@ function AncientCreepStackU(){
 		Fusion.Panels.AncientCreepStack.visible = true
 	Fusion.Panels.AncientCreepStack.style.position = (xy[0]/uiw*100)+"% "+(xy[1]/uih*100)+"% 0"
 	var neu = GetNeutral(ent,1000)
-	Fusion.Panels.AncientCreepStack.Children()[0].text="Stacks: "+((parseInt((neu[3]/3)*10))/10)
+	Fusion.Panels.AncientCreepStack.Children()[0].text="Stacks: " + Math.round(neu[3]/3)
 	Fusion.Panels.AncientCreepStack.Children()[1].text="Gold: ~"+neu[4]
 	Fusion.Panels.AncientCreepStack.Children()[2].text="Exp: ~"+neu[5]
-	var time = (parseInt((Game.GetDOTATime(false,false)%60)*10))/10
+	var time = Math.round(Game.GetDOTATime(false, false) % 60)
 	Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg ) translate3d( 0px, "+((time-Math.floor(time))*20)+"px, 0px );"}, 0.3, "ease-in-out", 0)
 }
 function move(ent,entnow,xyz){
@@ -228,7 +228,7 @@ function AncientCreepStackOnCheckBoxClick() {
 	u()
 }
 
-var AncientCreepStack = Game.AddScript("AncientCreepStack", AncientCreepStackOnCheckBoxClick)
+var AncientCreepStack = Fusion.AddScript("AncientCreepStack", AncientCreepStackOnCheckBoxClick)
 if(!Fusion.Commands.AncientCreepStack) {
 	Fusion.Commands.AncientCreepStack = function() {
 		myid = Players.GetLocalPlayer()

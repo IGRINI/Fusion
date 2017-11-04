@@ -22,47 +22,48 @@ function RubickAutoStealF(){
 		if(AbPanel[i].style.opacity==1 || AbPanel[i].style.opacity==null)
 			z.push(AbPanel[i].Children()[0].abilityname)
 	}
-	var MyEnt = parseInt( Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()) )
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	var Ulti = Entities.GetAbilityByName(MyEnt, "rubick_spell_steal" )
 	var UltiRange = Abilities.GetCastRangeFix( Ulti )
 	var UltiLvl = Abilities.GetLevel(Ulti)
 	var UltiCd = Abilities.GetCooldownTimeRemaining( Ulti )
-	if(flag){
+	if(flag)
 		if(UltiCd!=0)
 			flag = false
 		else
 			return
-	}
-	if(UltiLvl==0)
+	if(UltiLvl <= 0)
 		return
-	var HEnts = Game.PlayersHeroEnts()
-	for (i in HEnts) {
-		ent = parseInt(HEnts[i])
+	
+	Entities.PlayersHeroEnts().some(function(ent) {
 		if( !Entities.IsEnemy(ent) || Entities.IsMagicImmune(ent) || !Entities.IsAlive(ent))
-			continue
+			return false
 		var Range = Entities.GetRangeToUnit(MyEnt, ent)
 		if(!WTFMode && Range > UltiRange)
-			continue
+			return false
 		var Count = Entities.GetAbilityCount( ent )
 		for(i=0;i<Count;i++){
 			var ab = Entities.GetAbility( ent, i )
 			var lvl = Abilities.GetLevel( ab )
 			if(lvl==-1 || !Abilities.IsDisplayedAbility(ab) || Abilities.IsPassive(ab) )
-				continue
+				return false
 			var name = Abilities.GetAbilityName( ab )
 			if(z.indexOf(name)==-1)
-				continue
+				return false
 			var cd = Abilities.GetCooldownTimeRemaining( ab )
 			var cda = Abilities.GetCooldown( ab )
 			/*if(me !== -1 && !StealIfThere)
-				continue*/
+				return false*/
 			
 			if(UltiCd == 0 && (WTFMode || (Math.ceil(cd) == cda && cda != 0))){
 				flag = true
 				Game.CastTarget(MyEnt, Ulti, ent, false)
+				return true
 			}
+			
+			return false
 		}
-	}
+	})
 }
 function RubickAutoStealCreatePanel(){
 	Fusion.Panels.RubickAutoSteal = $.CreatePanel( "Panel", Fusion.Panels.Main, "RubickAutoStealAbilities" )
@@ -77,23 +78,21 @@ function RubickAutoStealCreatePanel(){
 		Fusion.Configs.RubickAutoSteal = config
 		Fusion.Panels.RubickAutoSteal.style.position = config.MainPanel.x + " " + config.MainPanel.y + " 0"
 	});
-	var HEnts = Game.PlayersHeroEnts()
-	for (i in HEnts) {
-		ent = parseInt(HEnts[i])
+	Entities.PlayersHeroEnts().forEach(function(ent) {
 		if(!Entities.IsEnemy(ent))
-			continue
+			return
 		var Count = Entities.GetAbilityCount( ent )
 		for(i=0;i<Count;i++){
 			var ab = Entities.GetAbility( ent, i )
 			if(!Abilities.IsDisplayedAbility(ab) || Abilities.IsPassive(ab) )
-				continue
+				return
 			var name = Abilities.GetAbilityName( ab )
 			var Item = $.CreatePanel( "Panel", Fusion.Panels.RubickAutoSteal, "RubickAutoStealAbilities" )
 			//Item.BLoadLayoutFromString( "<root><Panel><DOTAAbilityImage style="width:35px;"/></Panel></root>", false, false )
 			Item.BLoadLayoutFromString( "<root><script>function Add(){$.GetContextPanel().style.opacity='0.1';$.GetContextPanel().SetPanelEvent('onactivate', Rem)}function Rem(){$.GetContextPanel().style.opacity='1.0';$.GetContextPanel().SetPanelEvent('onactivate', Add)}</script><Panel style='border: 1px solid #000; border-radius: 10px;' onactivate='Add()'><DOTAAbilityImage style='width:35px;'/></Panel></root>", false, false )
 			Item.Children()[0].abilityname=name
 		}
-	}
+	})
 }
 
 function RubickAutoStealOnCheckBoxClick() {
@@ -120,4 +119,4 @@ function RubickAutoStealOnCheckBoxClick() {
 	Game.ScriptLogMsg("Script enabled: RubickAutoSteal", "#00ff00")
 }
 
-var RubickAutoSteal = Game.AddScript("RubickAutoSteal", RubickAutoStealOnCheckBoxClick)
+var RubickAutoSteal = Fusion.AddScript("RubickAutoSteal", RubickAutoStealOnCheckBoxClick)

@@ -1,37 +1,26 @@
 ﻿var MainHud = Fusion.Panels.Main
 var manabar_layout, uiw, uih
 function DeleteAll() {
-	try {
+	if(Fusion.Panels.EnemyManaBars)
 		Fusion.Panels.EnemyManaBars.forEach(function(panel) {
-			try {
-				panel.DeleteAsync(0)
-			} catch(e) {  }
+			panel.DeleteAsync(0)
 		})
-	} catch(e) {  }
-	try {
+	if(Fusion.Particles.EnemyManaBars)
 		Fusion.Particles.EnemyManaBars.forEach(function(par) {
-			try {
-				Particles.DestroyParticleEffect(par, true)
-			} catch(e) {  }
+			Particles.DestroyParticleEffect(par, true)
 		})
-	} catch(e) {  }
 	Fusion.Panels.EnemyManaBars = []
 	Fusion.Particles.EnemyManaBars = []
 }
 
-var FlyingHeroes = [
-
-]
 function EMBEvery() {
-	var HEnts = Game.PlayersHeroEnts().map(function(ent) {
-		return parseInt(ent)
-	}).filter(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
 	})
 	
-	for(var i in Fusion.Panels.EnemyManaBars)
-		if(HEnts.indexOf(i) === -1)
-			Fusion.Panels.EnemyManaBars[i].visible = false
+	for(var ent in Fusion.Panels.EnemyManaBars)
+		if(HEnts.indexOf(ent) === -1)
+			Fusion.Panels.EnemyManaBars[ent].visible = false
 	
 	HEnts.forEach(function(ent) {
 		if (!Entities.IsEnemy(ent) || !Entities.IsAlive(ent) || Game.IsIllusion(ent)) {
@@ -70,8 +59,8 @@ function EMBEvery() {
 		}
 		Fusion.Panels.EnemyManaBars[ent].visible = true
 		Fusion.Panels.EnemyManaBars[ent].style.position = uixp + "% " + uiyp + "% 0"
-		var Mana = Entities.GetMana(parseInt(ent))
-		var MaxMana = Entities.GetMaxMana(parseInt(ent))
+		var Mana = Entities.GetMana(ent)
+		var MaxMana = Entities.GetMaxMana(ent)
 		var ManaPercent = Math.floor(Mana / MaxMana * 100)
 		if (!ManaPercent) {
 			if (Fusion.Panels.EnemyManaBars[ent])
@@ -104,4 +93,4 @@ function EnemyManaBarsF() {
 }
 
 DeleteAll()
-var EnemyManaBars = Game.AddScript("EnemyManaBars", EnemyManaBarsF)
+var EnemyManaBars = Fusion.AddScript("EnemyManaBars", EnemyManaBarsF)

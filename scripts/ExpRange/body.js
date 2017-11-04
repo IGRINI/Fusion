@@ -31,5 +31,5 @@ function ExpRangeCheckBoxToggle() {
 	}
 }
 
-var ExpRangeCheckBox = Game.AddScript("ExpRange", ExpRangeCheckBoxToggle)
+var ExpRangeCheckBox = Fusion.AddScript("ExpRange", ExpRangeCheckBoxToggle)
 DestroyParticles()

@@ -6,7 +6,7 @@ Fusion = {
 	Subscribes: {},
 	MyTick: 1 / 30,
 	debugLoad: false,
-	debugAnimations: false,
+	debugAnimations: true,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
 }
@@ -31,7 +31,7 @@ Fusion.ReloadFusion = function(postfix) {
 
 Fusion.LoadScript = function(scriptName) {
 	Fusion.ServerRequest("getscript", scriptName, function(response) {
-		eval("try {" + response + "} catch(e) {$.Msg(\"Error in " + scriptName + ": \" + e)}")
+		eval(response)
 		$.Msg("JScript " + scriptName + " loaded")
 	})
 }
@@ -108,6 +108,9 @@ Fusion.LoadFusion = function(callback) {
 		
 		Fusion.GetConfig("init", function(config) {
 			Fusion.Configs.init = config
+			if(config.isSlowPC)
+				Fusion.MyTick *= 3
+			
 			$.Msg("Initializing slider...")
 			
 			with(Fusion.Panels.MainPanel) {

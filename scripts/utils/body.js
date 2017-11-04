@@ -23,12 +23,13 @@ Fusion.arrayRemove = function(ar, obj) {
 }
 
 Fusion.GetBuffByName = function(ent, buffName) {
-	var ret
+	var ret = undefined
 	Game.GetBuffs(ent).some(function(buff) {
 		if(Buffs.GetName(ent, buff) === buffName) {
 			ret = buff
 			return true
 		}
+
 		return false
 	})
 	
@@ -38,16 +39,11 @@ Fusion.GetBuffByName = function(ent, buffName) {
 Fusion.LinkenTargetName = "modifier_item_sphere_target"
 Fusion.HasLinkenAtTime = function(ent, time) {
 	var sphere = Game.GetAbilityByName(ent, "item_sphere")
-	if (
-		(
-			sphere !== undefined &&
-			Abilities.GetCooldownTimeRemaining(sphere) - time <= 0
-		) ||
-		Fusion.GetBuffByName(ent, Fusion.LinkenTargetName) !== undefined
-	)
-		return true
-	
-	return false
+
+	return (
+		sphere !== undefined &&
+		Abilities.GetCooldownTimeRemaining(sphere) - time <= 0
+	) || Fusion.GetBuffByName(ent, Fusion.LinkenTargetName) !== undefined
 }
 
 Fusion.DeepEquals = function (x, y) {
@@ -65,10 +61,7 @@ Fusion.DeepEquals = function (x, y) {
 
 		return true;
 	} else
-		if(x !== y)
-			return false;
-		else
-			return true;
+		return x === y
 }
 
 Game.GetScreenCursonWorldVec = function() {
@@ -80,7 +73,7 @@ Abilities.GetCastRangeFix = function(abil) { // Don"t redefine internals
 	var AbilRange = Abilities.GetCastRange(abil)
 	var Caster = Abilities.GetCaster(abil)
 	
-	var Behaviors = Game.Behaviors(abil)
+	var Behaviors = Fusion.Behaviors(abil)
 	if(Entities.HasItemInInventory(Caster, "item_aether_lens") && (Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1 || Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1))
 		AbilRange += Fusion.LenseBonusRange
 	
@@ -166,12 +159,12 @@ Game.AngleBetweenTwoFaces = function(a_facing, b_facing) {
 	return Math.acos((a_facing[0] * b_facing[0]) + (a_facing[1] * b_facing[1]))
 }
 
-Game.RotationTime = function(angle, rotspeed) { // MovementTurnRate
+Game.RotationTime = function(angle, rotspeed) { // angle is npc_heroes MovementTurnRate
 	return (Fusion.MyTick * angle / rotspeed)
 }
 
 Game.GetEntitiesInRange = function(pos, range, onlyEnemies) {
-	return Game.PlayersHeroEnts().filter(function(ent) {
+	return Entities.PlayersHeroEnts().filter(function(ent) {
 		return onlyEnemies || Entities.IsEnemy(ent)
 				&& Entities.IsAlive(ent)
 				&& !Entities.IsBuilding(ent)
@@ -199,6 +192,7 @@ Game.GetAbilityByName = function(ent, name) {
 	var ab = Entities.GetAbilityByName(ent, name)
 	if (ab !== -1)
 		return ab
+	
 	for(var i = 0; i < 7; i++) {
 		var item = Entities.GetItemInSlot(ent, i)
 		if(Abilities.GetAbilityName(item) === name)
@@ -211,9 +205,8 @@ Game.GetSpeed = function(ent) {
 		var a = Entities.GetBaseMoveSpeed(ent)
 		var b = Entities.GetMoveSpeedModifier(ent,a)
 		return b
-	} else {
+	} else
 		return 0
-	}
 }
 
 Game.VelocityWaypoint = function(ent, time, movespeed) {
@@ -289,7 +282,7 @@ Game.MoveToPos = function(ent, xyz, queue) {
 	})
 }
 
-Game.MoveToTarget = function(ent, entTo, queue) { //FIXME
+Game.MoveToTarget = function(ent, entTo, queue) {
 	Game.PrepareUnitOrders({
 		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET,
 		UnitIndex: ent,
@@ -304,16 +297,6 @@ Game.MoveToAttackPos = function(ent, xyz, queue) {
 		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE,
 		UnitIndex: ent,
 		Position: xyz,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
-
-Game.MoveToAttackTarget = function(ent, ent2, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET,
-		UnitIndex: ent,
-		Position: ent2,
 		Queue: queue,
 		ShowEffects: Fusion.debugAnimations
 	})
@@ -440,37 +423,28 @@ Entities.Distance = function(a, b) {
 	return Game.PointDistance(Entities.GetAbsOrigin(a), Entities.GetAbsOrigin(b))
 }
 
-//"округление" числа до определенного кол-ва знаков после запятой
-Game.roundPlus = function(x, n) {
-	if(isNaN(x) || isNaN(n)) return false
-	var m = Math.pow(10,n)
-	return Math.round(x*m)/m
-}
-
 //логарифм по основанию
 Math.logb = function(number, base) {
 	return Math.log(number) / Math.log(base)
 }
 
 //поэлементное сравнение двух массивов, порядок элементов не учитывается
-Game.CompareArrays = function(a,b) {
-	if (a==b)
+Game.CompareArrays = function(a, b) {
+	if (a === b)
 		return true
-	if (a.length!=b.length)
+	if (a.length != b.length)
 		return false
-	for(i in a)
-		if (a[i]!=b[i])
-			return false
-	return true
+	
+	return Game.IntersecArrays(a, b)
 }
 
 //проверяет есть ли в двух объектах хотя бы один одинаковый элемент
 Game.IntersecArrays = function(a,b) {
-	for(i in a)
-		for(m in b)
-			if(a[i] === b[m])
-				return true
-	return false
+	return a.some(function(val1) {
+		return b.some(function(val2) {
+			return val1 === val2
+		})
+	})
 }
 
 //получение массива с инвентарем юнита
@@ -484,41 +458,26 @@ Game.GetInventory = function(ent) {
 	return inv
 }
 
-//проверяет является ли иллюзией герой
 Game.IsIllusion = function(entity) {
-	var PlayersEnt = []
-	var PlayersIDs = Game.GetAllPlayerIDs()
-	for(i in PlayersIDs)
-		PlayersEnt.push( Players.GetPlayerHeroEntityIndex( PlayersIDs[i] ) )
-	if (PlayersEnt.indexOf(entity)==-1)
-		return true
-	else
-		return false
+	return Entities.PlayersHeroEnts().indexOf(entity) > -1
 }
 
-//список указателей на героев без иллюзий
-Game.PlayersHeroEnts = function() {
-	var PlayersEnt = []
-	var PlayersIDs = Game.GetAllPlayerIDs()
-	for(i in PlayersIDs)
-		PlayersEnt.push( Players.GetPlayerHeroEntityIndex( PlayersIDs[i] ) )
-	return PlayersEnt
+Entities.PlayersHeroEnts = function() {
+	return Game.GetAllPlayerIDs().map(function(playerID) { // do not convolute, as DotA 2 API can be called only from script context (.forEach, .map is V8 context)
+		return Players.GetPlayerHeroEntityIndex(playerID)
+	})
 }
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
-Game.Behaviors = function(DABor) {
-	var DABh = []
-	var ZBehavior = Abilities.GetBehavior( parseInt( DABor ) )
-	var s = 32
-	while ( ZBehavior > 0 && s > 0 ) {
-		if(Math.pow(2,s)>ZBehavior) {
-			s--
-			continue
-		}
-		ZBehavior-=Math.pow(2,s)
-		DABh.push(Math.pow(2,s))
-	}
-	return DABh
+Fusion.Behaviors = function(behavior) {
+	return behavior.toString(2).split("").reverse().map(function(val, i) {
+		if(i === "1")
+			return Math.pow(2, i + 1)
+		else
+			return undefined
+	}).filter(function(val) {
+		return val !== undefined
+	})
 }
 
 //объект с указателями на бафы юнита
@@ -540,9 +499,9 @@ Game.GetBuffsNames = function(ent) {
 var AnimatePanel_DEFAULT_DURATION = "300.0ms"
 var AnimatePanel_DEFAULT_EASE = "linear"
 Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
-	var durationString = (duration != null ? parseInt(duration * 1000) + ".0ms" : AnimatePanel_DEFAULT_DURATION)
+	var durationString = (duration != null ? (duration * 1000) + ".0ms" : AnimatePanel_DEFAULT_DURATION)
 	var easeString = (ease != null ? ease : AnimatePanel_DEFAULT_EASE)
-	var delayString = (delay != null ? parseInt(delay * 1000) + ".0ms" : "0.0ms")
+	var delayString = (delay != null ? (delay * 1000) + ".0ms" : "0.0ms")
 	var transitionString = durationString + " " + easeString + " " + delayString
 	var i = 0
 	var finalTransition = ""
@@ -555,17 +514,7 @@ Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
 		panel.style[property] = values[property]
 }
 
-
-//клонирование объекта
-Game.CloneObject = function(obj) {
-	if (null == obj || "object" != typeof obj) return obj
-	var copy = obj.constructor()
-	for (var attr in obj)
-		if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr]
-	return copy
-}
-
-Game.AddScript = function(scriptName, onCheckBoxClick) {
+Fusion.AddScript = function(scriptName, onCheckBoxClick) {
 	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
 	Temp.SetPanelEvent("onactivate", onCheckBoxClick)
 	Temp.BLoadLayoutFromString('\
@@ -578,12 +527,17 @@ Game.AddScript = function(scriptName, onCheckBoxClick) {
 				<ToggleButton class="CheckBox" id="' + scriptName + '" text="' + scriptName + '"/>\
 			</Panel>\
 		</root>\
-	', false, false) 
-	Fusion.Panels.MainPanel.scripts.Children().sort(function(a, b) {
-		var aText = a.Children()[0].text
-		var bText = b.Children()[0].text
-		return aText.toLowerCase() > bText.toLowerCase()
-	})
-	
+	', false, false)
+	/*var scripts = Fusion.Panels.MainPanel.scripts, // potential fix for sort
+		Child = scripts.Children()
+	for(var k = 1; k < Child.length - 1; k++) {
+		var a = Child[k], aText = a.Children()[0].text
+			b = Child[k + 1], bText = b.Children()[0].text
+		if(aText > bText)
+			scripts.MoveChildBefore(b, a)
+		else if(aText < bText)
+			scripts.MoveChildBefore(a, b)
+	}*/
+
 	return $.GetContextPanel().FindChildTraverse(scriptName).Children()[0]
 }

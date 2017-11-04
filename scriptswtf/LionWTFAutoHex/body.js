@@ -55,4 +55,4 @@ function LionWTFAutoHexOnToggle() {
 	}
 }
 
-var LionWTFAutoHex = Game.AddScript('LionWTFAutoHex', LionWTFAutoHexOnToggle)
+var LionWTFAutoHex = Fusion.AddScript('LionWTFAutoHex', LionWTFAutoHexOnToggle)

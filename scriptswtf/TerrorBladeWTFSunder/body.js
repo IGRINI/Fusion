@@ -2,7 +2,7 @@
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	Sunder(MyEnt, HEnts)
 }
@@ -46,4 +46,4 @@ function TerrorBladeWTFSunderOnToggle() {
 	}
 }
 
-var TerrorBladeWTFSunder = Game.AddScript('TerrorBladeWTFSunder', TerrorBladeWTFSunderOnToggle)
+var TerrorBladeWTFSunder = Fusion.AddScript('TerrorBladeWTFSunder', TerrorBladeWTFSunderOnToggle)

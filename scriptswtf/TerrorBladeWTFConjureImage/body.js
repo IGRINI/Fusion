@@ -38,4 +38,4 @@ function TerrorBladeWTFConjureImageOnToggle() {
 	}
 }
 
-var TerrorBladeWTFConjureImage = Game.AddScript('TerrorBladeWTFConjureImage', TerrorBladeWTFConjureImageOnToggle)
+var TerrorBladeWTFConjureImage = Fusion.AddScript('TerrorBladeWTFConjureImage', TerrorBladeWTFConjureImageOnToggle)

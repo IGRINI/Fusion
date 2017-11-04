@@ -1,19 +1,14 @@
 ﻿function GetAbilityRange(Abil) {
-	var abil = parseInt(Abil)
-	return Abilities.GetCastRangeFix(abil)
+	return Abilities.GetCastRangeFix(Abil)
 }
 
 function InventoryChanged(data) {
-	var MyID = Game.GetLocalPlayerID()
-	if ( MyID==-1 )
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+	if(Fusion.Particles.AbilityRange.length == 0)
 		return
-	MyEnt = Players.GetPlayerHeroEntityIndex(MyID)
-	if ( MyEnt==-1 )
-		return
-	if ( Fusion.Particles.AbilityRange.length == 0 )
-		return
-	for(var i in Fusion.Particles.AbilityRange){
-		Range = GetAbilityRange(i)
+	
+	for(var i in Fusion.Particles.AbilityRange) {
+		var Range = GetAbilityRange(i)
 		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[i], true)
 		if ( !Range || Range <= 0 )
 			return
@@ -26,25 +21,28 @@ function Destroy() {
 	if(Fusion.Panels.AbilityRange)
 		Fusion.Panels.AbilityRange.DeleteAsync(0)
 	if(Fusion.Subscribes.AbilityRange)
-		Fusion.Subscribes.AbilityRange.forEach(GameEvents.Unsubscribe)
+		Fusion.Subscribes.AbilityRange.forEach(function(sub) { // do not convolute, as DotA 2 API can be called only from script context (.forEach, .map is V8 context)
+			GameEvents.Unsubscribe(sub)
+		})
 	if(Fusion.Particles.AbilityRange)
 		Fusion.Particles.AbilityRange.forEach(function(par) {
 			Particles.DestroyParticleEffect(par, true)
 		})
 	Fusion.Subscribes.AbilityRange = []
 	Fusion.Particles.AbilityRange = []
+	delete Fusion.Panels.AbilityRange
 }
 
 function SkillLearned(data) {
 	var MyID = Game.GetLocalPlayerID()
 	var MyEnt = Players.GetPlayerHeroEntityIndex(MyID)
-	if ( data.PlayerID != MyID )
+	if (data.PlayerID != MyID)
 		return
-	var LearnedAbil =  Entities.GetAbilityByName( MyEnt, data.abilityname )
+	var LearnedAbil = Entities.GetAbilityByName(MyEnt, data.abilityname)
 	if ( LearnedAbil == -1 )
 		return
-	Range = GetAbilityRange( LearnedAbil )
-	if ( data.abilityname == "attribute_bonus" || Range <= 0 )
+	var Range = GetAbilityRange(LearnedAbil)
+	if (data.abilityname === "attribute_bonus" || Range <= 0)
 		return
 	if (Fusion.Particles.AbilityRange[LearnedAbil]){
 		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[LearnedAbil], true)
@@ -97,7 +95,7 @@ function chkboxpressed() {
 	}
 }
 
-function AbilityRangeF() {
+function AbilityRangeOnToggle() {
 	if (AbilityRange.checked) {
 		var MyID = Game.GetLocalPlayerID()
 		if ( MyID==-1 ){
@@ -175,9 +173,5 @@ function AbilityRangeF() {
 	}
 }
 
-function Dummy() {
-	Game.ScriptLogMsg("AbilityRange now aren't working, as it's crashing DotA 2", "#ff0000")
-}
-
 Destroy()
-var AbilityRange = Game.AddScript("AbilityRange", Dummy)
+var AbilityRange = Fusion.AddScript("AbilityRange", AbilityRangeOnToggle)

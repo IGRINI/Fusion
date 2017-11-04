@@ -1,11 +1,10 @@
-var hookspeed = 1450,
-	hookwidth = 200,
-	myVec, myForwardVec, enVec, MyEnt, ent
+var hookspeed = 1450
+var hookwidth = 200
+
 function Hook(callback) {
 	myVec = Entities.GetAbsOrigin(MyEnt)
 	myForwardVec = Entities.GetForward(MyEnt)
 	enVec = Entities.GetAbsOrigin(ent)
-	//enForwardVec = Entities.GetForward(ent)
 	var
 		hook = Game.GetAbilityByName(MyEnt, "pudge_meat_hook"),
 		distance = Entities.GetRangeToUnit(MyEnt, ent),
@@ -21,16 +20,15 @@ function Hook(callback) {
 	
 	Game.CastPosition(ent, hook, predict, false)
 	$.Schedule(0.3 - Fusion.MyTick, function() {
-		if(!CancelHook())
+		if(!CancelHook(MyEnt, ent))
 			callback()
 	})
 }
 
-function CancelHook() {
-	var distance = Game.PointDistance(enVec, Entities.GetAbsOrigin(ent))/*,
-		angle = Game.AngleBetweenTwoFaces(enForwardVec, myForwardVec)*/
+function CancelHook(MyEnt, ent) {
+	var distance = Game.PointDistance(enVec, Entities.GetAbsOrigin(ent))
 	
-	if(/*angle > 0.20 || */distance > hookwidth) {
+	if(distance > hookwidth) {
 		Game.EntStop(MyEnt, false)
 		Combo()
 		return true
@@ -38,7 +36,7 @@ function CancelHook() {
 		return false
 }
 
-function Rot() {
+function Rot(MyEnt, ent) {
 	var rot = Game.GetAbilityByName(MyEnt,"pudge_rot"),
 		userbuffs = Game.GetBuffsNames(ent),
 		MyEntbuffs = Game.GetBuffsNames(MyEnt),
@@ -48,7 +46,7 @@ function Rot() {
 		Abilities.ExecuteAbility(rot, MyEnt, false)
 }
 
-function Urn() {
+function Urn(MyEnt, ent) {
 	var urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
 		urncharges = urn === undefined ? -1 : Items.GetCurrentCharges(urn)
 		
@@ -56,28 +54,28 @@ function Urn() {
 		Game.CastTarget(MyEnt, urn, ent, false)
 }
 
-function Dismember() {
+function Dismember(MyEnt, ent) {
 	var dismember = Game.GetAbilityByName(MyEnt, "pudge_dismember")
 
 	Game.CastTarget(MyEnt, dismember, ent, false)
 }
 
-function Combo() {
-	Hook(function() {
-		Urn()
-		Rot()
-		Dismember()
+function Combo(MyEnt, ent) {
+	Hook(MyEnt, ent, function() {
+		Urn(MyEnt, ent)
+		Rot(MyEnt, ent)
+		Dismember(MyEnt, ent)
 	})
 }
 
 if(!Fusion.Commands.PudgeCombo) {
 	Fusion.Commands.PudgeCombo = function() {
-		MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		ent = Game.ClosetToMouse(MyEnt, 1000, true)
+		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+		var ent = Game.ClosetToMouse(MyEnt, 1000, true)
 		if(ent === undefined)
 			return
-		Combo()
+		Combo(MyEnt, ent)
 	}
 
-	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
+	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0) // FIXME
 }

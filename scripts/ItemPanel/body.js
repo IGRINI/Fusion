@@ -1,8 +1,5 @@
-﻿try {
+﻿if(Fusion.Panels.ItemPanel)
 	Fusion.Panels.ItemPanel.DeleteAsync(0)
-} catch(e) {
-
-}
 Fusion.ItemPanel = []
 
 function NewItem(oldinv, newinv, ent) {
@@ -21,7 +18,7 @@ function NewItem(oldinv, newinv, ent) {
 				", false, false)
 				A.Children()[0].heroname = Entities.GetUnitName(ent)
 				A.Children()[1].itemname = Abilities.GetAbilityName(n)
-				A.DeleteAsync(parseInt(Fusion.Configs.ItemPanel.NotifyTime))
+				A.DeleteAsync(Fusion.Configs.ItemPanel.NotifyTime)
 			}
 			if (Fusion.Configs.ItemPanel.EmitSound === "true")
 				Game.EmitSound("General.Buy")
@@ -30,25 +27,12 @@ function NewItem(oldinv, newinv, ent) {
 }
 
 function ItemPanelEvery() {
-	if (!ItemPanel.checked) {
-		Fusion.ItemPanel = []
-		try {
-			Fusion.Panels.ItemPanel.DeleteAsync(0)
-		} catch(e) {
-			
-		}
+	if (!ItemPanel.checked)
 		return
-	}
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)) {
-		try {
-			Fusion.Panels.ItemPanel.DeleteAsync(0)
-		} catch(e) {
-			
-		}
-		for(var i=0; i < Fusion.Panels.ItemPanel.Children().length; i++)
-			Fusion.Panels.ItemPanel.Children()[i].style.height = "0"
-		Fusion.ItemPanel = []
 		ItemPanel.checked = false
+		Game.ScriptLogMsg("ItemPanel cannot be enabled before pre-game", "#ff0000")
+		ItemPanelLoadOnOff()
 		return
 	}
 	var k = 0
@@ -73,7 +57,7 @@ function ItemPanelEvery() {
 		for(var i = 1; i < P.Children().length; i++)
 			P.Children()[i].itemname = ""
 		for(var n in Inv)
-			P.Children()[parseInt(n) + 1].itemname = Abilities.GetAbilityName(Inv[n])
+			P.Children()[n + 1].itemname = Abilities.GetAbilityName(Inv[n])
 		k++
 	}
 	if(ItemPanel.checked)
@@ -104,11 +88,8 @@ function ItemPanelLoad() {
 function ItemPanelLoadOnOff() {
 	if (!ItemPanel.checked) {
 		Fusion.ItemPanel = []
-		try {
+		if(Fusion.Panels.ItemPanel)
 			Fusion.Panels.ItemPanel.DeleteAsync(0)
-		} catch(e) {
-			
-		}
 		Game.ScriptLogMsg("Script disabled: ItemPanel", "#ff0000")
 	} else {
 		ItemPanelLoad()
@@ -116,4 +97,4 @@ function ItemPanelLoadOnOff() {
 	}
 }
 
-var ItemPanel = Game.AddScript("ItemPanel", ItemPanelLoadOnOff)
+var ItemPanel = Fusion.AddScript("ItemPanel", ItemPanelLoadOnOff)

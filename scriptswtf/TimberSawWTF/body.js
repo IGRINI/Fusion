@@ -2,7 +2,7 @@
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	WhirlingDeath(MyEnt, HEnts)
 }
@@ -36,4 +36,4 @@ function TimberSawWTF() {
 	}
 }
 
-var TimberSawWTF = Game.AddScript('TimberSawWTF', TimberSawWTF)
+var TimberSawWTF = Fusion.AddScript('TimberSawWTF', TimberSawWTF)

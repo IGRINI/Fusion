@@ -2,7 +2,7 @@
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	AutoClick(MyEnt, HEnts)
 }
@@ -51,4 +51,4 @@ function UrsaWTFAutoClickOnToggle() {
 	}
 }
 
-var UrsaWTFAutoClick = Game.AddScript('UrsaWTFAutoClick', UrsaWTFAutoClickOnToggle)
+var UrsaWTFAutoClick = Fusion.AddScript('UrsaWTFAutoClick', UrsaWTFAutoClickOnToggle)

@@ -52,4 +52,4 @@ function PudgeWTFDismemberOnToggle() {
 	}
 }
 
-var PudgeWTFDismember = Game.AddScript('PudgeWTFDismember', PudgeWTFDismemberOnToggle)
+var PudgeWTFDismember = Fusion.AddScript('PudgeWTFDismember', PudgeWTFDismemberOnToggle)

@@ -1,25 +1,24 @@
-﻿var feeder = true
+﻿var feeder = false
 
-function AntiAFKOnInterval() {
+function AntiAFKF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME))
 		return
-	var HEnts = Game.PlayersHeroEnts()
+	var HEnts = Entities.PlayersHeroEnts()
 	
 	GameUI.SelectUnit(MyEnt, false)
-	AFK(MyEnt, HEnts)
+	//AFK(MyEnt, HEnts)
+
+	if(AntiAFK.checked)
+		$.Schedule(Fusion.MyTick, AntiAFKF)
 }
 
 function AFK(MyEnt, HEnts) {
-	HEnts = HEnts.filter(function(ent) {
-		ent = parseInt(ent)
+	var lastMin = HEnts.filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && !Entities.IsEnemy(ent) && ent !== MyEnt
-	})
-	HEnts = HEnts.sort(function(ent1, ent2) {
-		ent1 = parseInt(ent1)
-		ent2 = parseInt(ent2)
+	}).sort(function(ent1, ent2) {
 		var rng1 = Entities.GetRangeToUnit(MyEnt, ent1)
 		var rng2 = Entities.GetRangeToUnit(MyEnt, ent2)
 		
@@ -29,12 +28,13 @@ function AFK(MyEnt, HEnts) {
 			return 1
 		else
 			return -1
-	})
-	
-	var lastMin = parseInt(HEnts[0])
+	})[0]
+
+	if(!lastMin)
+		return
 	var pos = Entities.GetAbsOrigin(lastMin)
 	if(pos == undefined)
-		return // otherwise it"ll walk to 0,0,0
+		return
 	if(feeder)
 		Game.MoveToAttackPos(MyEnt, pos, false)
 	else
@@ -42,22 +42,11 @@ function AFK(MyEnt, HEnts) {
 }
 
 function AntiAFKOnToggle() {
-	if (!AntiAFK.checked) {
-		Game.ScriptLogMsg("Script disabled: AntiAFK", "#ff0000")
-	} else {
-		function intervalFunc(){
-			$.Schedule(
-				Fusion.MyTick,
-				function() {
-					AntiAFKOnInterval()
-					if(AntiAFK.checked)
-						intervalFunc()
-				}
-			)
-		}
-		intervalFunc()
+	if (AntiAFK.checked) {
+		AntiAFKF()
 		Game.ScriptLogMsg("Script enabled: AntiAFK", "#00ff00")
-	}
+	} else 
+		Game.ScriptLogMsg("Script disabled: AntiAFK", "#ff0000")
 }
 
-var AntiAFK = Game.AddScript("AntiAFK", AntiAFKOnToggle)
+var AntiAFK = Fusion.AddScript("AntiAFK", AntiAFKOnToggle)
