@@ -55,7 +55,6 @@ function AegisSnatcherF() {
 	Entities.GetAllEntities().filter(function(ent) {
 		return Entities.Distance(ent, MyEnt) <= PickupRadius && !Entities.IsSelectable(ent) && Entities.IsItemPhysical(ent)
 	}).forEach(function(ent) {
-		$.Msg(Entities.Distance(ent, MyEnt))
 		Game.PickupItem(MyEnt, ent, false)
 	})
 }
