@@ -227,11 +227,11 @@ Game.ScriptLogMsg = function(msg, color) {
 	<Label/>\
 </root>", false, false)
 	ScriptLogMessage.style.fontSize = "15px"
-	var text = "	•••	" + msg
+	var text = `	•••	${msg}`
 	ScriptLogMessage.text = text
 	if (color) {
 		ScriptLogMessage.style.color = color
-		ScriptLogMessage.style.textShadow = "0px 0px 4px 1.2 " + color + "33"
+		ScriptLogMessage.style.textShadow = `0px 0px 4px 1.2 ${color}33`
 	}
 	ScriptLogMessage.DeleteAsync(7)
 	Fusion.AnimatePanel( ScriptLogMessage, {"opacity": "0;"}, 2, "linear", 4)
@@ -248,7 +248,7 @@ GameUI.MovePanel = function(a, callback) {
 		var uiw = Fusion.Panels.Main.actuallayoutwidth
 		var uih = Fusion.Panels.Main.actuallayoutheight
 		var linkpanel = function() {
-			a.style.position = (GameUI.GetCursorPosition()[0] / uiw * 100) + "% " + (GameUI.GetCursorPosition()[1] / uih * 100) + "% " + "0"
+			a.style.position = `${(GameUI.GetCursorPosition()[0] / uiw * 100)}% ${(GameUI.GetCursorPosition()[1] / uih * 100)}% 0`
 			if (GameUI.IsMouseDown(0)) {
 				m = false
 				a.SetPanelEvent("onactivate", onactivateF)
@@ -502,11 +502,11 @@ Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
 	var durationString = (duration != null ? (duration * 1000) + ".0ms" : AnimatePanel_DEFAULT_DURATION)
 	var easeString = (ease != null ? ease : AnimatePanel_DEFAULT_EASE)
 	var delayString = (delay != null ? (delay * 1000) + ".0ms" : "0.0ms")
-	var transitionString = durationString + " " + easeString + " " + delayString
+	var transitionString = `${durationString} ${easeString} ${delayString}`
 	var i = 0
 	var finalTransition = ""
 	for (var property in values) {
-		finalTransition = finalTransition + (i > 0 ? ", " : "") + property + " " + transitionString
+		finalTransition = `${finalTransition}${(i > 0 ? ", " : "")}${property} ${transitionString}`
 		i++
 	}
 	panel.style.transition = finalTransition + ";"
@@ -517,17 +517,17 @@ Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
 Fusion.AddScript = function(scriptName, onCheckBoxClick) {
 	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
 	Temp.SetPanelEvent("onactivate", onCheckBoxClick)
-	Temp.BLoadLayoutFromString('\
+	Temp.BLoadLayoutFromString(`\
 		<root>\
 			<styles>\
 				<include src="s2r://panorama/styles/dotastyles.vcss_c"/>\
 				<include src="s2r://panorama/styles/magadan.vcss_c"/>\
 			</styles>\
 			<Panel>\
-				<ToggleButton class="CheckBox" id="' + scriptName + '" text="' + scriptName + '"/>\
+				<ToggleButton class="CheckBox" id="${scriptName}" text="${scriptName}"/>\
 			</Panel>\
 		</root>\
-	', false, false)
+`, false, false)
 	/*var scripts = Fusion.Panels.MainPanel.scripts, // potential fix for sort
 		Child = scripts.Children()
 	for(var k = 1; k < Child.length - 1; k++) {

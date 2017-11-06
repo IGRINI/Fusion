@@ -192,9 +192,9 @@ function AncientCreepStackU(){
 		Fusion.Panels.AncientCreepStack.visible = true
 	Fusion.Panels.AncientCreepStack.style.position = (xy[0]/uiw*100)+"% "+(xy[1]/uih*100)+"% 0"
 	var neu = GetNeutral(ent,1000)
-	Fusion.Panels.AncientCreepStack.Children()[0].text="Stacks: " + Math.round(neu[3]/3)
-	Fusion.Panels.AncientCreepStack.Children()[1].text="Gold: ~"+neu[4]
-	Fusion.Panels.AncientCreepStack.Children()[2].text="Exp: ~"+neu[5]
+	Fusion.Panels.AncientCreepStack.Children()[0].text = `Stacks: ${Math.round(neu[3]/3)}`
+	Fusion.Panels.AncientCreepStack.Children()[1].text = `Gold: ~${neu[4]}`
+	Fusion.Panels.AncientCreepStack.Children()[2].text = `Exp: ~${neu[5]}`
 	var time = Math.round(Game.GetDOTATime(false, false) % 60)
 	Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg ) translate3d( 0px, "+((time-Math.floor(time))*20)+"px, 0px );"}, 0.3, "ease-in-out", 0)
 }

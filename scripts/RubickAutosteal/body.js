@@ -76,7 +76,7 @@ function RubickAutoStealCreatePanel(){
 	})
 	Fusion.GetConfig("RubickAutoSteal",function(config) {
 		Fusion.Configs.RubickAutoSteal = config
-		Fusion.Panels.RubickAutoSteal.style.position = config.MainPanel.x + " " + config.MainPanel.y + " 0"
+		Fusion.Panels.RubickAutoSteal.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 	});
 	Entities.PlayersHeroEnts().forEach(function(ent) {
 		if(!Entities.IsEnemy(ent))

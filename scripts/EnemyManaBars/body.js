@@ -58,7 +58,7 @@ function EMBEvery() {
 			Fusion.Panels.EnemyManaBars[ent].BLoadLayoutFromString(manabar_layout, false, false)
 		}
 		Fusion.Panels.EnemyManaBars[ent].visible = true
-		Fusion.Panels.EnemyManaBars[ent].style.position = uixp + "% " + uiyp + "% 0"
+		Fusion.Panels.EnemyManaBars[ent].style.position = `${uixp}% ${uiyp}% 0`
 		var Mana = Entities.GetMana(ent)
 		var MaxMana = Entities.GetMaxMana(ent)
 		var ManaPercent = Math.floor(Mana / MaxMana * 100)
@@ -67,7 +67,7 @@ function EMBEvery() {
 				Fusion.Panels.EnemyManaBars[ent].visible = false
 			return
 		}
-		Fusion.Panels.EnemyManaBars[ent].Children()[0].style.width = ManaPercent + "%"
+		Fusion.Panels.EnemyManaBars[ent].Children()[0].style.width = `${ManaPercent}%`
 	})
 	if(EnemyManaBars.checked)
 		$.Schedule(Fusion.MyTick, EMBEvery)

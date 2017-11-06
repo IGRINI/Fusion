@@ -34,7 +34,7 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 			RMinesDmg += dmg
 			if(RMinesDmg > (NeedMagicDmg + dmg)) {
 				if(debug)
-					$.Msg("[EzTechies] There's " + RMinesDmg + ", needed " + NeedMagicDmg + " for " + Entities.GetUnitName(ent))
+					$.Msg(`[EzTechies] There's ${RMinesDmg}, needed ${NeedMagicDmg} for ${Entities.GetUnitName(ent)}`)
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return true
 			}

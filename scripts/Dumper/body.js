@@ -22,15 +22,15 @@ if(!Fusion.Commands.DumpEnemyAbilities) {
 				var abil = Entities.GetAbility(ent, i)
 				available.push(abil)
 			}
-			$.Msg(entName + ": {")
+			$.Msg(`${entName}: {`)
 			available.map(function(abil) {
 				var abilName = Abilities.GetAbilityName(abil)
 				if(typeof abilName !== 'string' || abilName === '')
 					return
-				$.Msg("\t" + abilName + " {")
-				$.Msg("\t\t" + "Level: " + Abilities.GetLevel(abil))
-				$.Msg("\t\t" + "Cooldown: " + Math.ceil(Abilities.GetCooldownTimeRemaining(abil)))
-				$.Msg("\t" + "}")
+				$.Msg('\t${abilName} {')
+				$.Msg(`\t\tLevel: ${Abilities.GetLevel(abil)}`)
+				$.Msg(`\t\tCooldown: ${Math.ceil(Abilities.GetCooldownTimeRemaining(abil))}`)
+				$.Msg("\t}")
 			})
 			$.Msg("}")
 		})

@@ -13,7 +13,7 @@ function EzProcast01OnOffLoad() {
 		})
 		Fusion.GetConfig("EzProcast", function(config) {
 			Fusion.Configs.EzProcast = config
-			Fusion.Panels.EzProcast.style.position = config.MainPanel.x + " " + config.MainPanel.y + " 0"
+			Fusion.Panels.EzProcast.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 		})
 		
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())

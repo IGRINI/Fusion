@@ -55,7 +55,7 @@ function SAlertEvery() {
 function AlertTarget(modifier, ent) {
 	CreateFollowParticle(modifier[0], modifier[1], ent)
 	if(Fusion.Panels.ItemPanel !== undefined && Fusion.Configs.SkillAlert.Notify === "true" && panels[ent] === undefined) {
-		var A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, "Alert" + ent)
+		var A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, `Alert${ent}`)
 		A.BLoadLayoutFromString('\
 <root>\
 	<Panel style="width:100%;height:37px;background-color:#111;">\
@@ -80,7 +80,7 @@ function AlertTarget(modifier, ent) {
 function AlertPosition(modifier, vec, thinker) {
 	CreateTimerParticle(vec, modifier[0], thinker)
 	if(Fusion.Panels.ItemPanel !== undefined && Fusion.Configs.SkillAlert.Notify === "true" && panels[thinker] === undefined) {
-		var A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, "Alert" + thinker)
+		var A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, `Alert${thinker}`)
 		A.BLoadLayoutFromString("\
 <root>\
 	<Panel style='width:100%;height:37px;background-color:#111;'>\

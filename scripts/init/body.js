@@ -24,7 +24,7 @@ Fusion.ReloadFusion = function() {
 Fusion.LoadScript = function(scriptName) {
 	Fusion.ServerRequest("getscript", scriptName, function(response) {
 		eval(response)
-		$.Msg("JScript " + scriptName + " loaded")
+		$.Msg(`JScript ${scriptName} loaded`)
 	})
 }
 
@@ -39,7 +39,7 @@ Fusion.ServerRequest = function(name, val, callback) {
 				callback(a.responseText.substring(0, a.responseText.length - 1))
 			} else {
 				if(Fusion.debugLoad)
-					var log = "Can't load \"" + name + "\" @ " + val + ", returned " + JSON.stringify(a) + "."
+					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(a)}.`
 				if(a.status - 400 <= 0 || a.status - 400 > 99) {
 					if(Fusion.debugLoad)
 						log += " Trying again."
@@ -122,7 +122,7 @@ Fusion.LoadFusion = function(callback) {
 							Fusion.Configs.init.Slider.Value = Slider.value
 							Slider.saved = false
 						}
-						CamDist.text = "Camera distance: " + Math.floor(Slider.value)
+						CamDist.text = `Camera distance: ${Math.floor(Slider.value)}`
 						Slider.lastValue = Slider.value
 					}
 				}

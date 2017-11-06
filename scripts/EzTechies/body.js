@@ -25,7 +25,7 @@ function ScheduleExplode(rmine) {
 		})
 		
 		if(debug)
-			$.Msg("RMine will be deleted after " + delta + rmineTimeout + "s")
+			$.Msg(`RMine will be deleted after ${delta + rmineTimeout}s`)
 		$.Schedule(delta + rmineTimeout, function() {
 			if(Fusion.EzTechies.RMines.indexOf(rmine) < 0)
 				return
@@ -95,7 +95,7 @@ function RemoteMines(MyEnt, ents) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg
 			if(debug)
-				$.Msg("[EzTechies] There's " + RMinesDmg + ", needed " + NeedMagicDmg)
+				$.Msg(`[EzTechies] There's ${RMinesDmg}, needed ${NeedMagicDmg}`)
 			if(RMinesDmg > NeedMagicDmg) {
 				RMinesToBlow.forEach(function(rmine) {
 					GameUI.SelectUnit(rmine, false)

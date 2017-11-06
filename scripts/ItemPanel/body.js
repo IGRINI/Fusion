@@ -3,11 +3,10 @@
 Fusion.ItemPanel = []
 
 function NewItem(oldinv, newinv, ent) {
-	for(i in newinv){
-		n = newinv[i]
+	newinv.forEach(function(n) {
 		if(oldinv.indexOf(n) === -1 && Fusion.Configs.ItemPanel.Items.indexOf(Abilities.GetAbilityName(n))!= -1){
 			if(Fusion.Configs.ItemPanel.Notify === "true") {
-				A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, "Alert" + ent + n)
+				A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, `Alert${ent + n}`)
 				A.BLoadLayoutFromString("\
 <root>\
 	<Panel style='width:100%;height:37px;background-color:#111;'>\
@@ -23,7 +22,7 @@ function NewItem(oldinv, newinv, ent) {
 			if (Fusion.Configs.ItemPanel.EmitSound === "true")
 				Game.EmitSound("General.Buy")
 		}
-	}
+	})
 }
 
 function ItemPanelEvery() {
@@ -79,7 +78,7 @@ function ItemPanelLoad() {
 		
 		Fusion.GetConfig("ItemPanel", function(config) {
 			Fusion.Configs.ItemPanel = config
-			Fusion.Panels.ItemPanel.style.position = config.MainPanel.x + " " + config.MainPanel.y + " 0"
+			Fusion.Panels.ItemPanel.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 			ItemPanelEvery()
 		})
 	})

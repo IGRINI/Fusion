@@ -123,7 +123,7 @@ function AbilityRangeOnToggle() {
 		})
 		Fusion.GetConfig("AbilityRange",function(config) {
 			Fusion.Configs.AbilityRange = config
-			Fusion.Panels.AbilityRange.style.position = config.MainPanel.x + " " + config.MainPanel.y + " 0"
+			Fusion.Panels.AbilityRange.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 			Fusion.Panels.AbilityRange.style.flowChildren = config.MainPanel.flow
 		})
 		if(!Fusion.Commands.AbilityRange_Rotate) {
