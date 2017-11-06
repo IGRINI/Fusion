@@ -11,17 +11,9 @@ Fusion = {
 	SteamID: 0
 }
 
-Fusion.ReloadFusionVanilla = function() {
-	Fusion.ReloadFusion("")
-}
-
-Fusion.ReloadFusionCustomGames = function() {
-	Fusion.ReloadFusion("customgames")
-}
-
-Fusion.ReloadFusion = function(postfix) {
+Fusion.ReloadFusion = function() {
 	Fusion.LoadFusion(function() {
-		Fusion.ServerRequest("scriptlist" + postfix, "", function(response) {
+		Fusion.ServerRequest("scriptlist", "", function(response) {
 			var scriptlist = JSON.parse(response)
 			Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
 			scriptlist.forEach(Fusion.LoadScript)
@@ -97,8 +89,7 @@ Fusion.LoadFusion = function(callback) {
 			BLoadLayoutFromString(layout_string, false, false)
 			ToggleClass("PopupOpened")
 			ToggleClass("Popup")
-			FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusionVanilla)
-			FindChildTraverse("ReloadCustomGames").SetPanelEvent("onactivate", Fusion.ReloadFusionCustomGames)
+			FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusion)
 			Fusion.Panels.MainPanel.Slider = FindChildInLayoutFile("CameraDistance")
 			Fusion.Panels.MainPanel.CamDist = FindChildTraverse("CamDist")
 			Fusion.Panels.MainPanel.scripts = FindChildTraverse("scripts")
@@ -172,8 +163,7 @@ function WaitForGameStart() {
 				GameUI.SetCameraPitchMin(60)
 				GameUI.SetCameraPitchMax(60)
 				
-				Game.AddCommand( "__ReloadFusionVanilla", Fusion.ReloadFusionVanilla, "", 0)
-				Game.AddCommand( "__ReloadFusionCustomGames", Fusion.ReloadFusionCustomGames, "", 0)
+				Game.AddCommand( "__ReloadFusion", Fusion.ReloadFusion, "", 0)
 				Game.AddCommand("__TogglePanel", function() {
 					Fusion.Panels.MainPanel.ToggleClass("Popup")
 				}, "",0)
@@ -196,7 +186,7 @@ function WaitForGameStart() {
 							panel.style.visibility = "collapse"
 				}, "",0)
 				
-				Fusion.ReloadFusionVanilla()
+				Fusion.ReloadFusion()
 			} else
 				WaitForGameStart()
 		}

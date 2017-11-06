@@ -15,9 +15,6 @@
 			<Button id="Reload" class="Title2">
 				<Label id="ReloadText" class="Title2" text="Reload scripts"/>
 			</Button>
-			<Button id="ReloadCustomGames" class="Title2">
-				<Label id="ReloadText" class="Title2" text="Reload scripts with custom games' scripts"/>
-			</Button>
 			<Label class="Title2" text="Script log"/>
 			<Panel id="ScriptLog"/>
 		</Panel>
