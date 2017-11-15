@@ -1,4 +1,4 @@
-# Fusion
+# PROJECT ARE NOW REWORKING FOR NEW PLATFORM
 ## Contact me
 Skype: moofMonkey
 
