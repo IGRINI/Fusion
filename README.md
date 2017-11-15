@@ -1,4 +1,4 @@
-# PROJECT ARE NOW REWORKING FOR NEW PLATFORM
+# The project is being reprocessed under a new platform
 ## Contact me
 Skype: moofMonkey
 
