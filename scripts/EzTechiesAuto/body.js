@@ -5,7 +5,7 @@ var NoTarget = []
 var BlowDelay = 0.25 + Fusion.MyTick * 10
 var debug = false
 
-function CallMines(MyEnt, ent, callback, explosionCallback) {
+CallMines = (MyEnt, ent, callback, explosionCallback) => {
 	var NeedMagicDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 0.5)
 	var RMinesToBlow = []
 	var RMinesDmg = 0
@@ -34,7 +34,7 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 			RMinesDmg += dmg
 			if(RMinesDmg > (NeedMagicDmg + dmg)) {
 				if(debug)
-					$.Msg(`[EzTechies] There's ${RMinesDmg}, needed ${NeedMagicDmg} for ${Entities.GetUnitName(ent)}`)
+					$.Msg(`[EzTechiesAuto] There's ${RMinesDmg}, needed ${NeedMagicDmg} for ${Entities.GetUnitName(ent)}`)
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return true
 			}
@@ -43,7 +43,7 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 	})
 }
 
-function DenyMines(MyEnt) {
+DenyMines = MyEnt => {
 	var selected = false
 	Fusion.EzTechies.RMines.filter(function(ent) {
 		return Entities.GetHealthPercent(ent) !== 100
@@ -60,7 +60,7 @@ function DenyMines(MyEnt) {
 		GameUI.SelectUnit(MyEnt, false)
 }
 
-function RemoteMines(MyEnt, HEnts) {
+RemoteMines = (MyEnt, HEnts) => {
 	var Ulti = Entities.GetAbility(MyEnt, 5)
 	var UltiLvl = Abilities.GetLevel(Ulti)
 	if(UltiLvl == 0)
@@ -89,7 +89,7 @@ function RemoteMines(MyEnt, HEnts) {
 			}
 		)
 		
-		var force = Game.GetAbilityByName(MyEnt,"item_force_staff")
+		var force = Fusion.GetForceStaff(MyEnt)
 		if (
 			!callBackCalled &&
 			force !== undefined &&
@@ -115,7 +115,7 @@ function RemoteMines(MyEnt, HEnts) {
 	return
 }
 
-function EzTechiesF() {
+EzTechiesF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
 		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
@@ -137,7 +137,7 @@ function EzTechiesF() {
 		$.Schedule(Fusion.MyTick, EzTechiesF)
 }
 
-function EzTechiesCheckBoxClick() {
+EzTechiesCheckBoxClick = () => {
 	if (EzTechies.checked) {
 		if (Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) != "npc_dota_hero_techies") {
 			EzTechies.checked = false

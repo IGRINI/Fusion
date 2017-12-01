@@ -1,30 +1,88 @@
 ﻿Fusion.LenseBonusRange = 200
 Fusion.ForceStaffUnits = 600
+Fusion.LinkenTargetName = "modifier_item_sphere_target"
 
-Fusion.GetEntitiesOnPosition = function(vec) {
+Fusion.ForceStaffNames = [
+	"item_force_staff",
+	"item_hurricane_pike",
+]
+Fusion.GetForceStaff = ent => {
+	var item
+	Fusion.ForceStaffNames.some(name => (item = Game.GetAbilityByName(name)) !== undefined)
+	return item
+}
+
+Fusion.BuildNearMap = (ents, maxRadius) => {
+	var ignore = []
+	return ents.map(ent => {
+		ignore.push(ent)
+		return [ent, Fusion.FindNearestEntity(ent, ents, ignore)]
+	})
+}
+
+Fusion.FindNearestEntity = (ent, ents, ignore) => {
+	ignore = ignore || []
+	var ret = ents.reduce((prev, cur) => {
+		if(prev === ent || ignore.some(ent2 => ent2 === prev))
+			return cur
+		if(cur === ent || ignore.some(ent2 => ent2 === cur))
+			return prev
+		
+		if(Entities.GetRangeToUnit(ent, cur) < Entities.GetRangeToUnit(ent, prev))
+			return cur
+		else
+			return prev
+	})
+	return ret !== ent ? ret : undefined
+}
+
+Fusion.GetDagon = MyEnt => {
+	var item
+	[
+		"item_dagon",
+		"item_dagon_2",
+		"item_dagon_3",
+		"item_dagon_4",
+		"item_dagon_5"
+	].some(DagonName => {
+		var itemZ = Game.GetAbilityByName(MyEnt, DagonName)
+		if(itemZ !== undefined) {
+			item = itemZ
+			return true
+		}
+		return false
+	})
+	
+	return item
+}
+
+Fusion.GetDagonDamage = dagon => {
+	if(dagon === undefined)
+		return undefined
+	
+	return Abilities.GetLevelSpecialValueFor(dagon, "damage", Abilities.GetLevel(dagon))
+}
+
+Fusion.GetEntitiesOnPosition = vec => {
 	return GameUI.FindScreenEntities (
 		[
 			Game.WorldToScreenX(vec[0], vec[1], vec[2]),
 			Game.WorldToScreenY(vec[0], vec[1], vec[2])
 		]
-	).map(function(entData) {
-		return entData.entityIndex
-	})
+	).map(entData => entData.entityIndex)
 }
 
-GameUI.FindScreenEntitiesAtCursor = function() {
-	return GameUI.FindScreenEntities(GameUI.GetCursorPosition())
-}
+GameUI.FindScreenEntitiesAtCursor = () => GameUI.FindScreenEntities(GameUI.GetCursorPosition())
 
-Fusion.arrayRemove = function(ar, obj) {
+Fusion.arrayRemove = (ar, obj) => {
 	var i = ar.indexOf(obj)
 	if(i >= 0)
 		ar.splice(i, 1)
 }
 
-Fusion.GetBuffByName = function(ent, buffName) {
+Fusion.GetBuffByName = (ent, buffName) => {
 	var ret = undefined
-	Game.GetBuffs(ent).some(function(buff) {
+	Game.GetBuffs(ent).some(buff => {
 		if(Buffs.GetName(ent, buff) === buffName) {
 			ret = buff
 			return true
@@ -36,8 +94,8 @@ Fusion.GetBuffByName = function(ent, buffName) {
 	return ret
 }
 
-Fusion.LinkenTargetName = "modifier_item_sphere_target"
-Fusion.HasLinkenAtTime = function(ent, time) {
+Fusion.HasLinkenAtTime = (ent, time) => {
+	time = time || 0;
 	var sphere = Game.GetAbilityByName(ent, "item_sphere")
 
 	return (
@@ -46,7 +104,7 @@ Fusion.HasLinkenAtTime = function(ent, time) {
 	) || Fusion.GetBuffByName(ent, Fusion.LinkenTargetName) !== undefined
 }
 
-Fusion.DeepEquals = function (x, y) {
+Fusion.DeepEquals = (x, y) => {
 	if((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
 		if(Object.keys(x).length != Object.keys(y).length)
 			return false;
@@ -64,12 +122,12 @@ Fusion.DeepEquals = function (x, y) {
 		return x === y
 }
 
-Game.GetScreenCursonWorldVec = function() {
+Game.GetScreenCursonWorldVec = () => {
 	var curPos = GameUI.GetCursorPosition()
 	return Game.ScreenXYToWorld(curPos[0], curPos[1])
 }
 
-Abilities.GetCastRangeFix = function(abil) { // Don"t redefine internals
+Abilities.GetCastRangeFix = abil => { // Don"t redefine internals
 	var AbilRange = Abilities.GetCastRange(abil)
 	var Caster = Abilities.GetCaster(abil)
 	
@@ -80,7 +138,7 @@ Abilities.GetCastRangeFix = function(abil) { // Don"t redefine internals
 	return AbilRange
 }
 
-Fusion.ForceStaffPos = function(ent) {
+Fusion.ForceStaffPos = ent => {
 	var entVec = Entities.GetAbsOrigin(ent)
 	var entForward = Entities.GetForward(ent)
 	var forceVec = [
@@ -111,7 +169,7 @@ Fusion.IgnoreBuffs = [
 	"modifier_tusk_snowball_movement",
 	"modifier_tusk_snowball_movement_friendly"
 ]
-Fusion.GetMagicMultiplier = function(entFrom, entTo) {
+Fusion.GetMagicMultiplier = (entFrom, entTo) => {
 	var multiplier = Entities.GetMagicalArmorValue(entTo)
 	
 	if(Game.IntersecArrays(Game.GetBuffsNames(entTo), Fusion.IgnoreBuffs) || multiplier == 1)
@@ -127,9 +185,9 @@ Fusion.BuffsAbsorbMagicDmg = [
 	["modifier_abaddon_aphotic_shield", [110,140,170,200]],
 	["modifier_ember_spirit_flame_guard", [50,200,350,500]]
 ]
-Fusion.GetNeededMagicDmg = function(entFrom, entTo, dmg) {
-	Game.GetBuffs(entTo).forEach(function(enemyBuff) {
-		Fusion.BuffsAbsorbMagicDmg.forEach(function(absorbBuff) {
+Fusion.GetNeededMagicDmg = (entFrom, entTo, dmg) => {
+	Game.GetBuffs(entTo).forEach(enemyBuff => {
+		Fusion.BuffsAbsorbMagicDmg.forEach(absorbBuff => {
 			if(Buffs.GetName(entTo, enemyBuff) === absorbBuff[0])
 				if(Array.isArray(absorbBuff[1]))
 					dmg += absorbBuff[1][Abilities.GetLevel(Buffs.GetAbility(entTo, enemyBuff)) - 1]
@@ -141,7 +199,7 @@ Fusion.GetNeededMagicDmg = function(entFrom, entTo, dmg) {
 	return dmg * Fusion.GetMagicMultiplier(entFrom, entTo)
 }
 
-Game.AngleBetweenVectors = function(a_pos, a_facing, b_pos) {
+Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
 	with(Math) {
 		var distancevector = [
 			b_pos[0] - a_pos[0],
@@ -155,26 +213,22 @@ Game.AngleBetweenVectors = function(a_pos, a_facing, b_pos) {
 	}
 }
 
-Game.AngleBetweenTwoFaces = function(a_facing, b_facing) {
-	return Math.acos((a_facing[0] * b_facing[0]) + (a_facing[1] * b_facing[1]))
+Game.AngleBetweenTwoFaces = (a_facing, b_facing) => Math.acos((a_facing[0] * b_facing[0]) + (a_facing[1] * b_facing[1]))
+
+Game.RotationTime = (angle, rotspeed) => Fusion.MyTick * angle / rotspeed // angle is npc_heroes MovementTurnRate
+
+Game.GetEntitiesInRange = (pos, range, onlyEnemies) => {
+	return Entities.PlayersHeroEnts().filter(ent =>
+		onlyEnemies || Entities.IsEnemy(ent)
+			&& Entities.IsAlive(ent)
+			&& !Entities.IsBuilding(ent)
+			&& !Entities.IsInvulnerable(ent)
+			&& Game.PointDistance(pos, Entities.GetAbsOrigin(ent)) < range
+	)
 }
 
-Game.RotationTime = function(angle, rotspeed) { // angle is npc_heroes MovementTurnRate
-	return (Fusion.MyTick * angle / rotspeed)
-}
-
-Game.GetEntitiesInRange = function(pos, range, onlyEnemies) {
-	return Entities.PlayersHeroEnts().filter(function(ent) {
-		return onlyEnemies || Entities.IsEnemy(ent)
-				&& Entities.IsAlive(ent)
-				&& !Entities.IsBuilding(ent)
-				&& !Entities.IsInvulnerable(ent)
-				&& Game.PointDistance(pos, Entities.GetAbsOrigin(ent)) < range
-	})
-}
-
-Game.ClosetToMouse = function(MyEnt, range, onlyEnemies) {
-	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), range, onlyEnemies).sort(function(ent1, ent2) {
+Entities.NearestToMouse = (MyEnt, range, onlyEnemies) => {
+	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), range, onlyEnemies).sort((ent1, ent2) => {
 		var dst1 = Game.PointDistance(ent1, MyEnt),
 			dst2 = Game.PointDistance(ent2, MyEnt)
 		if(dst1 > dst2)
@@ -188,7 +242,7 @@ Game.ClosetToMouse = function(MyEnt, range, onlyEnemies) {
 	return ents.length > 0 ? ents[0] : undefined
 }
 
-Game.GetAbilityByName = function(ent, name) {
+Game.GetAbilityByName = (ent, name) => {
 	var ab = Entities.GetAbilityByName(ent, name)
 	if (ab !== -1)
 		return ab
@@ -200,7 +254,7 @@ Game.GetAbilityByName = function(ent, name) {
 	}
 }
 
-Game.GetSpeed = function(ent) {
+Game.GetSpeed = ent => {
 	if(Entities.IsMoving(ent)) {
 		var a = Entities.GetBaseMoveSpeed(ent)
 		var b = Entities.GetMoveSpeedModifier(ent,a)
@@ -209,7 +263,7 @@ Game.GetSpeed = function(ent) {
 		return 0
 }
 
-Game.VelocityWaypoint = function(ent, time, movespeed) {
+Game.VelocityWaypoint = (ent, time, movespeed) => {
 	var zxc = Entities.GetAbsOrigin(ent)
 	var forward = Entities.GetForward(ent)
 	if(movespeed === undefined)
@@ -219,7 +273,7 @@ Game.VelocityWaypoint = function(ent, time, movespeed) {
 }
 
 //сообщение в боковую панель
-Game.ScriptLogMsg = function(msg, color) {
+Game.ScriptLogMsg = (msg, color) => {
 	var ScriptLog = Fusion.Panels.MainPanel.FindChildTraverse("ScriptLog")
 	var ScriptLogMessage = $.CreatePanel( "Label", ScriptLog, "ScriptLogMessage" )
 	ScriptLogMessage.BLoadLayoutFromString("\
@@ -238,8 +292,8 @@ Game.ScriptLogMsg = function(msg, color) {
 }
 
 //Функция делает панельку перемещаемой кликом мыши по ней. callback нужен например для того, чтобы сохранить координаты панели в файл
-GameUI.MovePanel = function(a, callback) {
-	var onactivateF = function() {
+GameUI.MovePanel = (a, callback) => {
+	var onactivateF = () => {
 		var m = true
 		if (!GameUI.IsControlDown())
 			return
@@ -247,7 +301,7 @@ GameUI.MovePanel = function(a, callback) {
 		a.style.backgroundColor = "#FFFF00FF"
 		var uiw = Fusion.Panels.Main.actuallayoutwidth
 		var uih = Fusion.Panels.Main.actuallayoutheight
-		var linkpanel = function() {
+		var linkpanel = () => {
 			a.style.position = `${(GameUI.GetCursorPosition()[0] / uiw * 100)}% ${(GameUI.GetCursorPosition()[1] / uih * 100)}% 0`
 			if (GameUI.IsMouseDown(0)) {
 				m = false
@@ -256,10 +310,10 @@ GameUI.MovePanel = function(a, callback) {
 				callback(a)
 			}
 		}
-		function L() {
+		L = () => {
 			$.Schedule (
 				0,
-				function() {
+				() => {
 					L()
 					if(m)
 						linkpanel()
@@ -272,183 +326,141 @@ GameUI.MovePanel = function(a, callback) {
 	a.SetPanelEvent("onactivate", onactivateF)
 }
 
-Game.MoveToPos = function(ent, xyz, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION,
-		UnitIndex: ent,
-		Position: xyz,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.MoveToPos = (ent, xyz, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION,
+	UnitIndex: ent,
+	Position: xyz,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.MoveToTarget = function(ent, entTo, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET,
-		UnitIndex: ent,
-		Position: entTo,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.MoveToTarget = (ent, entTo, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET,
+	UnitIndex: ent,
+	Position: entTo,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.MoveToAttackPos = function(ent, xyz, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE,
-		UnitIndex: ent,
-		Position: xyz,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.MoveToAttackPos = (ent, xyz, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_MOVE,
+	UnitIndex: ent,
+	Position: xyz,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.CastTarget = function(ent, abil, target, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET,
-		UnitIndex: ent,
-		TargetIndex: target,
-		AbilityIndex: abil,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.CastTarget = (ent, abil, target, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET,
+	UnitIndex: ent,
+	TargetIndex: target,
+	AbilityIndex: abil,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.CastPosition = function(ent, abil, xyz, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION,
-		UnitIndex: ent,
-		Position: xyz,
-		AbilityIndex: abil,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.CastPosition = (ent, abil, xyz, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION,
+	UnitIndex: ent,
+	Position: xyz,
+	AbilityIndex: abil,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.CastNoTarget = function(ent, abil, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_NO_TARGET,
-		UnitIndex: ent,
-		AbilityIndex: abil,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.CastNoTarget = (ent, abil, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_NO_TARGET,
+	UnitIndex: ent,
+	AbilityIndex: abil,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.ToggleAbil = function(ent, abil, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TOGGLE,
-		UnitIndex: ent,
-		AbilityIndex: abil,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.ToggleAbil = (ent, abil, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TOGGLE,
+	UnitIndex: ent,
+	AbilityIndex: abil,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.EntStop = function(ent, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_STOP,
-		UnitIndex: ent,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.EntStop = (ent, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_STOP,
+	UnitIndex: ent,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.DisassembleItem = function(ent, item, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_DISASSEMBLE_ITEM,
-		UnitIndex: ent,
-		AbilityIndex: item,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.DisassembleItem = (ent, item, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_DISASSEMBLE_ITEM,
+	UnitIndex: ent,
+	AbilityIndex: item,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.DropItem = function(ent, item, xyz, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_DROP_ITEM,
-		UnitIndex: ent,
-		Position: xyz,
-		AbilityIndex: item,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.DropItem = (ent, item, xyz, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_DROP_ITEM,
+	UnitIndex: ent,
+	Position: xyz,
+	AbilityIndex: item,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.PickupItem = function(ent, item, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_ITEM,
-		UnitIndex: ent,
-		TargetIndex: item,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.PickupItem = (ent, item, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_ITEM,
+	UnitIndex: ent,
+	TargetIndex: item,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.PickupRune = function(ent, rune, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_RUNE,
-		UnitIndex: ent,
-		TargetIndex: rune,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.PickupRune = (ent, rune, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PICKUP_RUNE,
+	UnitIndex: ent,
+	TargetIndex: rune,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.ItemLock = function(ent, item, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK,
-		UnitIndex: ent,
-		TargetIndex: item,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.ItemLock = (ent, item, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK,
+	UnitIndex: ent,
+	TargetIndex: item,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
-Game.PurchaseItem = function(ent, itemid, queue) {
-	Game.PrepareUnitOrders({
-		OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM,
-		UnitIndex: ent,
-		AbilityIndex: itemid,
-		Queue: queue,
-		ShowEffects: Fusion.debugAnimations
-	})
-}
+Game.PurchaseItem = (ent, itemid, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM,
+	UnitIndex: ent,
+	AbilityIndex: itemid,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
 
 //Получение расстояния между двумя точками в пространстве, высшая математика епта
-Game.PointDistance = function(a, b) {
-	return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[2] - b[2], 2))
-}
-
-Entities.Distance = function(a, b) {
-	return Game.PointDistance(Entities.GetAbsOrigin(a), Entities.GetAbsOrigin(b))
-}
+Game.PointDistance = (a, b) => Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[2] - b[2], 2))
 
 //логарифм по основанию
-Math.logb = function(number, base) {
-	return Math.log(number) / Math.log(base)
-}
+Math.logb = (number, base) => Math.log(number) / Math.log(base)
 
 //поэлементное сравнение двух массивов, порядок элементов не учитывается
-Game.CompareArrays = function(a, b) {
+Game.CompareArrays = (a, b) => {
 	if (a === b)
 		return true
 	if (a.length != b.length)
 		return false
 	
-	return Game.IntersecArrays(a, b)
+	return !a.some(val1 => b.some(val2 => val1 !== val2))
 }
 
 //проверяет есть ли в двух объектах хотя бы один одинаковый элемент
-Game.IntersecArrays = function(a,b) {
-	return a.some(function(val1) {
-		return b.some(function(val2) {
-			return val1 === val2
-		})
-	})
-}
+Game.IntersecArrays = (a, b) => a.some(val1 => b.some(val2 => val1 === val2))
 
 //получение массива с инвентарем юнита
-Game.GetInventory = function(ent) {
+Game.GetInventory = ent => {
 	var inv = []
 	for(i = 0; i < 6; i++) {
 		var item = Entities.GetItemInSlot(ent, i)
@@ -458,47 +470,34 @@ Game.GetInventory = function(ent) {
 	return inv
 }
 
-Game.IsIllusion = function(entity) {
-	return Entities.PlayersHeroEnts().indexOf(entity) === -1
-}
+Game.IsIllusion = ent => Entities.PlayersHeroEnts().indexOf(ent) === -1
 
-Entities.PlayersHeroEnts = function() {
-	return Game.GetAllPlayerIDs().map(function(playerID) { // do not convolute, as DotA 2 API can be called only from script context (.forEach, .map is V8 context)
-		return Players.GetPlayerHeroEntityIndex(playerID)
-	})
-}
+Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(Players.GetPlayerHeroEntityIndex(playerID))
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
-Fusion.Behaviors = function(behavior) {
-	return behavior.toString(2).split("").reverse().map(function(val, i) {
+Fusion.Behaviors = behavior => {
+	return behavior.toString(2).split("").reverse().map((val, i) => {
 		if(i === "1")
 			return Math.pow(2, i + 1)
 		else
 			return undefined
-	}).filter(function(val) {
-		return val !== undefined
-	})
+	}).filter(val => val !== undefined)
 }
 
 //объект с указателями на бафы юнита
-Game.GetBuffs = function(ent) {
+Game.GetBuffs = ent => {
 	var buffs = []
 	for(var i=0; i < Entities.GetNumBuffs(ent); i++)
-		buffs.push(ent, Entities.GetBuff(ent,i))
+		buffs.push(ent, Entities.GetBuff(ent, i))
 	return buffs
 }
 
-//объект с именами бафов юнита
-Game.GetBuffsNames = function(ent) {
-	return Game.GetBuffs(ent).map(function(buff) {
-		return Buffs.GetName(ent, buff)
-	})
-}
+Game.GetBuffsNames = ent => Game.GetBuffs(ent).map(Buffs.GetName(ent, buff))
 
-//анимирование панелей. Источник moddota.com
+//Panel amimating (c) moddota.com
 var AnimatePanel_DEFAULT_DURATION = "300.0ms"
 var AnimatePanel_DEFAULT_EASE = "linear"
-Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
+Fusion.AnimatePanel = (panel, values, duration, ease, delay) => {
 	var durationString = (duration != null ? (duration * 1000) + ".0ms" : AnimatePanel_DEFAULT_DURATION)
 	var easeString = (ease != null ? ease : AnimatePanel_DEFAULT_EASE)
 	var delayString = (delay != null ? (delay * 1000) + ".0ms" : "0.0ms")
@@ -514,7 +513,7 @@ Fusion.AnimatePanel = function(panel, values, duration, ease, delay) {
 		panel.style[property] = values[property]
 }
 
-Fusion.AddScript = function(scriptName, onCheckBoxClick) {
+Fusion.AddScript = (scriptName, onCheckBoxClick) => {
 	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
 	Temp.SetPanelEvent("onactivate", onCheckBoxClick)
 	Temp.BLoadLayoutFromString(`\

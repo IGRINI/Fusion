@@ -1,5 +1,5 @@
 if(!Fusion.Commands.SetTimeoutForHost) {
-	Fusion.Commands.SetTimeoutForHost = function() { //Host-troll
+	Fusion.Commands.SetTimeoutForHost = () => { //Host-troll
 		Game.SetAutoLaunchEnabled(false)
 		Game.SetAutoLaunchEnabled(true)
 		Game.SetAutoLaunchDelay(1500000000000)
@@ -9,11 +9,11 @@ if(!Fusion.Commands.SetTimeoutForHost) {
 }
 
 if(!Fusion.Commands.Set1TimeoutForHost) {
-	Fusion.Commands.Set1TimeoutForHost = function() { //Host-antitroll
+	Fusion.Commands.Set1TimeoutForHost = () => { //Host-antitroll
 		Game.SetAutoLaunchEnabled(false)
 		Game.SetAutoLaunchEnabled(true)
-		Game.SetAutoLaunchDelay(1)
-		Game.SetRemainingSetupTime(1) 
+		Game.SetAutoLaunchDelay(0)
+		Game.SetRemainingSetupTime(0)
 	}
 
 	Game.AddCommand("__Set1TimeoutForHost", Fusion.Commands.Set1TimeoutForHost, "", 0)

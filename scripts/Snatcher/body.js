@@ -56,20 +56,18 @@ function RuneSnatcherF() {
 	})
 }
 
-function AegisSnatcherF() {
+function ItemSnatcherF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	
 	Entities.GetAllEntities().filter(function(ent) {
-		return Entities.Distance(ent, MyEnt) <= PickupRadius && !Entities.IsSelectable(ent) && Entities.IsItemPhysical(ent)
-	}).forEach(function(ent) {
-		Game.PickupItem(MyEnt, ent, false)
-	})
+		return Entities.GetRangeToUnit(ent, MyEnt) <= PickupRadius && !Entities.IsSelectable(ent) && Entities.IsItemPhysical(ent)
+	}).forEach(ent => Game.PickupItem(MyEnt, ent, false))
 }
 
 function SnatcherF() {
-	AegisSnatcherF()
+	ItemSnatcherF()
 	RuneSnatcherF()
 
 	if(Snatcher.checked)

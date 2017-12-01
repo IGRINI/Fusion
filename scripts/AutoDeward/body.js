@@ -1,4 +1,4 @@
-﻿function AutoDewardF() {
+﻿AutoDewardF = () =>{
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -10,57 +10,57 @@
 		$.Schedule(Fusion.MyTick, AutoDewardF)
 }
 
-function Deward(MyEnt, HEnts) {
+Deward = (MyEnt, HEnts) => {
 	var Abil = GetDewardItem(MyEnt)
 	if(Abil === -1) {
-		Game.ScriptLogMsg("Needed deward item to make this script work!", "#ff0000")
-		AutoDeward.checked = false
-		AutoDewardOnToggle()
+		return
 	}
 
 	var AbilRange = Abilities.GetCastRangeFix(Abil)
-	HEnts.some(function(ent) {
-		if(!(Entities.IsAlive(ent) && Entities.IsEnemy(ent)))
-			return false
-		if(Entities.GetRangeToUnit(MyEnt, ent) > AbilRange)
-			return false
-		if(!AreDeward(ent))
-			return false
-		
+	HEnts.filter(ent =>
+		!(
+			Entities.IsAlive(ent)
+			&& Entities.IsEnemy(ent)
+		)
+		|| Entities.GetRangeToUnit(MyEnt, ent) > AbilRange
+		|| !AreDeward(ent)
+	).some(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)
 		return true
 	})
 }
 
-function AreDeward(ent) {
-	return Entities.IsWard(ent) || IsMine(ent)
-}
+AreDeward = ent => Entities.IsWard(ent) || IsMine(ent)
 
-var MineNames = ["npc_dota_techies_remote_mine", "npc_dota_techies_stasis_trap"]
-function IsMine(ent) {
-	for(i = 0; i < MineNames.length; i++)
-		if(Entities.GetUnitName(ent) === MineNames[i])
+IsMine = ent =>
+	[
+		"npc_dota_techies_remote_mine",
+		"npc_dota_techies_stasis_trap"
+	].some(name => Entities.GetUnitName(ent) === name)
+
+GetDewardItem = MyEnt => {
+	var result = -1
+	[
+		"item_quelling_blade",
+		"item_bfury",
+		"item_iron_talon",
+		"item_tango"
+	].some(itemName => {
+		let item = Game.GetAbilityByName(MyEnt, itemName)
+		if(item !== undefined) {
+			result = item
 			return true
+		}
+
+		return false
+	})
 	
-	return false
+	return result
 }
 
-var DewardItemNames = ["item_quelling_blade", "item_bfury", "item_iron_talon", "item_tango"]
-function GetDewardItem(MyEnt) {
-	for(var i in DewardItemNames) {
-		var DewardItemName = DewardItemNames[i]
-		
-		var item = Game.GetAbilityByName(MyEnt, DewardItemName)
-		if(item !== undefined)
-			return item
-	}
-	
-	return -1
-}
-
-function AutoDewardOnToggle() {
-	if (!AutoDeward.checked) {
+AutoDewardOnToggle = () => {
+	if (AutoDeward.checked) {
 		AutoDewardF()
 		Game.ScriptLogMsg("Script enabled: AutoDeward", "#00ff00")
 	} else

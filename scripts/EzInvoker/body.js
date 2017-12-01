@@ -1,29 +1,28 @@
 ﻿if(!Fusion.Commands.InvokerCombo) {
-	var EulDuration = 2.5
-	var SunStrikeDelay = 1.7
-	var TornadoDelay = [ 0.8, 1.1, 1.4, 1.7, 2.0, 2.3, 2.6, 2.9 ]
-	Fusion.Commands.InvokerCombo = function() {
+	var EulDuration = 2.5,
+		SunStrikeDelay = 1.7,
+		TornadoDelay = [ 0.8, 1.1, 1.4, 1.7, 2.0, 2.3, 2.6, 2.9 ]
+	Fusion.Commands.InvokerCombo = () => {
 		var playerID = Game.GetLocalPlayerID()
 		MyEnt = Players.GetPlayerHeroEntityIndex(playerID)
 		
-		var enemy = Game.ClosetToMouse(MyEnt, 500, true)
+		var enemy = Entities.NearestToMouse(MyEnt, 500, true)
 		if(enemy === undefined)
 			return
 		var pos = Entities.GetAbsOrigin(enemy)
 		
 		var Veil = Game.GetAbilityByName(MyEnt, "item_veil_of_discord")
-		var Eul = Game.GetAbilityByName(MyEnt, "item_cyclone")
-		var Etherial = Game.GetAbilityByName(MyEnt, "item_ethereal_blade")
-		var Orchid = Game.GetAbilityByName(MyEnt, "item_orchid")
-		var Urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows")
-		var Dagon = Fusion.GetDagon(MyEnt)
-		
-		var SunStrike = Game.GetAbilityByName(MyEnt, "invoker_sun_strike")
-		var Emp = Game.GetAbilityByName(MyEnt, "invoker_emp")
-		var Meteor = Game.GetAbilityByName(MyEnt, "invoker_chaos_meteor")
-		var Tornado = Game.GetAbilityByName(MyEnt, "invoker_tornado")
-		var Cold = Game.GetAbilityByName(MyEnt, "invoker_cold_snap")
-		var Blast = Game.GetAbilityByName(MyEnt, "invoker_deafening_blast")
+			Eul = Game.GetAbilityByName(MyEnt, "item_cyclone"),
+			Etherial = Game.GetAbilityByName(MyEnt, "item_ethereal_blade"),
+			Orchid = Game.GetAbilityByName(MyEnt, "item_orchid"),
+			Urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
+			Dagon = Fusion.GetDagon(MyEnt),
+			SunStrike = Game.GetAbilityByName(MyEnt, "invoker_sun_strike"),
+			Emp = Game.GetAbilityByName(MyEnt, "invoker_emp"),
+			Meteor = Game.GetAbilityByName(MyEnt, "invoker_chaos_meteor"),
+			Tornado = Game.GetAbilityByName(MyEnt, "invoker_tornado"),
+			Cold = Game.GetAbilityByName(MyEnt, "invoker_cold_snap"),
+			Blast = Game.GetAbilityByName(MyEnt, "invoker_deafening_blast")
 		
 		GameUI.SelectUnit(MyEnt, false)
 		Game.EntStop(MyEnt, false)
@@ -50,7 +49,12 @@
 				$.Schedule(EulDuration - SunStrikeDelay + Fusion.MyTick * 15, function() {
 					Game.CastPosition(MyEnt, Tornado, pos, false)
 					
-					$.Schedule(TornadoDelay[Abilities.GetLevel(Game.GetAbilityByName(MyEnt, "invoker_quas")) - 2 + (Entities.HasScepter(MyEnt) ? 1 : 0)] + Fusion.MyTick * 2, function() {
+					var lift_duration = Abilities.GetLevelSpecialValueFor(Tornado, "lift_duration", Abilities.GetLevel(Game.GetAbilityByName(MyEnt, "invoker_quas")) - 2 + (Entities.HasScepter(MyEnt) ? 1 : 0)),
+						talent = Entities.GetAbilityByName(MyEnt, "special_bonus_unique_invoker_8")
+					if(talent !== -1 && Abilities.GetLevel(talent) > 0)
+						lift_duration += Abilities.GetSpecialValueFor(talent, "value")
+					
+					$.Schedule(lift_duration + Fusion.MyTick * 2, function() {
 						Game.CastPosition(MyEnt, Meteor, pos, false)
 						
 						Quas(); Quas(); Quas(); Invoke();
@@ -64,25 +68,26 @@
 		})
 	}
 
-	function Quas() {
+	Quas = () => {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_quas")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
-	function Wex() {
+	Wex = () => {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_wex")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
-	function Exort() {
+	Exort = () => {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_exort")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
-	function Invoke() {
+	Invoke = () => {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_invoke")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
 	Game.AddCommand("__InvokerCombo", Fusion.Commands.InvokerCombo, "", 0)
+	// TODO: add invoker skills' functions with callbacks, integrate to code and turn into commands
 }

@@ -1,25 +1,30 @@
-var interval = 0.1
-var damage = [0.6, 0.75, 0.9]
-var LenseBonusRange = 200
-var rangeCast = 600
-var StunDuration = 1.5
+var interval = 0.1,
+	damage = [0.6, 0.75, 0.9],
+	LenseBonusRange = 200,
+	rangeCast = 600,
+	StunDuration = 1.5;
 
-function AutoUltNecrophosF() {
+AutoUltNecrophosF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var Ulti = Entities.GetAbilityByName(MyEnt, "necrolyte_reapers_scythe")
-	var UltiRange = Abilities.GetCastRangeFix(Ulti)
+		Ulti = Entities.GetAbilityByName(MyEnt, "necrolyte_reapers_scythe"),
+		UltiRange = Abilities.GetCastRangeFix(Ulti),
+		UltiLvl = Abilities.GetLevel(Ulti),
+		UltiDmg = Abilities.GetAbilityDamage(Ulti),
+		UltiManaCost = Abilities.GetManaCost(Ulti),
+		DamagePerMissHP = damage[UltiLvl-1];
 	
-	var UltiLvl = Abilities.GetLevel(Ulti)
-	var UltiDmg = Abilities.GetAbilityDamage(Ulti)
-	var UltiManaCost = Abilities.GetManaCost(Ulti)
-	var DamagePerMissHP = damage[UltiLvl-1]
-	
-	if(UltiLvl==0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
+	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
 		return
 	
-	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange && !Entities.IsMagicImmune(ent)
-	}).sort(function(ent1, ent2) {
+	var HEnts = Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange
+		&& !Entities.IsMagicImmune(ent)
+	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
 		
@@ -32,7 +37,7 @@ function AutoUltNecrophosF() {
 	})
 	
 	
-	HEnts.some(function(ent) {
+	HEnts.some(ent => {
 		if(Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti)))
 			return false
 		var dmg = (Entities.GetMaxHealth(ent) - Entities.GetHealth(ent)) * DamagePerMissHP
@@ -60,7 +65,7 @@ function AutoUltNecrophosF() {
 	})
 }
 
-function AutoUltNecrophosOnCheckBoxClick() {
+AutoUltNecrophosOnCheckBoxClick = () => {
 	if (!AutoUltNecrophos.checked) {
 		Fusion.Panels.AutoUltNecrophos.DeleteAsync(0)
 		Game.ScriptLogMsg("Script disabled: AutoUltNecrophos", "#ff0000")
@@ -72,10 +77,10 @@ function AutoUltNecrophosOnCheckBoxClick() {
 		return
 	}
 
-	function f() {
+	f = () => {
 		$.Schedule (
 			interval,
-			function() {
+			() => {
 				AutoUltNecrophosF()
 				if(AutoUltNecrophos.checked)
 					f()

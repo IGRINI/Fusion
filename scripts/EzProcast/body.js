@@ -1,28 +1,27 @@
 ﻿if(Fusion.Panels.EzProcast)
 	Fusion.Panels.EzProcast.DeleteAsync(0)
 
-function EzProcast01OnOffLoad() {
-	Fusion.GetXML("EzProcast/panel", function(a){
+EzProcast01OnOffLoad = () => {
+	Fusion.GetXML("EzProcast/panel", layout_string => {
 		Fusion.Panels.EzProcast = $.CreatePanel("Panel", Fusion.Panels.Main, "EzProcast")
-		Fusion.Panels.EzProcast.BLoadLayoutFromString(a, false, false)
-		GameUI.MovePanel(Fusion.Panels.EzProcast, function(p) {
+		Fusion.Panels.EzProcast.BLoadLayoutFromString(layout_string, false, false)
+		GameUI.MovePanel(Fusion.Panels.EzProcast, p => {
 			var position = p.style.position.split(" ")
 			Fusion.Configs.EzProcast.MainPanel.x = position[0]
 			Fusion.Configs.EzProcast.MainPanel.y = position[1]
 			Fusion.SaveConfig("EzProcast", Fusion.Configs.EzProcast)
 		})
-		Fusion.GetConfig("EzProcast", function(config) {
+		Fusion.GetConfig("EzProcast", config => {
 			Fusion.Configs.EzProcast = config
 			Fusion.Panels.EzProcast.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 		})
 		
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var AbC = Entities.GetAbilityCount( MyEnt )
-		for(i=0;i<AbC;i++){
-			var Ab = Entities.GetAbility( MyEnt, i )
+		for(var i = 0; i < Entities.GetAbilityCount(MyEnt); i++) {
+			var Ab = Entities.GetAbility(MyEnt, i)
 			if( !Abilities.IsDisplayedAbility(Ab) || Abilities.IsPassive(Ab) )
 				continue
-			var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcastItems" )
+			var P = $.CreatePanel("Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcastItems")
 			P.BLoadLayoutFromString("\
 <root>\
 	<script>\
@@ -40,11 +39,10 @@ function EzProcast01OnOffLoad() {
 		<DOTAAbilityImage/>\
 	</Panel>\
 </root>", false, false )
-			P.Children()[0].abilityname = Abilities.GetAbilityName( Ab )
+			P.Children()[0].abilityname = Abilities.GetAbilityName(Ab)
 		}
-		var Inv = Game.GetInventory(MyEnt)
-		for(i in Inv){
-			Behaviors = Fusion.Behaviors(Inv[i])
+		Game.GetInventory(MyEnt).forEach(item => {
+			Behaviors = Fusion.Behaviors(item)
 			if( Behaviors.indexOf(2)!=-1 )
 				continue
 			var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
@@ -65,42 +63,29 @@ function EzProcast01OnOffLoad() {
 		<DOTAItemImage/>\
 	</Panel>\
 </root>", false, false )
-			P.Children()[0].itemname = Abilities.GetAbilityName( Inv[i] )
-		}
+			P.Children()[0].itemname = Abilities.GetAbilityName(item)
+		})
 	});
 }
 
-function EzProcast01OnOff(){
-	if ( !EzProcast01.checked ){
-		try{
-			Fusion.Panels.EzProcast.DeleteAsync(0)
-		}catch(e){}
-		Game.ScriptLogMsg("Script disabled: EzProcast", "#ff0000")
-		
-	}else{
-		EzProcast01OnOffLoad()
-		Game.ScriptLogMsg("Script enabled: EzProcast", "#00ff00")
-	}
-}
-
 if(!Fusion.Commands.EzProcastF) {
-	Fusion.Commands.EzProcastF = function() {
+	Fusion.Commands.EzProcastF = () => {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var EntOnCursor = GameUI.FindScreenEntities( GameUI.GetCursorPosition() )
 		var pos = Game.GetScreenCursonWorldVec()
 		var items = Fusion.Panels.EzProcast.Children()[2].Children()
 		var abils = []
-		for(i in items)
-			if(items[i].Children()[0].paneltype === "DOTAAbilityImage")
-				abils.push(items[i].Children()[0].abilityname)
+		items.forEach(item => {
+			if(item.Children()[0].paneltype === "DOTAAbilityImage")
+				abils.push(item.Children()[0].abilityname)
 			else
-				if(items[i].Children()[0].paneltype === "DOTAItemImage")
-					abils.push(items[i].Children()[0].itemname)
+				if(item.Children()[0].paneltype === "DOTAItemImage")
+					abils.push(item.Children()[0].itemname)
+		})
 		//$.Msg("Abils: "+abils)
 		Game.EntStop(MyEnt)
-		for(var i in abils){
-			var AbName = abils[i]
-			var Abil = Game.GetAbilityByName(MyEnt,abils[i])
+		abils.forEach(AbName => {
+			var Abil = Game.GetAbilityByName(MyEnt, AbName)
 			var EzPBeh = Fusion.Behaviors(Abil)
 			var EzPDUTT = Abilities.GetAbilityTargetTeam(Abil)
 			//$.Msg("Team Target: "+EzPDUTT)
@@ -124,8 +109,16 @@ if(!Fusion.Commands.EzProcastF) {
 				else
 					Game.CastTarget(MyEnt, Abil, MyEnt)
 			}
-		}
+		})
 	}
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
 }
-var EzProcast01 = Fusion.AddScript("EzProcast", EzProcast01OnOff)
+var EzProcast01 = Fusion.AddScript("EzProcast", () => {
+	if (EzProcast01.checked) {
+		EzProcast01OnOffLoad()
+		Game.ScriptLogMsg("Script enabled: EzProcast", "#00ff00")
+	} else {
+		Fusion.Panels.EzProcast.DeleteAsync(0)
+		Game.ScriptLogMsg("Script disabled: EzProcast", "#ff0000")
+	}
+})

@@ -40,14 +40,14 @@ if(!Fusion.Commands.DumpEnemyAbilities) {
 
 if(!Fusion.Commands.ModifierDebugging) {
 	var ModifierDebuggingEnabled = false
-	Fusion.Commands.ModifierDebugging = [
-		Command = function() {
+	Fusion.Commands.ModifierDebugging = {
+		Command: () => {
 			if(ModifierDebuggingEnabled)
 				return
 			ModifierDebuggingEnabled = true
 			Fusion.Commands.ModifierDebugging.Function()
 		},
-		Function = function() {
+		Function: () => {
 			var MyEnt = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer())
 			var buffs = Game.GetBuffsNames(MyEnt)
 			if(!Fusion.DeepEquals(lastBuffs, buffs)) {
@@ -56,6 +56,6 @@ if(!Fusion.Commands.ModifierDebugging) {
 			}
 			$.Schedule(Fusion.MyTick, Fusion.Commands.ModifierDebugging.Function)
 		}
-	]
+	}
 	Game.AddCommand('__StartModifierDebugging', Fusion.Commands.ModifierDebugging.Command, '', 0)
 }

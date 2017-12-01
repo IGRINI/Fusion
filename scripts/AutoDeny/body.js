@@ -2,7 +2,7 @@
 var AegisName = "item_aegis"
 var RotDamage = [30, 60, 90, 120]
 
-function AutoDenyOnInterval() {
+AutoDenyOnInterval = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -25,14 +25,14 @@ function AutoDenyOnInterval() {
 	Game.CastPosition(MyEnt, item, Entities.GetAbsOrigin(MyEnt), false)
 }
 
-function AutoDenyOnToggle() {
+AutoDenyOnToggle = () => {
 	if (!AutoDeny.checked) {
 		Game.ScriptLogMsg("Script disabled: AutoDeny", "#ff0000")
 	} else {
-		function intervalFunc(){
+		intervalFunc = () => {
 			$.Schedule(
 				Fusion.MyTick / 3,
-				function() {
+				() => {
 					AutoDenyOnInterval()
 					if(AutoDeny.checked)
 						intervalFunc()

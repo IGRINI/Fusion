@@ -1,6 +1,6 @@
 ﻿var feeder = false
 
-function AntiAFKF() {
+AntiAFKF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -9,16 +9,22 @@ function AntiAFKF() {
 	var HEnts = Entities.PlayersHeroEnts()
 	
 	GameUI.SelectUnit(MyEnt, false)
-	//AFK(MyEnt, HEnts)
+	AFK(MyEnt, HEnts)
 
 	if(AntiAFK.checked)
 		$.Schedule(Fusion.MyTick, AntiAFKF)
 }
 
-function AFK(MyEnt, HEnts) {
-	var lastMin = HEnts.filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && !Entities.IsEnemy(ent) && ent !== MyEnt
-	}).sort(function(ent1, ent2) {
+AFK = (MyEnt, HEnts) => {
+	var lastMin = HEnts.filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+			 && !Entities.IsEnemy(ent)
+			 && ent !== MyEnt
+		)
+	).sort((ent1, ent2) => {
 		var rng1 = Entities.GetRangeToUnit(MyEnt, ent1)
 		var rng2 = Entities.GetRangeToUnit(MyEnt, ent2)
 		
@@ -41,7 +47,7 @@ function AFK(MyEnt, HEnts) {
 		Game.MoveToPos(MyEnt, pos, false)
 }
 
-function AntiAFKOnToggle() {
+AntiAFKOnToggle = () => {
 	if (AntiAFK.checked) {
 		AntiAFKF()
 		Game.ScriptLogMsg("Script enabled: AntiAFK", "#00ff00")

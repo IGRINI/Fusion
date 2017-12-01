@@ -4,35 +4,34 @@ Fusion = {
 	Panels: {},
 	Particles: {},
 	Subscribes: {},
-	MyTick: 1 / 30 * 3/*/ 3 uncomment if you have powerful pc*/,
+	MyTick: 1 / 30,
 	debugLoad: false,
 	debugAnimations: true,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
 }
 
-Fusion.ReloadFusion = function() {
-	Fusion.LoadFusion(function() {
-		Fusion.ServerRequest("scriptlist", "", function(response) {
-			var scriptlist = JSON.parse(response)
+Fusion.ReloadFusion = () => {
+	Fusion.LoadFusion(() => {
+		Fusion.ServerRequest("scriptlist", "", response => {
 			Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
-			scriptlist.forEach(Fusion.LoadScript)
+			JSON.parse(response).forEach(Fusion.LoadScript)
 		})
 	})
 }
 
-Fusion.LoadScript = function(scriptName) {
-	Fusion.ServerRequest("getscript", scriptName, function(response) {
+Fusion.LoadScript = scriptName => {
+	Fusion.ServerRequest("getscript", scriptName, response => {
 		eval(response)
 		$.Msg(`JScript ${scriptName} loaded`)
 	})
 }
 
-Fusion.ServerRequest = function(name, val, callback) {
+Fusion.ServerRequest = (name, val, callback) => {
 	var args = {
 		type: "POST",
 		data: {},
-		complete: function(a) {
+		complete: a => {
 			if (a.status === 200) {
 				if(a.responseText == null)
 					a.responseText = "\n"
@@ -54,35 +53,35 @@ Fusion.ServerRequest = function(name, val, callback) {
 	$.AsyncWebRequest(Fusion.FusionServer, args)
 }
 	
-Fusion.GetXML = function(file, callback){
-	Fusion.ServerRequest("getxml", file, callback)
-}
+Fusion.GetXML = (file, callback) => Fusion.ServerRequest("getxml", file, callback)
 
-Fusion.GetConfig = function(scriptName, callback) {
-	Fusion.ServerRequest("getconfig", scriptName, function(json) {
-		callback(JSON.parse(json)[0])
-	})
-}
+Fusion.GetConfig = (scriptName, callback) => Fusion.ServerRequest (
+	"getconfig",
+	scriptName,
+	json => callback(JSON.parse(json)[0])
+)
 
-Fusion.SaveConfig = function(scriptName, config) {
-	Fusion.ServerRequest("writeconfig", JSON.stringify (
+Fusion.SaveConfig = (scriptName, config) => Fusion.ServerRequest (
+	"writeconfig",
+	JSON.stringify (
 		{
 			"filepath": scriptName,
 			"json": JSON.stringify(config)
 		}
-	), function(response) {
+	),
+	response => {
 		
-	})
-}
+	}
+)
 
 Fusion.StatsEnabled = true
 Fusion.MinimapActsEnabled = true
 Fusion.HUDEnabled = true
-Fusion.LoadFusion = function(callback) {
+Fusion.LoadFusion = callback => {
 	if(Fusion.Panels.MainPanel !== undefined)
 		Fusion.Panels.MainPanel.DeleteAsync(0)
 	Fusion.Panels.MainPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "DotaOverlay")
-	Fusion.GetXML("init/hud", function(layout_string) {
+	Fusion.GetXML("init/hud", layout_string => {
 		$.Msg("HUD now are initializing...")
 		
 		with(Fusion.Panels.MainPanel) {
@@ -110,7 +109,7 @@ Fusion.LoadFusion = function(callback) {
 				Slider.saved = true
 			}
 			
-			function OnTickSlider() {
+			OnTickSlider = () => {
 				with(Fusion.Panels.MainPanel) {
 					if(!Slider.mousedown && !Slider.saved) {
 						Fusion.SaveConfig("init", Fusion.Configs.init)
@@ -143,7 +142,7 @@ Fusion.LoadFusion = function(callback) {
 if(Fusion.Panels.MainPanel !== undefined)
 	Fusion.Panels.MainPanel.DeleteAsync(0)
 
-function InstallMainHUD() {
+InstallMainHUD = () => {
 	var globalContext = $.GetContextPanel()
 	while(true)
 		if(globalContext.paneltype == "DOTAHud")
@@ -154,7 +153,7 @@ function InstallMainHUD() {
 	Fusion.Panels.Main.HUDElements = Fusion.Panels.Main.FindChild("HUDElements")
 }
 
-function WaitForGameStart() {
+WaitForGameStart = () => {
 	$.Schedule (
 		Fusion.MyTick,
 		function() {

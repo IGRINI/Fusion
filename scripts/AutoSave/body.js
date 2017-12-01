@@ -1,6 +1,5 @@
 ﻿var SavingAbils = [
-	"bane_nightmare",
-	"item_eul"
+	"bane_nightmare"
 ]
 
 var BuffsNames = [
@@ -8,11 +7,11 @@ var BuffsNames = [
 ]
 
 var flag = false
-function Save(MyEnt, ent) {
+Save = (MyEnt, ent) => {
 	if(flag)
 		return
 	var distance = Entities.GetRangeToUnit(MyEnt, ent)
-	SavingAbils.some(function(ar) {
+	SavingAbils.some(ar => {
 		var abil = Game.GetAbilityByName(MyEnt, ar[0])
 		if(abil === undefined)
 			return false
@@ -22,38 +21,39 @@ function Save(MyEnt, ent) {
 			return false
 		Game.CastTarget(MyEnt, abil, ent)
 		flag = true
-		$.Schedule(1, function() {
-			flag = false
-		})
+		$.Schedule(1, () => flag = false)
 		return true
 	})
 }
 
-function AutoSaveF() {
+AutoSaveF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
-	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && !Entities.IsEnemy(ent)
-	}).some(function(ent) {
+	var HEnts = Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+		&& !Entities.IsEnemy(ent)
+	).some(ent => {
 		var entBuffsNames = Game.GetBuffsNames(ent)
-		entBuffsNames.some(function(buffName) {
+		entBuffsNames.some(buffName => {
 			if(BuffsNames.contains(buffName)) {
 				Save(MyEnt, ent)
 				return true
 			} else
 				return false
 		})
-		//$.Msg(entBuffsNames)
 	})
 }
 
-function AutoSaveToggle() {
-	if (!AutoSave.checked) {
+AutoSaveToggle = () => {
+	if (!AutoSave.checked)
 		Game.ScriptLogMsg("Script disabled: AutoSave", "#ff0000")
-		return
-	} else {
-		function L() {
+	else {
+		L = () => {
 			if (AutoSave.checked) {
 				AutoSaveF()
 				$.Schedule(Fusion.MyTick, L)

@@ -1,8 +1,6 @@
-﻿function GetAbilityRange(Abil) {
-	return Abilities.GetCastRangeFix(Abil)
-}
+﻿GetAbilityRange = Abil => Abilities.GetCastRangeFix(Abil)
 
-function InventoryChanged(data) {
+InventoryChanged = data => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Fusion.Particles.AbilityRange.length == 0)
 		return
@@ -17,23 +15,19 @@ function InventoryChanged(data) {
 	}
 }
 
-function Destroy() {
+Destroy = () => {
 	if(Fusion.Panels.AbilityRange)
 		Fusion.Panels.AbilityRange.DeleteAsync(0)
 	if(Fusion.Subscribes.AbilityRange)
-		Fusion.Subscribes.AbilityRange.forEach(function(sub) { // do not convolute, as DotA 2 API can be called only from script context (.forEach, .map is V8 context)
-			GameEvents.Unsubscribe(sub)
-		})
+		Fusion.Subscribes.AbilityRange.forEach(GameEvents.Unsubscribe)
 	if(Fusion.Particles.AbilityRange)
-		Fusion.Particles.AbilityRange.forEach(function(par) {
-			Particles.DestroyParticleEffect(par, true)
-		})
+		Fusion.Particles.AbilityRange.forEach(Particles.DestroyParticleEffect)
 	Fusion.Subscribes.AbilityRange = []
 	Fusion.Particles.AbilityRange = []
 	delete Fusion.Panels.AbilityRange
 }
 
-function SkillLearned(data) {
+SkillLearned = data => {
 	var MyID = Game.GetLocalPlayerID()
 	var MyEnt = Players.GetPlayerHeroEntityIndex(MyID)
 	if (data.PlayerID != MyID)
@@ -72,7 +66,7 @@ function SkillLearned(data) {
 	CheckB.SetPanelEvent( "onactivate", chkboxpressed )
 }
 
-function chkboxpressed() {
+chkboxpressed = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	var CheckBs = AbilityRangePanel.Children()
 	for(c=0;c<CheckBs.length;c++){
@@ -95,7 +89,7 @@ function chkboxpressed() {
 	}
 }
 
-function AbilityRangeOnToggle() {
+AbilityRangeOnToggle = () => {
 	if (AbilityRange.checked) {
 		var MyID = Game.GetLocalPlayerID()
 		if ( MyID==-1 ){
@@ -115,19 +109,19 @@ function AbilityRangeOnToggle() {
 	<Panel class='AbilityRangePanel' style='flow-children: down;background-color:#00000099;border-radius:15px;padding:20px 0;'>\
 	</Panel>\
 </root>", false, false)
-		GameUI.MovePanel(Fusion.Panels.AbilityRange,function(p){
+		GameUI.MovePanel(Fusion.Panels.AbilityRange, p => {
 			var position = Fusion.Panels.AbilityRange.style.position.split(" ")
 			Fusion.Configs.AbilityRange.MainPanel.x = position[0]
 			Fusion.Configs.AbilityRange.MainPanel.y = position[1]
 			Fusion.SaveConfig("AbilityRange", Fusion.Configs.AbilityRange)
 		})
-		Fusion.GetConfig("AbilityRange",function(config) {
+		Fusion.GetConfig("AbilityRange", config => {
 			Fusion.Configs.AbilityRange = config
 			Fusion.Panels.AbilityRange.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 			Fusion.Panels.AbilityRange.style.flowChildren = config.MainPanel.flow
 		})
 		if(!Fusion.Commands.AbilityRange_Rotate) {
-			Fusion.Commands.AbilityRange_Rotate = function() {
+			Fusion.Commands.AbilityRange_Rotate = () => {
 				var panel = Fusion.Panels.AbilityRange
 				if (panel.style.flowChildren == "right")
 					panel.style.flowChildren = "down"

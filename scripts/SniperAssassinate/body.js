@@ -1,4 +1,4 @@
-function SniperAssassinateFunc() {
+SniperAssassinateFunc = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	
 	var Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate")
@@ -12,9 +12,16 @@ function SniperAssassinateFunc() {
 	if(UltiLvl === 0 || UltiCd > 0 || UltiManaCost > Entities.GetMana(MyEnt) || Abilities.IsInAbilityPhase(Ulti))
 		return
 
-	Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent) && Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange && !Entities.IsMagicImmune(ent)
-	}).sort(function(ent1, ent2) {
+	Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+		&& Entities.IsEnemy(ent)
+		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange
+		&& !Entities.IsMagicImmune(ent)
+	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
 		
@@ -24,7 +31,7 @@ function SniperAssassinateFunc() {
 			return 1 
 		else
 			return -1
-	}).some(function(ent) {
+	}).some(ent => {
 		if(Fusion.HasLinkenAtTime(ent, 2))
 			return false
 		
@@ -39,7 +46,7 @@ function SniperAssassinateFunc() {
 	})
 }
 
-function SniperAssassinateOnCheckBoxClick() {
+SniperAssassinateOnCheckBoxClick = () => {
 	if (!SniperAssassinate.checked) {
 		Fusion.Panels.SniperAssassinate.DeleteAsync(0)
 		Game.ScriptLogMsg("Script disabled: SniperAssassinate", "#ff0000")
@@ -51,10 +58,10 @@ function SniperAssassinateOnCheckBoxClick() {
 		return
 	}
 
-	function f() {
+	f = () => {
 		$.Schedule (
 			Fusion.MyTick,
-			function() {
+			() => {
 				SniperAssassinateFunc()
 				if(SniperAssassinate.checked)
 					f()

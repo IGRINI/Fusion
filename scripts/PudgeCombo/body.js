@@ -1,7 +1,7 @@
 var hookspeed = 1450
 var hookwidth = 200
 
-function Hook(callback) {
+Hook = callback => {
 	myVec = Entities.GetAbsOrigin(MyEnt)
 	myForwardVec = Entities.GetForward(MyEnt)
 	enVec = Entities.GetAbsOrigin(ent)
@@ -25,7 +25,7 @@ function Hook(callback) {
 	})
 }
 
-function CancelHook(MyEnt, ent) {
+CancelHook = (MyEnt, ent) => {
 	var distance = Game.PointDistance(enVec, Entities.GetAbsOrigin(ent))
 	
 	if(distance > hookwidth) {
@@ -36,17 +36,15 @@ function CancelHook(MyEnt, ent) {
 		return false
 }
 
-function Rot(MyEnt, ent) {
+Rot = MyEnt => {
 	var rot = Game.GetAbilityByName(MyEnt,"pudge_rot"),
-		userbuffs = Game.GetBuffsNames(ent),
-		MyEntbuffs = Game.GetBuffsNames(MyEnt),
-		distance = Entities.GetRangeToUnit(MyEnt, ent)
+		MyEntbuffs = Game.GetBuffsNames(MyEnt)
 
 	if(MyEntbuffs.indexOf("modifier_pudge_rot") === -1)
 		Abilities.ExecuteAbility(rot, MyEnt, false)
 }
 
-function Urn(MyEnt, ent) {
+Urn = (MyEnt, ent) => {
 	var urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
 		urncharges = urn === undefined ? -1 : Items.GetCurrentCharges(urn)
 		
@@ -54,28 +52,25 @@ function Urn(MyEnt, ent) {
 		Game.CastTarget(MyEnt, urn, ent, false)
 }
 
-function Dismember(MyEnt, ent) {
+Dismember = (MyEnt, ent) => {
 	var dismember = Game.GetAbilityByName(MyEnt, "pudge_dismember")
 
 	Game.CastTarget(MyEnt, dismember, ent, false)
 }
 
-function Combo(MyEnt, ent) {
-	Hook(MyEnt, ent, function() {
-		Urn(MyEnt, ent)
-		Rot(MyEnt, ent)
-		Dismember(MyEnt, ent)
-	})
-}
-
 if(!Fusion.Commands.PudgeCombo) {
 	Fusion.Commands.PudgeCombo = function() {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var ent = Game.ClosetToMouse(MyEnt, 1000, true)
+		var ent = Entities.NearestToMouse(MyEnt, 1000, true)
 		if(ent === undefined)
 			return
-		Combo(MyEnt, ent)
+		
+		Hook(MyEnt, ent, () => {
+			Urn(MyEnt, ent)
+			Rot(MyEnt, ent)
+			Dismember(MyEnt, ent)
+		})
 	}
 
-	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0) // FIXME
+	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
 }

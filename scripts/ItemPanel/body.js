@@ -2,9 +2,9 @@
 	Fusion.Panels.ItemPanel.DeleteAsync(0)
 Fusion.ItemPanel = []
 
-function NewItem(oldinv, newinv, ent) {
-	newinv.forEach(function(n) {
-		if(oldinv.indexOf(n) === -1 && Fusion.Configs.ItemPanel.Items.indexOf(Abilities.GetAbilityName(n))!= -1){
+NewItem = (oldinv, newinv, ent) => {
+	newinv.forEach(n => {
+		if(oldinv.indexOf(n) === -1 && Fusion.Configs.ItemPanel.Items.indexOf(Abilities.GetAbilityName(n)) > -1){
 			if(Fusion.Configs.ItemPanel.Notify === "true") {
 				A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, `Alert${ent + n}`)
 				A.BLoadLayoutFromString("\
@@ -19,13 +19,14 @@ function NewItem(oldinv, newinv, ent) {
 				A.Children()[1].itemname = Abilities.GetAbilityName(n)
 				A.DeleteAsync(Fusion.Configs.ItemPanel.NotifyTime)
 			}
+
 			if (Fusion.Configs.ItemPanel.EmitSound === "true")
 				Game.EmitSound("General.Buy")
 		}
 	})
 }
 
-function ItemPanelEvery() {
+ItemPanelEvery = () => {
 	if (!ItemPanel.checked)
 		return
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)) {
@@ -34,49 +35,42 @@ function ItemPanelEvery() {
 		ItemPanelLoadOnOff()
 		return
 	}
-	var k = 0
-	var IDs = Game.GetAllPlayerIDs()
-	for(var i in IDs) {
-		var Ent = Players.GetPlayerHeroEntityIndex(IDs[i])
-		if(!Entities.IsEnemy(Ent))
-			continue
-		var P = Fusion.Panels.ItemPanel.Children()[k]
-		P.style.height = "24px"
-		P.Children()[0].heroname = Entities.GetUnitName(Ent)
-		var Inv = Game.GetInventory(Ent)
-		if(typeof Fusion.ItemPanel[Ent] === "undefined")
-			Fusion.ItemPanel[Ent] = []
-		if (Array.isArray(Fusion.ItemPanel[Ent]))
-			if(Game.CompareArrays(Fusion.ItemPanel[Ent], Inv)) {
-				k++
-				continue
-			}
-		NewItem(Fusion.ItemPanel[Ent], Inv, Ent)
-		Fusion.ItemPanel[Ent] = Inv
-		for(var i = 1; i < P.Children().length; i++)
-			P.Children()[i].itemname = ""
-		for(var n in Inv)
-			P.Children()[parseInt(n) + 1].itemname = Abilities.GetAbilityName(Inv[n])
-		k++
-	}
+	Game.GetAllPlayerIDs()
+		.map(playerID => Players.GetPlayerHeroEntityIndex(IDs[i]))
+		.filter(ent => Entities.IsEnemy(Ent))
+		.forEach(ent => {
+			var P = Fusion.Panels.ItemPanel.Children()[k]
+			P.style.height = "24px"
+			P.Children()[0].heroname = Entities.GetUnitName(Ent)
+			var Inv = Game.GetInventory(Ent)
+			if(Fusion.ItemPanel[Ent] === undefined)
+				Fusion.ItemPanel[Ent] = []
+			if (Array.isArray(Fusion.ItemPanel[Ent]))
+				if(Game.CompareArrays(Fusion.ItemPanel[Ent], Inv))
+					continue
+			NewItem(Fusion.ItemPanel[Ent], Inv, Ent)
+			Fusion.ItemPanel[Ent] = Inv
+			P.Children().forEach(child => child.itemname = "")
+			for(var n in Inv)
+				P.Children()[n + 1].itemname = Abilities.GetAbilityName(Inv[n])
+		})
 	if(ItemPanel.checked)
 		$.Schedule(Fusion.MyTick, ItemPanelEvery)
 }
 
-function ItemPanelLoad() {
-	Fusion.GetXML("ItemPanel/panel", function(a) {
+ItemPanelLoad = () => {
+	Fusion.GetXML("ItemPanel/panel", a => {
 		Fusion.Panels.ItemPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "ItemPanel1")
 		Fusion.Panels.ItemPanel.BLoadLayoutFromString(a, false, false)
-		for(var i=0; i < 5; i++)
-			Fusion.Panels.ItemPanel.Children()[i].style.height = "0"
-		GameUI.MovePanel(Fusion.Panels.ItemPanel, function(p) {
+		Fusion.Panels.ItemPanel.Children().forEach(child => child.style.height = "0")
+		GameUI.MovePanel(Fusion.Panels.ItemPanel, p => {
 			var position = p.style.position.split(" ")
 			Fusion.Configs.ItemPanel.MainPanel.x = position[0]
 			Fusion.Configs.ItemPanel.MainPanel.y = position[1]
 			Fusion.SaveConfig("ItemPanel", Fusion.Configs.ItemPanel)
 		})
 		
-		Fusion.GetConfig("ItemPanel", function(config) {
+		Fusion.GetConfig("ItemPanel", config => {
 			Fusion.Configs.ItemPanel = config
 			Fusion.Panels.ItemPanel.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 			ItemPanelEvery()
@@ -84,15 +78,15 @@ function ItemPanelLoad() {
 	})
 }
 
-function ItemPanelLoadOnOff() {
-	if (!ItemPanel.checked) {
+ItemPanelLoadOnOff = () => {
+	if (ItemPanel.checked) {
+		ItemPanelLoad()
+		Game.ScriptLogMsg("Script enabled: ItemPanel", "#00ff00")
+	} else {
 		Fusion.ItemPanel = []
 		if(Fusion.Panels.ItemPanel)
 			Fusion.Panels.ItemPanel.DeleteAsync(0)
 		Game.ScriptLogMsg("Script disabled: ItemPanel", "#ff0000")
-	} else {
-		ItemPanelLoad()
-		Game.ScriptLogMsg("Script enabled: ItemPanel", "#00ff00")
 	}
 }
 

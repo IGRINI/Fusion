@@ -8,13 +8,13 @@ var AbuseManaItems = [
 ]
 
 if(!Fusion.Commands.ManaAbuseF) {
-	Fusion.Commands.ManaAbuseF = function() {
-		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var myVec = Entities.GetAbsOrigin(MyEnt)
-		var Inv = Game.GetInventory(MyEnt)
-		Inv.forEach(function(Item) {
-			var ItemName = Abilities.GetAbilityName(Item)
-			var ManaPool = 0
+	Fusion.Commands.ManaAbuseF = () => {
+		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
+			myVec = Entities.GetAbsOrigin(MyEnt),
+			Inv = Game.GetInventory(MyEnt)
+		Inv.forEach(Item => {
+			var ItemName = Abilities.GetAbilityName(Item),
+				ManaPool = 0
 			ManaPool += Abilities.GetSpecialValueFor(Item, "bonus_int")
 			ManaPool += Abilities.GetSpecialValueFor(Item, "bonus_intellect")
 			ManaPool += Abilities.GetSpecialValueFor(Item, "bonus_all_stats")
@@ -22,16 +22,15 @@ if(!Fusion.Commands.ManaAbuseF) {
 			if(ManaPool > 0 && AbuseManaItems.indexOf(ItemName) === -1)
 				Game.DropItem(MyEnt, Item, myVec, false)
 		})
-		Inv.forEach(function(Item) {
-			var ItemName = Abilities.GetAbilityName(Item)
-			if(AbuseManaItems.indexOf(ItemName) !== -1)
-				Game.CastNoTarget(MyEnt,Item,false)
-		})
-		Entities.GetAllEntities().filter(function(ent) {
-			return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Game.PointDistance(Entities.GetAbsOrigin(ent), myVec) <= 150
-		}).forEach(function(ent) {
-			Game.PickupItem(MyEnt, ent, true)
-		})
+		Inv.filter(Item => AbuseManaItems.indexOf(Abilities.GetAbilityName(Item)) !== -1).forEach(Item => Game.CastNoTarget(MyEnt, Item, false))
+		Entities.GetAllEntities().filter(ent =>
+			Entities.IsAlive(ent)
+			&& !(
+				Entities.IsBuilding(ent)
+				|| Entities.IsInvulnerable(ent)
+			)
+			&& Game.PointDistance(Entities.GetAbsOrigin(ent), myVec) <= 150
+		).forEach(ent => Game.PickupItem(MyEnt, ent, false))
 	}
 
 	Game.AddCommand("__ManaAbuse", Fusion.Commands.ManaAbuseF, "", 0)

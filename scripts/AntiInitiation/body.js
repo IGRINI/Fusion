@@ -62,32 +62,34 @@ var Abils = [
 	OtherAbils
 ]
 
-function GetAbilArray(abilNameToSearch) {
+GetAbilArray = abilNameToSearch => {
 	var abilArFound
-	Abils.some(function(ar) {
-		return ar.some(function(abilAr) {
-			var abilName = abilAr[0]
-			var abilToUse = abilAr[1]
-			if(abilName !== abilNameToSearch)
-				return false
-			
-			abilArFound = abilAr
-			return true
-		})
-	})
+	Abils.some(ar => ar.some(abilAr => {
+		var abilName = abilAr[0]
+		var abilToUse = abilAr[1]
+		if(abilName !== abilNameToSearch)
+			return false
+		
+		abilArFound = abilAr
+		return true
+	}))
 	
 	return abilArFound
 }
 
 var flags = []
-function AntiInitiationF() {
+AntiInitiationF = () => {
 	if(!AntiInitiation.checked)
 		return
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
-	})
-	HEnts.some(function(ent) {
+	Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& Entities.IsEnemy(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+	).some(ent => {
 		if(flags[ent])
 			return
 		for(var m = 0; m < Entities.GetAbilityCount(ent); m++) {
@@ -97,7 +99,7 @@ function AntiInitiationF() {
 		}
 		if(Game.GetBuffsNames(ent).indexOf("modifier_teleporting") !== -1) {
 			var abil
-			StunAbils.some(function(abilAr) {
+			StunAbils.some(abilAr => {
 				var abilName = abilAr[0]
 				var abilToUse = abilAr[1]
 				if(!abilToUse)
@@ -132,9 +134,7 @@ function AntiInitiationF() {
 				else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1)
 					Game.CastTarget(MyEnt, abil, ent, false)
 				flags[ent] = true
-				$.Schedule(1, function() {
-					flags[ent] = false
-				})
+				$.Schedule(1, () => flags[ent] = false)
 				return true
 			}
 		}
@@ -142,7 +142,7 @@ function AntiInitiationF() {
 	})
 }
 
-function Disable(MyEnt, ent, Abil) {
+Disable = (MyEnt, ent, Abil) => {
 	var AbilName = Abilities.GetAbilityName(Abil)
 	if (
 		Abil === -1 ||
@@ -156,8 +156,8 @@ function Disable(MyEnt, ent, Abil) {
 	if(AbilAr !== undefined && AbilAr[2])
 		return false
 	var abil
-	Abils.some(function(ar) {
-		return ar.some(function(abilAr) {
+	Abils.some(ar => {
+		return ar.some(abilAr => {
 			var abilName = abilAr[0]
 			var abilToUse = abilAr[1]
 			if(!abilToUse)
@@ -193,22 +193,20 @@ function Disable(MyEnt, ent, Abil) {
 	else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1)
 		Game.CastTarget(MyEnt, abil, ent, false)
 	flags[ent] = true
-	$.Schedule(1, function() {
-		flags[ent] = false
-	})
+	$.Schedule(1, () => flags[ent] = false)
 	return true
 }
 
 
-function AntiInitiationToggle() {
+AntiInitiationToggle = () => {
 	if (!AntiInitiation.checked){
 		Game.ScriptLogMsg("Script disabled: AntiInitiation", "#ff0000")
 		return
 	} else {
-		function f() {
+		f = () => {
 			$.Schedule (
 				Fusion.MyTick,
-				function() {
+				() => {
 					AntiInitiationF()
 					if(AntiInitiation.checked)
 						f()

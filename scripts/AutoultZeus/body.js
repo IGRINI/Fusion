@@ -1,6 +1,6 @@
 ﻿var damage = [225, 325, 425]
 
-function ZeusAutoultF() {
+ZeusAutoultF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	var Ulti = Entities.GetAbilityByName(MyEnt, "zuus_thundergods_wrath")
 	var UltiLvl = Abilities.GetLevel(Ulti)
@@ -9,7 +9,7 @@ function ZeusAutoultF() {
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Ulti))
 		return
 	
-	Entities.PlayersHeroEnts().some(function(ent) {
+	Entities.PlayersHeroEnts().some(ent => {
 		if (!Entities.IsEnemy(ent) || Entities.IsMagicImmune(ent) || !Entities.IsAlive(ent))
 			return false
 		if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)
@@ -22,20 +22,17 @@ function ZeusAutoultF() {
 	})
 }
 
-function ZeusAutoultOnCheckBoxClick() {
-	if (!ZeusAutoult.checked){
-		Game.ScriptLogMsg("Script disabled: ZeusAutoult", "#ff0000")
-		return
-	} else {
+ZeusAutoultOnCheckBoxClick = () => {
+	if (ZeusAutoult.checked) {
 		if (Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) != "npc_dota_hero_zuus"){
 			ZeusAutoult.checked = false
 			Game.ScriptLogMsg("ZeusAutoult: Not Zeus", "#ff0000")
 			return
 		}
-		function f() {
+		f = () => {
 			$.Schedule (
 				Fusion.MyTick,
-				function() {
+				() => {
 					ZeusAutoultF()
 					if(ZeusAutoult.checked)
 						f()
@@ -44,7 +41,8 @@ function ZeusAutoultOnCheckBoxClick() {
 		}
 		f()
 		Game.ScriptLogMsg("Script enabled: ZeusAutoult", "#00ff00")
-	}
+	} else
+		Game.ScriptLogMsg("Script disabled: ZeusAutoult", "#ff0000")
 }
 
 var ZeusAutoult = Fusion.AddScript("AutoultZeus", ZeusAutoultOnCheckBoxClick)

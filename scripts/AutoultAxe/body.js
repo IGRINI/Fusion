@@ -1,5 +1,5 @@
 var damage = [250, 325, 400]
-function AxeUltiF() {
+AxeUltiF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -10,9 +10,16 @@ function AxeUltiF() {
 	var UltiDmg = damage[UltiLvl - 1]
 	var UltiCastRange = Abilities.GetCastRangeFix(Ulti) + 75
 	
-	Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent) && Entities.GetRangeToUnit(MyEnt, ent) <= UltiCastRange && Entities.GetHealth(ent) <= UltiDmg
-	}).sort(function(ent1, ent2) {
+	Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+		&& Entities.IsEnemy(ent)
+		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiCastRange
+		&& Entities.GetHealth(ent) <= UltiDmg
+	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
 		
@@ -22,7 +29,7 @@ function AxeUltiF() {
 			return 1
 		else
 			return -1
-	}).some(function(ent) {
+	}).some(ent => {
 		if(Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti)))
 			return false
 		
@@ -32,7 +39,7 @@ function AxeUltiF() {
 	})
 }
 
-function AxeUltiOnCheckBoxClick() {
+AxeUltiOnCheckBoxClick = () => {
 	if (!AxeUlti.checked) {
 		Game.ScriptLogMsg("Script disabled: AxeUlti", "#ff0000")
 		return
@@ -42,9 +49,9 @@ function AxeUltiOnCheckBoxClick() {
 			AxeUltiOnCheckBoxClick()
 			return
 		} else {
-			function f() {
+			f = () => {
 				if(AxeUlti.checked)
-					$.Schedule(Fusion.MyTick, function() {
+					$.Schedule(Fusion.MyTick, () => {
 						AxeUltiF()
 						f()
 					})

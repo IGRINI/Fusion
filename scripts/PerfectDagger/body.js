@@ -1,5 +1,5 @@
 ﻿Fusion.BlinkDistance = 1200
-GameUI.SetMouseCallback(function(eventName,arg) {
+GameUI.SetMouseCallback((eventName, arg) => {
 	var ab = Abilities.GetLocalPlayerActiveAbility()
 	var abn = Abilities.GetAbilityName(ab)
 	if (GameUI.GetClickBehaviors() !== 3 || abn !== "item_blink")
