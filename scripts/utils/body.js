@@ -337,7 +337,7 @@ Game.MoveToPos = (ent, xyz, queue) => Game.PrepareUnitOrders({
 Game.MoveToTarget = (ent, entTo, queue) => Game.PrepareUnitOrders({
 	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET,
 	UnitIndex: ent,
-	Position: entTo,
+	TargetIndex: entTo,
 	Queue: queue,
 	ShowEffects: Fusion.debugAnimations
 })
@@ -428,14 +428,6 @@ Game.ItemLock = (ent, item, queue) => Game.PrepareUnitOrders({
 	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK,
 	UnitIndex: ent,
 	TargetIndex: item,
-	Queue: queue,
-	ShowEffects: Fusion.debugAnimations
-})
-
-Game.PurchaseItem = (ent, itemid, queue) => Game.PrepareUnitOrders({
-	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM,
-	UnitIndex: ent,
-	AbilityIndex: itemid,
 	Queue: queue,
 	ShowEffects: Fusion.debugAnimations
 })

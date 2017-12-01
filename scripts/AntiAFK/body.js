@@ -38,13 +38,12 @@ AFK = (MyEnt, HEnts) => {
 
 	if(!lastMin)
 		return
-	var pos = Entities.GetAbsOrigin(lastMin)
 	if(pos == undefined)
 		return
 	if(feeder)
-		Game.MoveToAttackPos(MyEnt, pos, false)
+		Game.MoveToAttackPos(MyEnt, Entities.GetAbsOrigin(lastMin), false)
 	else
-		Game.MoveToPos(MyEnt, pos, false)
+		Game.MoveToTarget(MyEnt, lastMin, false)
 }
 
 AntiAFKOnToggle = () => {
