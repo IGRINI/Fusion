@@ -60,10 +60,6 @@ LaserSteal = () => {
 							ent = pair
 					})
 				*/
-
-				FindPairs(ent, nearMap).reduce((prev, cur) => {
-
-				})
 				
 				if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange)
 					return false
