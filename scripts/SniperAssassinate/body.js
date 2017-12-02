@@ -31,18 +31,18 @@ SniperAssassinateFunc = () => {
 			return 1 
 		else
 			return -1
-	}).some(ent => {
+	}).every(ent => {
 		if(Fusion.HasLinkenAtTime(ent, 2))
-			return false
+			return true
 		
 		if(Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= UltiDmg) {
 			GameUI.SelectUnit(MyEnt, false)
 			if(Glimmer !== undefined)
 				Game.CastTarget(MyEnt, Glimmer, MyEnt, false)
 			Game.CastTarget(MyEnt, Ulti, ent, false)
-			return true
+			return false
 		}
-		return false
+		return true
 	})
 }
 

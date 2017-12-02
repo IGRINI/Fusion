@@ -1,11 +1,19 @@
 ﻿Fusion.LenseBonusRange = 200
 Fusion.ForceStaffUnits = 600
 Fusion.LinkenTargetName = "modifier_item_sphere_target"
-
 Fusion.ForceStaffNames = [
 	"item_force_staff",
 	"item_hurricane_pike",
 ]
+
+Game.GetLocalPlayerID = () => -1
+
+Entities.IsMine = ent =>
+	[
+		"npc_dota_techies_remote_mine",
+		"npc_dota_techies_stasis_trap"
+	].some(name => Entities.GetUnitName(ent) === name)
+
 Fusion.GetForceStaff = ent => {
 	var item
 	Fusion.ForceStaffNames.some(name => (item = Game.GetAbilityByName(name)) !== undefined)

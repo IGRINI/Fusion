@@ -1,24 +1,16 @@
-﻿// pros would like this script
-var TriggerRadius = 425
-var RMinesDamage = [300, 450, 600]
-var RMinesDamageScepter = [450, 600, 750]
-var debug = false
-var RMineSetupTime = 2
-
-SummonParticle = (range, ent) => Particles.SetParticleControl(Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent), 1, [range, 0, 0])
+﻿SummonParticle = (range, ent) => Particles.SetParticleControl(Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent), 1, [range, 0, 0])
 
 var rmineTimeout = 598 // 600 is mine duration
-ScheduleExplode = (rmine) => {
-	$.Schedule(RMineSetupTime + Fusion.MyTick, () => {
+ScheduleExplode = rmine => {
+	$.Schedule(2 + Fusion.MyTick, () => {
 		var time = Game.GetGameTime()
 		var delta = time - rmineTimeout + Fusion.MyTick
-		Game.GetBuffs(rmine).some(function(buff) {
+		Game.GetBuffs(rmine).every(buff => {
 			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine") {
 				delta = time - Buffs.GetCreationTime(rmine, buff)
-				return true
+				return false
 			}
-			
-			return false
+			return true
 		})
 		
 		if(debug)
@@ -36,6 +28,7 @@ ScheduleExplode = (rmine) => {
 }
 
 HandleEntity = ent => {
+	var TriggerRadius = Abilities.GetSpecialValueFor(Entities.GetAbility(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()), 5), "radius")
 	if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine") {
 		var range = TriggerRadius
 		Fusion.EzTechies.RMines.push(ent)
@@ -61,12 +54,13 @@ HandleMines = () => {
 
 RemoteMines = (MyEnt, ents) => {
 	var Ulti = Entities.GetAbility(MyEnt, 5)
+	var TriggerRadius = Abilities.GetSpecialValueFor(Ulti, "radius")
 	var UltiLvl = Abilities.GetLevel(Ulti)
 	if(UltiLvl == 0)
 		return
 	
 	var NeedMagicDmg = -1
-	ents.forEach(function(ent) {
+	ents.forEach(ent => {
 		var need = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 0.5)
 		if(need > NeedMagicDmg)
 			NeedMagicDmg = need
@@ -75,44 +69,44 @@ RemoteMines = (MyEnt, ents) => {
 		return
 	var RMinesToBlow = []
 	var RMinesDmg = 0
-	Fusion.EzTechies.RMines.some(function(rmine) {
-		var time = -1
-		Game.GetBuffs(rmine).some(function(buff) {
+	Fusion.EzTechies.RMines.every(function(rmine) {
+		var rmineTime = -1
+		Game.GetBuffs(rmine).every(buff => {
 			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine") {
-				time = Buffs.GetCreationTime(rmine, buff)
-				return true
+				rmineTime = Buffs.GetCreationTime(rmine, buff)
+				return false
 			}
-			return false
+			return true
 		})
-		if(time === -1)
-			return false
+		if(rmineTime === -1)
+			return true
 		
 		var dmg = -1
-		for(var z = Fusion.EzTechies.LVLUp.length; z >= 0; z--)
-			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z])
-				dmg = Entities.HasScepter(MyEnt) ? RMinesDamageScepter[z] : RMinesDamage[z]
-		if(ents.some(function(ent) {
-			return Entities.IsEntityInRange(rmine, ent, TriggerRadius)
-		})) {
+		Fusion.EzTechies.LVLUp
+			.filter(time => time !== -1 && rmineTime > time)
+			.every((time, lvl) => dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl))
+		if(ents.some(ent => Entities.IsEntityInRange(rmine, ent, TriggerRadius))) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg
-			if(debug)
+			if(Fusion.debug)
 				$.Msg(`[EzTechies] There's ${RMinesDmg}, needed ${NeedMagicDmg}`)
 			if(RMinesDmg > NeedMagicDmg) {
-				RMinesToBlow.forEach(function(rmine) {
+				RMinesToBlow.forEach(rmine => {
 					GameUI.SelectUnit(rmine, false)
 					Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 				})
 				GameUI.SelectUnit(MyEnt, false)
-				return
+				return false
 			}
 		}
+
+		return true
 	})
 }
 
 SubscribeEvents = () => {
 	if(!Fusion.Subscribes.UltiUp)
-		Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", function(event) {
+		Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", event => {
 			if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname != "techies_remote_mines")
 				return
 			
@@ -122,7 +116,7 @@ SubscribeEvents = () => {
 		})
 
 	if(!Fusion.Subscribes.EzTechiesMinesSpawn)
-		Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", function(event) {
+		Fusion.Subscribes.EzTechiesMinesSpawn = GameEvents.Subscribe("npc_spawned", event => {
 			var ent = event.entindex
 			if(Entities.IsEnemy(ent))
 				return
@@ -130,7 +124,7 @@ SubscribeEvents = () => {
 		})
 
 	if(!Fusion.Subscribes.EzTechiesMineDeath)
-		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", function(event) {
+		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", event => {
 			var ent = event.entindex_killed
 			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
 				Fusion.EzTechies.RemoveRMine(ent)
@@ -153,6 +147,7 @@ SubscribeEvents()
 if(!Fusion.Commands.EzTechies) {
 	Fusion.Commands.EzTechies = () => {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+		var TriggerRadius = Abilities.GetSpecialValueFor(Entities.GetAbility(MyEnt, 5), "radius")
 		var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), TriggerRadius, true)
 		
 		RemoteMines(MyEnt, ents.filter(ent => Fusion.GetMagicMultiplier(MyEnt, ent) !== 0))

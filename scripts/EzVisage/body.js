@@ -1,6 +1,5 @@
-Fusion.FamiliarBaseClass = "npc_dota_visage_familiar"
 GetFamiliars = () => {
-	return Entities.GetAllEntitiesByClassname(Fusion.FamiliarBaseClass).filter(ent =>
+	return Entities.GetAllEntitiesByClassname("npc_dota_visage_familiar").filter(ent =>
 		Entities.IsAlive(ent)
 		&& !Entities.IsBuilding(ent)
 		&& !Entities.IsEnemy(ent)
@@ -39,9 +38,18 @@ Souls = MyEnt => {
 	var AbilCastPoint = Abilities.GetCastPoint(Abil)
 	var SoulDamage = 20 + 65 * Buffs.GetStackCount(MyEnt, Fusion.GetBuffByName(MyEnt, "modifier_visage_soul_assumption"))
 	
-	Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent) && Entities.GetRangeToUnit(ent, MyEnt) <= AbilRange
-	}).sort(function(ent1, ent2) {
+	Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+		&& Entities.IsEnemy(ent)
+		&& Entities.GetRangeToUnit(ent, MyEnt) <= AbilRange
+		&& !Fusion.HasLinkenAtTime(ent, AbilCastPoint)
+		&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
+		&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= SoulDamage
+	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
 		
@@ -51,14 +59,10 @@ Souls = MyEnt => {
 			return 1
 		else
 			return -1
-	}).some(function(ent) {
-		if(Fusion.HasLinkenAtTime(ent, AbilCastPoint) || Fusion.GetMagicMultiplier(MyEnt, ent) === 0)
-			return false
-		if(Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= SoulDamage) {
-			GameUI.SelectUnit(MyEnt, false)
-			Game.CastTarget(MyEnt, Abil, ent, false)
-			return true
-		}
+	}).every(ent => {
+		GameUI.SelectUnit(MyEnt, false)
+		Game.CastTarget(MyEnt, Abil, ent, false)
+		return false
 	})
 }
 

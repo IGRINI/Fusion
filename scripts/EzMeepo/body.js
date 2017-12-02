@@ -84,17 +84,21 @@ if(!Fusion.Commands.MeepoEarthBind) {
 		var playerID = Game.GetLocalPlayerID()
 		var MyEnt = Players.GetPlayerHeroEntityIndex(playerID)
 		
-		return Entities.GetAllEntitiesByClassname(MeepoName).filter(function(ent) {
-			return Entities.IsAlive(ent) && !Entities.IsEnemy(ent) && !Entities.IsStunned(ent) && Entities.IsControllableByPlayer(ent, playerID) && !Entities.IsIllusion(ent)
-		}).some(function(ent) {
+		return Entities.GetAllEntitiesByClassname(MeepoName).filter(ent =>
+			Entities.IsAlive(ent)
+			&& !Entities.IsEnemy(ent)
+			&& !Entities.IsStunned(ent)
+			&& Entities.IsControllableByPlayer(ent, playerID)
+			&& !Entities.IsIllusion(ent)
+		).every(ent => {
 			var Abil = Game.GetAbilityByName(ent, "meepo_earthbind")
 			if(Abilities.GetCooldownTimeRemaining(Abil) === 0) {
 				var EarthBind = Game.GetAbilityByName(ent, "meepo_earthbind")
 				GameUI.SelectUnit(ent, false)
 				Game.CastPosition(ent, EarthBind, pos, false)
-				return true
+				return false
 			}
-			return false
+			return true
 		})
 	}
 	Game.AddCommand("__MeepoEarthBind", () => Fusion.Commands.MeepoEarthBind(Game.GetScreenCursonWorldVec()), "", 0)

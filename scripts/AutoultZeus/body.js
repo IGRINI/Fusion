@@ -1,4 +1,8 @@
-﻿ZeusAutoultF = () => {
+﻿var flag = false
+ZeusAutoultF = () => {
+	if(flag)
+		return
+	
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "zuus_thundergods_wrath"),
 		UltiLvl = Abilities.GetLevel(Ulti),
@@ -7,17 +11,21 @@
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Ulti))
 		return
 	
-	Entities.PlayersHeroEnts().some(ent => {
-		if (!Entities.IsEnemy(ent) || Entities.IsMagicImmune(ent) || !Entities.IsAlive(ent))
-			return false
-		if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)
-			return false
-		
-		if(Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= UltiDmg) {
+	Entities.PlayersHeroEnts()
+		.filter(ent =>
+			Entities.IsEnemy(ent)
+			&& !Entities.IsMagicImmune(ent)
+			&& Entities.IsAlive(ent))
+			&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
+			&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) < UltiDmg
+		.every(ent => {
 			Game.CastNoTarget(MyEnt, Ulti, false)
-			return true
-		}
-	})
+
+			flag = true
+			$.Schedule(Abilities.GetCastPoint(Ulti), () => flag = false)
+			
+			return false
+		})
 }
 
 ZeusAutoultOnCheckBoxClick = () => {

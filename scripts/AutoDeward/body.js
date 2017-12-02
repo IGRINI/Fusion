@@ -12,9 +12,8 @@
 
 Deward = (MyEnt, HEnts) => {
 	var Abil = GetDewardItem(MyEnt)
-	if(Abil === -1) {
+	if(Abil === -1)
 		return
-	}
 
 	var AbilRange = Abilities.GetCastRangeFix(Abil)
 	HEnts.filter(ent =>
@@ -24,20 +23,14 @@ Deward = (MyEnt, HEnts) => {
 		)
 		|| Entities.GetRangeToUnit(MyEnt, ent) > AbilRange
 		|| !AreDeward(ent)
-	).some(ent => {
+	).every(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)
-		return true
+		return false
 	})
 }
 
-AreDeward = ent => Entities.IsWard(ent) || IsMine(ent)
-
-IsMine = ent =>
-	[
-		"npc_dota_techies_remote_mine",
-		"npc_dota_techies_stasis_trap"
-	].some(name => Entities.GetUnitName(ent) === name)
+AreDeward = ent => Entities.IsWard(ent) || Entities.IsMine(ent)
 
 GetDewardItem = MyEnt => {
 	var result = -1
@@ -46,14 +39,13 @@ GetDewardItem = MyEnt => {
 		"item_bfury",
 		"item_iron_talon",
 		"item_tango"
-	].some(itemName => {
+	].every(itemName => {
 		let item = Game.GetAbilityByName(MyEnt, itemName)
 		if(item !== undefined) {
 			result = item
-			return true
+			return false
 		}
-
-		return false
+		return true
 	})
 	
 	return result

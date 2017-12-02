@@ -66,9 +66,9 @@ BoltSteal = () => {
 } else*/
 		potentialTargets
 			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < BoltRange)
-			.some(ent => {
+			.every(ent => {
 				CastBolt(MyEnt, Bolt, BoltCastPoint, ent)
-				return true
+				return false
 			})
 }
 

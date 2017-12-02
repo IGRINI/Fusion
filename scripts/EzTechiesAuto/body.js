@@ -1,9 +1,5 @@
-﻿var TriggerRadius = 425
-var RMinesDamage		= [300, 450, 600]
-var RMinesDamageScepter = [450, 600, 750]
-var NoTarget = []
+﻿var NoTarget = []
 var BlowDelay = 0.25 + Fusion.MyTick * 10
-var debug = false
 
 CallMines = (MyEnt, ent, callback, explosionCallback) => {
 	var NeedMagicDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 0.5)
@@ -11,29 +7,32 @@ CallMines = (MyEnt, ent, callback, explosionCallback) => {
 	var RMinesDmg = 0
 	if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)
 		return
-	Fusion.EzTechies.RMines.some(function(rmine) {
+	Fusion.EzTechies.RMines.every(rmine => {
 		var buffs = Game.GetBuffs(rmine)
 		if(buffs.length === 0)
-			return false
+			return true
 		
-		var time = -1
-		buffs.forEach(function(buff) {
-			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine")
-				time = Buffs.GetCreationTime(rmine, buff)
+		var rmineTime = -1
+		buffs.every(buff => {
+			if(Buffs.GetName(rmine, buff) === "modifier_techies_remote_mine") {
+				rmineTime = Buffs.GetCreationTime(rmine, buff)
+				return false
+			}
+			return true
 		})
-		if(time === -1)
-			return false
+		if(rmineTime === -1)
+			return true
 		
 		var dmg = -1
-		for(var z = Fusion.EzTechies.LVLUp.length; z >= 0; z--)
-			if(Fusion.EzTechies.LVLUp[z] !== -1 && time > Fusion.EzTechies.LVLUp[z])
-				dmg = Entities.HasScepter(MyEnt) ? RMinesDamageScepter[z] : RMinesDamage[z]
+		Fusion.EzTechies.LVLUp
+			.filter(time => time !== -1 && rmineTime > time)
+			.every((time, lvl) => dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl))
 		
 		if(callback(MyEnt, ent, rmine)) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg
 			if(RMinesDmg > (NeedMagicDmg + dmg)) {
-				if(debug)
+				if(Fusion.debug)
 					$.Msg(`[EzTechiesAuto] There's ${RMinesDmg}, needed ${NeedMagicDmg} for ${Entities.GetUnitName(ent)}`)
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return true
@@ -62,6 +61,7 @@ DenyMines = MyEnt => {
 
 RemoteMines = (MyEnt, HEnts) => {
 	var Ulti = Entities.GetAbility(MyEnt, 5)
+	var TriggerRadius = Abilities.GetSpecialValueFor(Ulti, "radius")
 	var UltiLvl = Abilities.GetLevel(Ulti)
 	if(UltiLvl == 0)
 		return
@@ -82,9 +82,7 @@ RemoteMines = (MyEnt, HEnts) => {
 					Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 				})
 				NoTarget.push(ent)
-				$.Schedule(BlowDelay, function() {
-					Fusion.arrayRemove(NoTarget, ent)
-				})
+				$.Schedule(BlowDelay, () => Fusion.arrayRemove(NoTarget, ent))
 				GameUI.SelectUnit(MyEnt, false)
 			}
 		)

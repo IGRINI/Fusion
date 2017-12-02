@@ -28,10 +28,10 @@ AxeUltiF = () => {
 			return 1
 		else
 			return -1
-	}).some(ent => {
+	}).every(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Ulti, ent, false)
-		return true
+		return false
 	})
 }
 

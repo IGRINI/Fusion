@@ -70,9 +70,9 @@ LaserSteal = () => {
 } else*/
 		potentialTargets
 			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange)
-			.some(ent => {
+			.every(ent => {
 				CastLaser(MyEnt, Laser, LaserCastPoint, ent)
-				return true
+				return false
 			})
 }
 

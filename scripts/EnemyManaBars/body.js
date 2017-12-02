@@ -1,5 +1,8 @@
-﻿var MainHud = Fusion.Panels.Main
-var manabar_layout, uiw, uih
+﻿var MainHud = Fusion.Panels.Main,
+	uiw = Fusion.Panels.Main.actuallayoutwidth,
+	uih = Fusion.Panels.Main.actuallayoutheight,
+	manabar_layout
+
 DeleteAll = () => {
 	if(Fusion.Panels.EnemyManaBars)
 		Fusion.Panels.EnemyManaBars.entries().filter(ar => ar[1]).forEach(panel =>  panel.DeleteAsync(0))
@@ -53,8 +56,6 @@ EMBEvery = () => {
 DeleteAll()
 var EnemyManaBars = Fusion.AddScript("EnemyManaBars", () => {
 	if (!EnemyManaBars.checked) {
-		uiw = Fusion.Panels.Main.actuallayoutwidth
-		uih = Fusion.Panels.Main.actuallayoutheight
 		Fusion.GetConfig("EnemyManaBars", config => {
 			Fusion.GetXML("EnemyManaBars/manabar", xml => {
 				manabar_layout = xml

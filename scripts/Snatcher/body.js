@@ -10,7 +10,7 @@ var RunePositions = [
 	[3686.9375,-3624.8125,304]   // radiantTop
 ]
 
-function DestroyParticle() {
+DestroyParticle = () => {
 	if(Fusion.Particles.RuneSnatcher) {
 		Particles.DestroyParticleEffect(Fusion.Particles.RuneSnatcher, true)
 		delete Fusion.Particles.RuneSnatcher
@@ -21,7 +21,7 @@ function DestroyParticle() {
 	}
 }
 
-function CreateParticle() {
+CreateParticle = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 
 	Fusion.Particles.RuneSnatcher = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
@@ -31,42 +31,42 @@ function CreateParticle() {
 	Particles.SetParticleControl(Fusion.Particles.RuneSnatcherTrue, 1, [TruePickupRadius, 0, 0])
 }
 
-function RuneSnatcherF() {
+RuneSnatcherF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	
 	var myVec = Entities.GetAbsOrigin(MyEnt)
-	RunePositions.filter(function(RunePos) {
-		return Game.PointDistance(RunePos, myVec) <= PickupRadius
-	}).map(function(RunePos) {
-		var rune = undefined
-		Fusion.GetEntitiesOnPosition(RunePos).some(function(ent) {
-			if(!Entities.IsSelectable(ent)) {
-				rune = ent
-				return true
-			}
-			return false
+	RunePositions
+		.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius)
+		.map(RunePos => {
+			var rune = undefined
+			Fusion.GetEntitiesOnPosition(RunePos).every(ent => {
+				if(!Entities.IsSelectable(ent)) {
+					rune = ent
+					return true
+				}
+				return false
+			})
+			return rune
 		})
-		return rune
-	}).filter(function(ent) {
-		return ent !== undefined
-	}).forEach(function(Rune) {
-		Game.PickupRune(MyEnt, Rune, false)
-	})
+		.filter(ent => ent !== undefined)
+		.forEach(Rune => Game.PickupRune(MyEnt, Rune, false))
 }
 
-function ItemSnatcherF() {
+ItemSnatcherF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
 	
-	Entities.GetAllEntities().filter(function(ent) {
-		return Entities.GetRangeToUnit(ent, MyEnt) <= PickupRadius && !Entities.IsSelectable(ent) && Entities.IsItemPhysical(ent)
-	}).forEach(ent => Game.PickupItem(MyEnt, ent, false))
+	Entities.GetAllEntities().filter(ent =>
+		Entities.GetRangeToUnit(ent, MyEnt) <= PickupRadius
+		&& !Entities.IsSelectable(ent)
+		&& Entities.IsItemPhysical(ent)
+	).forEach(ent => Game.PickupItem(MyEnt, ent, false))
 }
 
-function SnatcherF() {
+SnatcherF = () => {
 	ItemSnatcherF()
 	RuneSnatcherF()
 
@@ -74,7 +74,9 @@ function SnatcherF() {
 		$.Schedule(Fusion.MyTick, SnatcherF)
 }
 
-function SnatcherToggle() {
+function SnatcherToggle
+
+var Snatcher = Fusion.AddScript("Snatcher", () => {
 	if(Snatcher.checked) {
 		CreateParticle()
 		SnatcherF()
@@ -83,7 +85,5 @@ function SnatcherToggle() {
 		DestroyParticle()
 		Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
 	}
-}
-
-var Snatcher = Fusion.AddScript("Snatcher", SnatcherToggle)
+})
 DestroyParticle()

@@ -10,7 +10,7 @@ AutoUltNecrophosF = () => {
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
 		return
 	
-	var HEnts = Entities.PlayersHeroEnts().filter(ent =>
+	Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(
 			Entities.IsBuilding(ent)
@@ -28,19 +28,16 @@ AutoUltNecrophosF = () => {
 			return 1
 		else
 			return -1
-	})
-	
-	
-	HEnts.some(ent => {
+	}).every(ent => {
 		if(Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti)))
-			return false
+			return true
 		var dmg = (Entities.GetMaxHealth(ent) - Entities.GetHealth(ent)) * DamagePerMissHP
 		var NeededDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent))
 		
 		if(NeededDmg <= dmg) {
-			GameUI.SelectUnit(MyEnt,false)
+			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Ulti, ent, false)
-			return true
+			return false
 		} else {
 			var Dagon = Fusion.GetDagon(MyEnt)
 			if(Dagon !== undefined) {
@@ -55,7 +52,8 @@ AutoUltNecrophosF = () => {
 				}
 			}
 		}
-		return false
+
+		return true
 	})
 }
 

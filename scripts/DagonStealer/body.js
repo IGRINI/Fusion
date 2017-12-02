@@ -19,25 +19,23 @@ function DagonSteal() {
 	if(Abilities.GetCooldownTimeRemaining(Dagon) !== 0)
 		return
 	
-	Entities.PlayersHeroEnts().some(function(ent) {
-		if(!Entities.IsEnemy(ent))
-			return false
-		if(!Entities.IsAlive(ent) || Entities.IsMagicImmune(ent) || Fusion.HasLinkenAtTime(ent, 0))
-			return false
-		if(Entities.GetRangeToUnit(MyEnt, ent) > DagonRange)
-			return false
-		if(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent))
-			return false
-		
-		if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)
-			return false
-		
-		if(Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= DagonDamage) {
+	Entities.PlayersHeroEnts()
+		.filter(ent =>
+			Entities.IsEnemy(ent)
+			&& Entities.IsAlive(ent)
+			&& !Entities.IsBuilding(ent)
+			&& !Entities.IsMagicImmune(ent)
+			&& !Entities.IsInvulnerable(ent)
+			&& !Fusion.HasLinkenAtTime(ent, 0)
+			&& Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange
+			&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
+			&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= DagonDamage
+		)
+		.every(ent => {
 			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Dagon, ent, false)
-			return true
-		}
-	})
+			return false
+		})
 }
 
 function DagonStealerOnToggle() {

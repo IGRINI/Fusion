@@ -64,14 +64,14 @@ var Abils = [
 
 GetAbilArray = abilNameToSearch => {
 	var abilArFound
-	Abils.some(ar => ar.some(abilAr => {
+	Abils.every(ar => ar.every(abilAr => {
 		var abilName = abilAr[0]
 		var abilToUse = abilAr[1]
 		if(abilName !== abilNameToSearch)
-			return false
+			return true
 		
 		abilArFound = abilAr
-		return true
+		return false
 	}))
 	
 	return abilArFound
@@ -89,25 +89,24 @@ AntiInitiationF = () => {
 			Entities.IsBuilding(ent)
 			|| Entities.IsInvulnerable(ent)
 		)
-	).some(ent => {
+	).every(ent => {
 		if(flags[ent])
-			return
+			return true
 		for(var m = 0; m < Entities.GetAbilityCount(ent); m++) {
-			var Abil = Entities.GetAbility(ent, m)
-			if(Disable(MyEnt, ent, Abil))
-				return true
+			if(Disable(MyEnt, ent, Entities.GetAbility(ent, m)))
+				return false
 		}
 		if(Game.GetBuffsNames(ent).indexOf("modifier_teleporting") !== -1) {
 			var abil
-			StunAbils.some(abilAr => {
+			StunAbils.every(abilAr => {
 				var abilName = abilAr[0]
 				var abilToUse = abilAr[1]
 				if(!abilToUse)
-					return false
+					return true
 				
 				var abilL = Game.GetAbilityByName(MyEnt, abilName)
 				if(abilL === undefined)
-					return false
+					return true
 				var abilrange = Abilities.GetCastRangeFix(abilL)
 				if (
 					Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
@@ -116,10 +115,10 @@ AntiInitiationF = () => {
 						abilrange !== 0
 					)
 				)
-					return false
+					return true
 				
 				abil = abilL
-				return true
+				return false
 			})
 			
 			if(abil !== undefined) {
@@ -135,10 +134,11 @@ AntiInitiationF = () => {
 					Game.CastTarget(MyEnt, abil, ent, false)
 				flags[ent] = true
 				$.Schedule(1, () => flags[ent] = false)
-				return true
+				return false
 			}
 		}
-		return false
+		
+		return true
 	})
 }
 
@@ -156,29 +156,27 @@ Disable = (MyEnt, ent, Abil) => {
 	if(AbilAr !== undefined && AbilAr[2])
 		return false
 	var abil
-	Abils.some(ar => {
-		return ar.some(abilAr => {
-			var abilName = abilAr[0]
-			var abilToUse = abilAr[1]
-			if(!abilToUse)
-				return false
-			
-			var abilL = Game.GetAbilityByName(MyEnt, abilName)
-			var abilrange = Abilities.GetCastRangeFix(abilL)
-			if (
-				abilL === undefined ||
-				Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
-				(
-					Entities.GetRangeToUnit(MyEnt, ent) > abilrange &&
-					abilrange !== 0
-				)
+	Abils.every(ar => !ar.some(abilAr => {
+		var abilName = abilAr[0]
+		var abilToUse = abilAr[1]
+		if(!abilToUse)
+			return false
+		
+		var abilL = Game.GetAbilityByName(MyEnt, abilName)
+		var abilrange = Abilities.GetCastRangeFix(abilL)
+		if (
+			abilL === undefined ||
+			Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
+			(
+				Entities.GetRangeToUnit(MyEnt, ent) > abilrange &&
+				abilrange !== 0
 			)
-				return false
-			
-			abil = abilL
-			return true
-		})
-	})
+		)
+			return false
+		
+		abil = abilL
+		return true
+	}))
 	if(abil === undefined)
 		return false
 	

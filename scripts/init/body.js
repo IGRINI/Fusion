@@ -5,6 +5,7 @@ Fusion = {
 	Particles: {},
 	Subscribes: {},
 	MyTick: 1 / 30,
+	debug: false,
 	debugLoad: false,
 	debugAnimations: true,
 	FusionServer: "http://localhost:4297",
