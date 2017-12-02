@@ -1,10 +1,8 @@
-﻿var damage = [225, 325, 425]
-
-ZeusAutoultF = () => {
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var Ulti = Entities.GetAbilityByName(MyEnt, "zuus_thundergods_wrath")
-	var UltiLvl = Abilities.GetLevel(Ulti)
-	var UltiDmg = damage[UltiLvl-1]
+﻿ZeusAutoultF = () => {
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
+		Ulti = Entities.GetAbilityByName(MyEnt, "zuus_thundergods_wrath"),
+		UltiLvl = Abilities.GetLevel(Ulti),
+		UltiDmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage", UltiLvl)
 	
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Ulti))
 		return

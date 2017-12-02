@@ -1,9 +1,3 @@
-var interval = 0.1,
-	damage = [0.6, 0.75, 0.9],
-	LenseBonusRange = 200,
-	rangeCast = 600,
-	StunDuration = 1.5;
-
 AutoUltNecrophosF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		Ulti = Entities.GetAbilityByName(MyEnt, "necrolyte_reapers_scythe"),
@@ -11,7 +5,7 @@ AutoUltNecrophosF = () => {
 		UltiLvl = Abilities.GetLevel(Ulti),
 		UltiDmg = Abilities.GetAbilityDamage(Ulti),
 		UltiManaCost = Abilities.GetManaCost(Ulti),
-		DamagePerMissHP = damage[UltiLvl-1];
+		DamagePerMissHP = Abilities.GetLevelSpecialValueFor(Ulti, "damage_per_health", UltiLvl);
 	
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
 		return
@@ -79,7 +73,7 @@ AutoUltNecrophosOnCheckBoxClick = () => {
 
 	f = () => {
 		$.Schedule (
-			interval,
+			Fusion.MyTick,
 			() => {
 				AutoUltNecrophosF()
 				if(AutoUltNecrophos.checked)

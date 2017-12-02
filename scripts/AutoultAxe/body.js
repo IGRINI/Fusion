@@ -1,14 +1,12 @@
-var damage = [250, 325, 400]
 AxeUltiF = () => {
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
+		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
+		UltiLvl = Abilities.GetLevel(Ulti),
+		kill_threshold = Abilities.GetLevelSpecialValueFor(Ulti, "kill_threshold", UltiLvl),
+		UltiCastRange = Abilities.GetCastRangeFix(Ulti) + 75
+	
+	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt) || UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Ulti))
 		return
-	var Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade")
-	var UltiLvl = Abilities.GetLevel(Ulti)
-	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Ulti))
-		return
-	var UltiDmg = damage[UltiLvl - 1]
-	var UltiCastRange = Abilities.GetCastRangeFix(Ulti) + 75
 	
 	Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
@@ -18,7 +16,8 @@ AxeUltiF = () => {
 		)
 		&& Entities.IsEnemy(ent)
 		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiCastRange
-		&& Entities.GetHealth(ent) <= UltiDmg
+		&& Entities.GetHealth(ent) < kill_threshold
+		&& !Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti) + Fusion.MyTick)
 	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
@@ -30,9 +29,6 @@ AxeUltiF = () => {
 		else
 			return -1
 	}).some(ent => {
-		if(Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti)))
-			return false
-		
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Ulti, ent, false)
 		return true
