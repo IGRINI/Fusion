@@ -1,0 +1,98 @@
+RubickBoltStealerOnInterval = () => {
+	BoltSteal()
+	
+	if(RubickBoltStealer.checked)
+		$.Schedule(Fusion.MyTick, RubickBoltStealerOnInterval)
+}
+
+var flag = false
+BoltSteal = () => {
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+	if(flag || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+		return
+	
+	var Bolt = Entities.GetAbilityByName(MyEnt, "rubick_fade_bolt")
+	if(Bolt === -1 || Abilities.GetLevel(Bolt) === 0)
+		return
+	
+	var BoltDamage = Abilities.GetLevelSpecialValueFor(Bolt, "damage", Abilities.GetLevel(Bolt))
+	var BoltRefractionRange = Abilities.GetSpecialValueFor(Bolt, "radius")
+	
+	var BoltRange = Abilities.GetCastRangeFix(Bolt)
+	var BoltCastPoint = Abilities.GetCastPoint(Bolt)
+	
+	if(Abilities.GetCooldownTimeRemaining(Bolt) !== 0)
+		return
+	
+	var ents = Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsEnemy(ent)
+		&& Entities.IsAlive(ent)
+		&& !Entities.IsMagicImmune(ent)
+		&& !Fusion.HasLinkenAtTime(ent, BoltCastPoint)
+		&& !Entities.IsBuilding(ent)
+		&& !Entities.IsInvulnerable(ent)
+	)
+	var targets = ents.filter(ent => Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) < BoltDamage)
+	var starts = ents.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) <= BoltRange)
+	/*var nearMap = Fusion.BuildNearMap(ents, BoltRange)
+
+	starts.some(ent => {
+		if(Entities.GetHealth(ent) < BoltDamage) {
+			CastBolt(MyEnt, Bolt, BoltCastPoint, ent)
+			return true
+		}
+		
+	})
+
+	targets.some(ent => {
+		if(Entities.GetRangeToUnit(MyEnt, ent) > BoltRange) {
+			// Generate paths to ent by near map
+			// FIXME: Not working.
+			var pairs
+			while((pairs = FindPairs(ent, nearMap)).length !== 0)
+				pairs.forEach(pair => {
+					if(Entities.GetRangeToUnit(MyEnt, pair) < Entities.GetRangeToUnit(MyEnt, ent))
+						ent = pair
+				})
+			
+			
+			if(Entities.GetRangeToUnit(MyEnt, ent) > BoltRange)
+				return false
+		}
+		
+		CastBolt(MyEnt, Bolt, BoltCastPoint, ent)
+		return true
+	})
+} else*/
+		potentialTargets
+			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < BoltRange)
+			.some(ent => {
+				CastBolt(MyEnt, Bolt, BoltCastPoint, ent)
+				return true
+			})
+}
+
+CastBolt = (MyEnt, Bolt, BoltCastPoint, ent) => {
+	GameUI.SelectUnit(MyEnt, false)
+	Game.CastTarget(MyEnt, Bolt, ent, false)
+	
+	flag = true
+	$.Schedule(BoltCastPoint, () => flag = false)
+}
+
+/**
+ * @argument el element that we'll find in 2D
+ * @argument ar 2D array to search in
+ * @returns pairs
+ */
+FindPairs = (el, ar) => ar.filter(ar2 => ar2.indexOf(el) > -1).map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
+
+RubickBoltStealerOnToggle = () => {
+	if (RubickBoltStealer.checked) {
+		RubickBoltStealerOnInterval()
+		Game.ScriptLogMsg("Script enabled: RubickBoltStealer", "#00ff00")
+	} else
+		Game.ScriptLogMsg("Script disabled: RubickBoltStealer", "#ff0000")
+}
+
+var RubickBoltStealer = Fusion.AddScript("RubickBoltStealer", RubickBoltStealerOnToggle)

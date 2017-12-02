@@ -38,41 +38,42 @@ LaserSteal = () => {
 	)
 	var targets = ents.filter(ent => Entities.GetHealth(ent) < LaserDamage)
 	var starts = ents.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) <= LaserRange)
-	if(Entities.HasScepter(MyEnt)) {
-		var nearMap = Fusion.BuildNearMap(ents, LaserRange)
+	/*var nearMap = Fusion.BuildNearMap(ents, LaserRange)
 
-		starts.some(ent => {
-			if(Entities.GetHealth(ent) < LaserDamage) {
+	starts.some(ent => {
+		if(Entities.GetHealth(ent) < LaserDamage) {
+			CastLaser(MyEnt, Laser, LaserCastPoint, ent)
+			return true
+		}
+		
+	})
+
+	targets.some(ent => {
+		if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange) {
+			// Generate paths to ent by near map
+			// FIXME: Not working.
+			var pairs
+			while((pairs = FindPairs(ent, nearMap)).length !== 0)
+				pairs.forEach(pair => {
+					if(Entities.GetRangeToUnit(MyEnt, pair) < Entities.GetRangeToUnit(MyEnt, ent))
+						ent = pair
+				})
+			
+			
+			if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange)
+				return false
+		}
+		
+		CastLaser(MyEnt, Laser, LaserCastPoint, ent)
+		return true
+	})
+} else*/
+		potentialTargets
+			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange)
+			.some(ent => {
 				CastLaser(MyEnt, Laser, LaserCastPoint, ent)
 				return true
-			}
-			
-		})
-
-		targets.some(ent => {
-			if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange) {
-				// Generate paths to ent by near map
-				/* FIXME: Not working.
-				var pairs
-				while((pairs = FindPairs(ent, nearMap)).length !== 0)
-					pairs.forEach(pair => {
-						if(Entities.GetRangeToUnit(MyEnt, pair) < Entities.GetRangeToUnit(MyEnt, ent))
-							ent = pair
-					})
-				*/
-				
-				if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange)
-					return false
-			}
-			
-			CastLaser(MyEnt, Laser, LaserCastPoint, ent)
-			return true
-		})
-	} else
-		potentialTargets.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange).some(ent => {
-			CastLaser(MyEnt, Laser, LaserCastPoint, ent)
-			return true
-		})
+			})
 }
 
 CastLaser = (MyEnt, Laser, LaserCastPoint, ent) => {
