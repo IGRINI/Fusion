@@ -6,13 +6,20 @@ Fusion.ForceStaffNames = [
 	"item_hurricane_pike",
 ]
 
+Fusion.DrawLineInGameWorld = (a, b) => {
+	var temp = Particles.CreateParticle("particles/ui_mouseactions/bounding_area_view_a.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN, 0)
+	Particles.SetParticleControl(temp, 0, a)
+	Particles.SetParticleControl(temp, 1, b)
+	return temp
+}
+
 Game.GetLocalPlayerID = () => -1
 
 Entities.IsMine = ent =>
 	[
 		"npc_dota_techies_remote_mine",
 		"npc_dota_techies_stasis_trap"
-	].some(name => Entities.GetUnitName(ent) === name)
+	].indexOf(Entities.GetUnitName(ent)) > -1
 
 Fusion.GetForceStaff = ent => {
 	var item
@@ -31,9 +38,9 @@ Fusion.BuildNearMap = (ents, maxRadius) => {
 Fusion.FindNearestEntity = (ent, ents, ignore) => {
 	ignore = ignore || []
 	var ret = ents.reduce((prev, cur) => {
-		if(prev === ent || ignore.some(ent2 => ent2 === prev))
+		if(prev === ent || ignore.indexOf(prev) > 0)
 			return cur
-		if(cur === ent || ignore.some(ent2 => ent2 === cur))
+		if(cur === ent || ignore.indexOf(cur) > 0)
 			return prev
 		
 		if(Entities.GetRangeToUnit(ent, cur) < Entities.GetRangeToUnit(ent, prev))

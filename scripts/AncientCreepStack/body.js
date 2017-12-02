@@ -1,94 +1,90 @@
 destroy()
 var uiw = Game.GetScreenWidth()
-var uih = Game.GetScreenHeight()
-var interval = 0
-var hpn = false
-var b = false
-var camp
-var z = 0
-var myid
-var ent
-var team
-var status
-var a = [
-	[
-		[-2625,-333,384],
-		[-2576,-457,384],
-		[-2517,-656,384],
-		[-2675,-812,384],
-		[-2826,-971,384],
-		[-2987,-1121,384],
-		[-3160,-1264,384],
-		[-3292,-1416,384],
-		[-3443,-1576,384],
-		[-3621,-1706,384],
-		[-3791,-1842,384],
-		[-3959,-1983,384],
-		[-4125,-2123,384]
+	uih = Game.GetScreenHeight(),
+	interval = 0, hpn = false, b = false, z = 0,
+	a = [
+		[
+			[-2625,-333,384],
+			[-2576,-457,384],
+			[-2517,-656,384],
+			[-2675,-812,384],
+			[-2826,-971,384],
+			[-2987,-1121,384],
+			[-3160,-1264,384],
+			[-3292,-1416,384],
+			[-3443,-1576,384],
+			[-3621,-1706,384],
+			[-3791,-1842,384],
+			[-3959,-1983,384],
+			[-4125,-2123,384]
+		],
+		[
+			[3104,-769,256],
+			[3033,-773,256],
+			[2812,-786,256],
+			[2602,-795,256],
+			[2389,-772,256],
+			[2207,-653,256],
+			[2125,-447,256],
+			[2085,-237,256],
+			[2087,-15,256],
+			[2152,187,256],
+			[2267,360,256],
+			[2322,575,256],
+			[2400,736,256]
+		]
 	],
-	[
-		[3104,-769,256],
-		[3033,-773,256],
-		[2812,-786,256],
-		[2602,-795,256],
-		[2389,-772,256],
-		[2207,-653,256],
-		[2125,-447,256],
-		[2085,-237,256],
-		[2087,-15,256],
-		[2152,187,256],
-		[2267,360,256],
-		[2322,575,256],
-		[2400,736,256]
-	]
-]
-var camps = [
-	[
-		[-2463,-160,384],
-		55,
-		-0.05
-		
+	camps = [
+		[
+			[-2463,-160,384],
+			55,
+			-0.05
+			
+		],
+		[
+			[3535,-786,256],
+			54.9,
+			0.1
+		]
 	],
-	[
-		[3535,-786,256],
-		54.9,
-		0.1
-	]
-]
-var ancients = {
-	npc_dota_neutral_black_drake:[250,279],
-	npc_dota_neutral_big_thunder_lizard:[223,393],
-	npc_dota_neutral_granite_golem:[230,393]
-}
-var spots = [
-	[-3307, 383, -2564, -413, 400],
-	[3456, -384, 4543, -1151, 300]
-]
+	ancients = {
+		"npc_dota_neutral_black_drake": [250,279],
+		"npc_dota_neutral_big_thunder_lizard": [223,393],
+		"npc_dota_neutral_granite_golem": [230,393]
+	},
+	spots = [
+		[-3307, 383, -2564, -413, 400],
+		[3456, -384, 4543, -1151, 300]
+	],
+	camp, myid, ent, team, status
+
 destroy = () => {
 	if(Fusion.Subscribes.AncientCreepStack !== undefined)
 		GameEvents.Unsubscribe(Fusion.Subscribes.AncientCreepStack)
-	try {
-		Fusion.Panels.AncientCreepStack.DeleteAsync(0)
-	} catch(e) {}
-	for(i in Fusion.Particles.AncientCreepStack)
-		try {
-			Particles.DestroyParticleEffect(Fusion.Particles.AncientCreepStack[i], true)
-		} catch(e) {}
+	Fusion.Panels.AncientCreepStack.DeleteAsync(0)
+	Fusion.Particles.AncientCreepStack.forEach(par => Particles.DestroyParticleEffect(par, true))
 	Fusion.Particles.AncientCreepStack = []
 }
 
 DrawBox = box => {
-	Fusion.Particles.AncientCreepStack.push(DrawLineInGameWorld( [ box[0], box[1], box[4] ], [ box[0], box[3], box[4] ]))
-	Fusion.Particles.AncientCreepStack.push(DrawLineInGameWorld( [ box[2], box[1], box[4] ], [ box[2], box[3], box[4] ]))
-	Fusion.Particles.AncientCreepStack.push(DrawLineInGameWorld( [ box[0], box[1], box[4] ], [ box[2], box[1], box[4] ]))
-	Fusion.Particles.AncientCreepStack.push(DrawLineInGameWorld( [ box[0], box[3], box[4] ], [ box[2], box[3], box[4] ]))
+	Fusion.Particles.AncientCreepStack.push(Fusion.DrawLineInGameWorld(
+		[box[0], box[1], box[4]],
+		[box[0], box[3], box[4]]
+	))
+	Fusion.Particles.AncientCreepStack.push(Fusion.DrawLineInGameWorld(
+		[box[2], box[1], box[4]],
+		[box[2], box[3], box[4]]
+	))
+	Fusion.Particles.AncientCreepStack.push(Fusion.DrawLineInGameWorld(
+		[box[0], box[1], box[4]],
+		[box[2], box[1], box[4]]
+	))
+	Fusion.Particles.AncientCreepStack.push(Fusion.DrawLineInGameWorld(
+		[box[0], box[3], box[4]],
+		[box[2], box[3], box[4]]
+	))
 }
-DrawLineInGameWorld = (a, b) => {
-		var temp = Particles.CreateParticle("particles/ui_mouseactions/bounding_area_view_a.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN, 0)
-		Particles.SetParticleControl(temp, 0, a)
-		Particles.SetParticleControl(temp, 1, b)
-		return temp
-}
+
 ComparePoints = (a,b,c) => {
 	if(Math.abs(a[0]-b[0])>c||Math.abs(a[1]-b[1])>c||Math.abs(a[2]-b[2])>c)
 		return false
