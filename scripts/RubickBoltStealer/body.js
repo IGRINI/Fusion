@@ -15,11 +15,10 @@ BoltSteal = () => {
 	if(Bolt === -1 || Abilities.GetLevel(Bolt) === 0)
 		return
 	
-	var BoltDamage = Abilities.GetLevelSpecialValueFor(Bolt, "damage", Abilities.GetLevel(Bolt))
-	var BoltRefractionRange = Abilities.GetSpecialValueFor(Bolt, "radius")
-	
-	var BoltRange = Abilities.GetCastRangeFix(Bolt)
-	var BoltCastPoint = Abilities.GetCastPoint(Bolt)
+	var BoltDamage = Abilities.GetLevelSpecialValueFor(Bolt, "damage", Abilities.GetLevel(Bolt)),
+		BoltRefractionRange = Abilities.GetSpecialValueFor(Bolt, "radius"),
+		BoltRange = Abilities.GetCastRangeFix(Bolt),
+		BoltCastPoint = Abilities.GetCastPoint(Bolt)
 	
 	if(Abilities.GetCooldownTimeRemaining(Bolt) !== 0)
 		return
@@ -64,7 +63,7 @@ BoltSteal = () => {
 		return true
 	})
 } else*/
-		potentialTargets
+		targets
 			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < BoltRange)
 			.every(ent => {
 				CastBolt(MyEnt, Bolt, BoltCastPoint, ent)

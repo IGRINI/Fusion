@@ -40,11 +40,11 @@ SAlertEvery = () => {
 		
 		buffs.forEach(buff => {
 			var modifier = targetModifiers[buff]
-			if(typeof modifier !== "undefined" && modifier !== [])
+			if(modifier !== undefined && modifier !== [])
 				AlertTarget(modifier, ent)
 			else {
 				var modifier = waitingPosModifiers[buff]
-				if(typeof modifier !== "undefined" && modifier !== [])
+				if(modifier !== undefined && modifier !== [])
 					; //AlertTarget(modifier, ent) // AlertPosition
 			}
 		})

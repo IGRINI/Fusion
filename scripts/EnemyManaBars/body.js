@@ -5,7 +5,7 @@
 
 DeleteAll = () => {
 	if(Fusion.Panels.EnemyManaBars)
-		Fusion.Panels.EnemyManaBars.entries().filter(ar => ar[1]).forEach(panel =>  panel.DeleteAsync(0))
+		Fusion.Panels.EnemyManaBars.entries().map(ar => ar[1]).forEach(panel =>  panel.DeleteAsync(0))
 	Fusion.Panels.EnemyManaBars = new Map()
 }
 
@@ -19,7 +19,7 @@ EMBEvery = () => {
 		)
 	)
 	
-	Fusion.Panels.EnemyManaBars.entries().filter(ar => ar[0]).filter(ent => HEnts.indexOf(ent) === -1).forEach(ent => Fusion.Panels.EnemyManaBars[ent].visible = false)
+	Fusion.Panels.EnemyManaBars.entries().map(ar => ar[0]).filter(ent => HEnts.indexOf(ent) === -1).forEach(ent => Fusion.Panels.EnemyManaBars.get(ent).visible = false)
 	
 	HEnts.forEach(ent => {
 		var xyz = Entities.GetAbsOrigin(ent),
@@ -55,7 +55,7 @@ EMBEvery = () => {
 
 DeleteAll()
 var EnemyManaBars = Fusion.AddScript("EnemyManaBars", () => {
-	if (!EnemyManaBars.checked) {
+	if (EnemyManaBars.checked) {
 		Fusion.GetConfig("EnemyManaBars", config => {
 			Fusion.GetXML("EnemyManaBars/manabar", xml => {
 				manabar_layout = xml

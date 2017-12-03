@@ -29,15 +29,15 @@ LaserSteal = () => {
 		return
 	
 	var ents = Entities.PlayersHeroEnts().filter(ent =>
-		Entities.IsEnemy(ent)
-		&& Entities.IsAlive(ent)
-		&& !Entities.IsMagicImmune(ent)
-		&& !Fusion.HasLinkenAtTime(ent, LaserCastPoint)
-		&& !Entities.IsBuilding(ent)
-		&& !Entities.IsInvulnerable(ent)
-	)
-	var targets = ents.filter(ent => Entities.GetHealth(ent) < LaserDamage)
-	var starts = ents.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) <= LaserRange)
+			Entities.IsEnemy(ent)
+			&& Entities.IsAlive(ent)
+			&& !Entities.IsMagicImmune(ent)
+			&& !Fusion.HasLinkenAtTime(ent, LaserCastPoint)
+			&& !Entities.IsBuilding(ent)
+			&& !Entities.IsInvulnerable(ent)
+		),
+		targets = ents.filter(ent => Entities.GetHealth(ent) < LaserDamage),
+		starts = ents.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) <= LaserRange)
 	/*var nearMap = Fusion.BuildNearMap(ents, LaserRange)
 
 	starts.some(ent => {
@@ -68,7 +68,7 @@ LaserSteal = () => {
 		return true
 	})
 } else*/
-		potentialTargets
+		targets
 			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange)
 			.every(ent => {
 				CastLaser(MyEnt, Laser, LaserCastPoint, ent)
