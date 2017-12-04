@@ -39,8 +39,8 @@ EMBEvery = () => {
 		}
 		if (!Fusion.Panels.EnemyManaBars.has(ent)) {
 			var panel = $.CreatePanel("Panel", MainHud, "EnemyManaBar")
-			Fusion.Panels.EnemyManaBars.set(ent, panel)
 			panel.BLoadLayoutFromString(manabar_layout, false, false)
+			Fusion.Panels.EnemyManaBars.set(ent, panel)
 		}
 		var manabar = Fusion.Panels.EnemyManaBars.get(ent)
 		manabar.visible = true
@@ -56,12 +56,9 @@ EMBEvery = () => {
 DeleteAll()
 var EnemyManaBars = Fusion.AddScript("EnemyManaBars", () => {
 	if (EnemyManaBars.checked) {
-		Fusion.GetConfig("EnemyManaBars", config => {
-			Fusion.GetXML("EnemyManaBars/manabar", xml => {
-				manabar_layout = xml
-				Fusion.Configs.EnemyManaBars = config
-				EMBEvery()
-			})
+		Fusion.GetXML("EnemyManaBars/manabar", xml => {
+			manabar_layout = xml
+			EMBEvery()
 		})
 		Game.ScriptLogMsg("Script enabled: EnemyManaBars", "#00ff00")
 	} else

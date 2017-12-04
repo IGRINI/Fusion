@@ -12,27 +12,25 @@ Fusion = {
 	SteamID: 0
 }
 
-Fusion.ReloadFusion = () => {
-	Fusion.LoadFusion(() => {
-		Fusion.ServerRequest("scriptlist", "", response => {
-			Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
-			JSON.parse(response).forEach(Fusion.LoadScript)
-		})
-	})
-}
+Fusion.ReloadFusion = () => Fusion.LoadFusion(() => Fusion.ServerRequest("scriptlist", "", response => {
+	Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
+	JSON.parse(response).forEach(Fusion.LoadScript)
+}))
 
-Fusion.LoadScript = scriptName => {
-	Fusion.ServerRequest("getscript", scriptName, response => {
+Fusion.LoadScript = scriptName => Fusion.ServerRequest (
+	"getscript", scriptName, response => {
 		eval(response)
 		$.Msg(`JScript ${scriptName} loaded`)
-	})
-}
+	}
+)
 
 Fusion.ServerRequest = (name, val, callback) => {
 	var args = {
-		type: "POST",
-		data: {},
-		complete: a => {
+		"type": "POST",
+		"data": {
+			"steamid": Fusion.SteamID // comment if you don"t wanted in logging your steamid
+		},
+		"complete": a => {
 			if (a.status === 200) {
 				if(a.responseText == null)
 					a.responseText = "\n"
@@ -42,14 +40,15 @@ Fusion.ServerRequest = (name, val, callback) => {
 					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(a)}.`
 				if(a.status - 400 <= 0 || a.status - 400 > 99) {
 					if(Fusion.debugLoad)
-						log += " Trying again."
+						$.Msg(log + " Trying again.")
 					Fusion.ServerRequest(name, val, callback)
-				}
+				} else
+					if(Fusion.debugLoad)
+						$.Msg(log)
 			}
 		}
 	}
-	args["data"][name] = val
-	args["data"]["steamid"] = Fusion.SteamID // comment if you don"t wanted in logging your steamid
+	args.data[name] = val
 	
 	$.AsyncWebRequest(Fusion.FusionServer, args)
 }
@@ -57,22 +56,16 @@ Fusion.ServerRequest = (name, val, callback) => {
 Fusion.GetXML = (file, callback) => Fusion.ServerRequest("getxml", file, callback)
 
 Fusion.GetConfig = (scriptName, callback) => Fusion.ServerRequest (
-	"getconfig",
-	scriptName,
-	json => callback(JSON.parse(json)[0])
+	"getconfig", scriptName, json => callback(JSON.parse(json)[0])
 )
 
 Fusion.SaveConfig = (scriptName, config) => Fusion.ServerRequest (
 	"writeconfig",
-	JSON.stringify (
-		{
-			"filepath": scriptName,
-			"json": JSON.stringify(config)
-		}
-	),
-	response => {
-		
-	}
+	JSON.stringify({
+		"filepath": scriptName,
+		"json": JSON.stringify(config)
+	}),
+	response => {}
 )
 
 Fusion.StatsEnabled = true
