@@ -1,5 +1,6 @@
 # The project is being reprocessed under a new platform
 # Now it's just pseudocode. If you wanna use it - you might use [older version](https://github.com/Fusion-DotA2/Legacy-Fusion-Scripts)
+## [TODO](https://github.com/Fusion-DotA2/Fusion/blob/master/TODO.md)
 ## Contact me
   Skype: moofMonkey
   
