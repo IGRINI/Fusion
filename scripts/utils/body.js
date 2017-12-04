@@ -252,15 +252,13 @@ Game.AngleBetweenTwoFaces = (a_facing, b_facing) => Math.acos((a_facing[0] * b_f
 
 Game.RotationTime = (angle, rotspeed) => Fusion.MyTick * angle / rotspeed // angle is npc_heroes MovementTurnRate
 
-Game.GetEntitiesInRange = (pos, range, onlyEnemies) => {
-	return Entities.PlayersHeroEnts().filter(ent =>
-		onlyEnemies || Entities.IsEnemy(ent)
-			&& Entities.IsAlive(ent)
-			&& !Entities.IsBuilding(ent)
-			&& !Entities.IsInvulnerable(ent)
-			&& Game.PointDistance(pos, Entities.GetAbsOrigin(ent)) < range
-	)
-}
+Game.GetEntitiesInRange = (pos, range, onlyEnemies) => Entities.PlayersHeroEnts().filter(ent =>
+	(onlyEnemies || Entities.IsEnemy(ent))
+	&& Entities.IsAlive(ent)
+	&& !Entities.IsBuilding(ent)
+	&& !Entities.IsInvulnerable(ent)
+	&& Game.PointDistance(pos, Entities.GetAbsOrigin(ent)) < range
+)
 
 Entities.NearestToMouse = (MyEnt, range, onlyEnemies) => {
 	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), range, onlyEnemies).sort((ent1, ent2) => {
@@ -289,20 +287,12 @@ Game.GetAbilityByName = (ent, name) => {
 	}
 }
 
-Game.GetSpeed = ent => {
-	if(Entities.IsMoving(ent)) {
-		var a = Entities.GetBaseMoveSpeed(ent)
-		var b = Entities.GetMoveSpeedModifier(ent,a)
-		return b
-	} else
-		return 0
-}
+Game.GetSpeed = ent => Entities.IsMoving(ent) ? Entities.GetMoveSpeedModifier(ent, Entities.GetBaseMoveSpeed(ent)) : 0
 
 Game.VelocityWaypoint = (ent, time, movespeed) => {
 	var zxc = Entities.GetAbsOrigin(ent)
 	var forward = Entities.GetForward(ent)
-	if(movespeed === undefined)
-		var movespeed = Game.GetSpeed(ent)
+	movespeed = movespeed || Game.GetSpeed(ent)
 
 	return [zxc[0] + (forward[0] * movespeed * time),zxc[1] + (forward[1] * movespeed * time),zxc[2]]
 }
@@ -502,14 +492,12 @@ Game.IsIllusion = ent => Entities.PlayersHeroEnts().indexOf(ent) === -1
 Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(Players.GetPlayerHeroEntityIndex(playerID))
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
-Fusion.Behaviors = behavior => {
-	return behavior.toString(2).split("").reverse().map((val, i) => {
-		if(i === "1")
-			return Math.pow(2, i + 1)
-		else
-			return undefined
-	}).filter(val => val !== undefined)
-}
+Fusion.Behaviors = behavior => behavior.toString(2).split("").reverse().map((val, i) => {
+	if(val === "1")
+		return Math.pow(2, i + 1)
+	else
+		return 0
+})
 
 //объект с указателями на бафы юнита
 Game.GetBuffs = ent => {

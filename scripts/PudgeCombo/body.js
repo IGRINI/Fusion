@@ -47,9 +47,7 @@ Urn = (MyEnt, ent) => {
 		Game.CastTarget(MyEnt, urn, ent, false)
 }
 
-Dismember = (MyEnt, ent) => {
-	Game.CastTarget(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_dismember"), ent, false)
-}
+Dismember = (MyEnt, ent) => Game.CastTarget(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_dismember"), ent, false)
 
 if(!Fusion.Commands.PudgeCombo) {
 	Fusion.Commands.PudgeCombo = () => {
