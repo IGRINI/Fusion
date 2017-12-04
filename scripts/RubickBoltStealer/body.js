@@ -86,12 +86,10 @@ CastBolt = (MyEnt, Bolt, BoltCastPoint, ent) => {
  */
 FindPairs = (el, ar) => ar.filter(ar2 => ar2.indexOf(el) > -1).map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
 
-RubickBoltStealerOnToggle = () => {
+var RubickBoltStealer = Fusion.AddScript("RubickBoltStealer", () => {
 	if (RubickBoltStealer.checked) {
 		RubickBoltStealerOnInterval()
 		Game.ScriptLogMsg("Script enabled: RubickBoltStealer", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: RubickBoltStealer", "#ff0000")
-}
-
-var RubickBoltStealer = Fusion.AddScript("RubickBoltStealer", RubickBoltStealerOnToggle)
+})

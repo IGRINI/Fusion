@@ -1,5 +1,13 @@
 ﻿var SunStrikeDamage = [ 100, 162, 225, 287, 350, 412, 475, 537 ]
+
 EzSunstrikeOnInterval = () => {
+	EzSunstrikeF()
+
+	if(EzSunstrike.checked)
+		$.Schedule(Fusion.MyTick, EzSunstrikeOnInterval)
+}
+
+EzSunstrikeF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		SunStrike = Game.GetAbilityByName(MyEnt, "invoker_sun_strike"),
 		SunStrikeDamageCur = SunStrikeDamage[Abilities.GetLevel(Game.GetAbilityByName(MyEnt, "invoker_exort")) - 2 + (Entities.HasScepter(MyEnt) ? 1 : 0)],
@@ -52,17 +60,7 @@ EzSunstrikeOnInterval = () => {
 
 var EzSunstrike = Fusion.AddScript("EzSunstrike", () => {
 	if (EzSunstrike.checked) {
-		intervalFunc = () => {
-			$.Schedule(
-				Fusion.MyTick,
-				function() {
-					EzSunstrikeOnInterval()
-					if(EzSunstrike.checked)
-						intervalFunc()
-				}
-			)
-		}
-		intervalFunc()
+		EzSunstrikeOnInterval()
 		Game.ScriptLogMsg("Script enabled: EzSunstrike", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: EzSunstrike", "#ff0000")

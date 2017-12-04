@@ -201,7 +201,7 @@ move = (ent, toSelect, vec) => {
 	GameUI.SelectUnit(toSelect,false)
 }
 
-AncientCreepStackOnCheckBoxClick = () => {
+var AncientCreepStack = Fusion.AddScript("AncientCreepStack", () => {
 	if ( !AncientCreepStack.checked ){
 		destroy()
 		Game.ScriptLogMsg("Script disabled: AncientCreepStack", "#ff0000")
@@ -224,9 +224,7 @@ AncientCreepStackOnCheckBoxClick = () => {
 		}
 	)}
 	u()
-}
-
-var AncientCreepStack = Fusion.AddScript("AncientCreepStack", AncientCreepStackOnCheckBoxClick)
+})
 if(!Fusion.Commands.AncientCreepStack) {
 	Fusion.Commands.AncientCreepStack = () => {
 		myid = Players.GetLocalPlayer()

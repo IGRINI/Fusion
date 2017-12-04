@@ -91,12 +91,10 @@ CastLaser = (MyEnt, Laser, LaserCastPoint, ent) => {
  */
 FindPairs = (el, ar) => ar.filter(ar2 => ar2.indexOf(el) > -1).map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
 
-TinkerLaserStealerOnToggle = () => {
+var TinkerLaserStealer = Fusion.AddScript("TinkerLaserStealer", () => {
 	if (TinkerLaserStealer.checked) {
 		TinkerLaserStealerOnInterval()
 		Game.ScriptLogMsg("Script enabled: TinkerLaserStealer", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: TinkerLaserStealer", "#ff0000")
-}
-
-var TinkerLaserStealer = Fusion.AddScript("TinkerLaserStealer", TinkerLaserStealerOnToggle)
+})

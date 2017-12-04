@@ -1,4 +1,11 @@
-SniperAssassinateFunc = () => {
+SniperAssassinateOnInterval = () => {
+	SniperAssassinateF()
+
+	if(SniperAssassinate.checked)
+		$.Schedule(Fusion.MyTick, SniperAssassinateOnInterval)
+}
+
+SniperAssassinateF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	
 	var Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate")
@@ -46,30 +53,10 @@ SniperAssassinateFunc = () => {
 	})
 }
 
-SniperAssassinateOnCheckBoxClick = () => {
-	if (!SniperAssassinate.checked) {
-		Fusion.Panels.SniperAssassinate.DeleteAsync(0)
+var SniperAssassinate = Fusion.AddScript("SniperAssassinate", () => {
+	if (SniperAssassinate.checked) {
+		SniperAssassinateOnInterval()
+		Game.ScriptLogMsg("Script enabled: SniperAssassinate", "#00ff00")
+	} else
 		Game.ScriptLogMsg("Script disabled: SniperAssassinate", "#ff0000")
-		return
-	}
-	if(Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) !== "npc_dota_hero_sniper") {
-		SniperAssassinate.checked = false
-		Game.ScriptLogMsg("SniperAssassinate: Not Sniper", "#ff0000")
-		return
-	}
-
-	f = () => {
-		$.Schedule (
-			Fusion.MyTick,
-			() => {
-				SniperAssassinateFunc()
-				if(SniperAssassinate.checked)
-					f()
-			}
-		)
-	}
-	f()
-	Game.ScriptLogMsg("Script enabled: SniperAssassinate", "#00ff00")
-}
-
-var SniperAssassinate = Fusion.AddScript("SniperAssassinate", SniperAssassinateOnCheckBoxClick)
+})

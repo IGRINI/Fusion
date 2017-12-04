@@ -46,12 +46,10 @@ AFK = (MyEnt, HEnts) => {
 		Game.MoveToTarget(MyEnt, lastMin, false)
 }
 
-AntiAFKOnToggle = () => {
+var AntiAFK = Fusion.AddScript("AntiAFK", () => {
 	if (AntiAFK.checked) {
 		AntiAFKF()
 		Game.ScriptLogMsg("Script enabled: AntiAFK", "#00ff00")
 	} else 
 		Game.ScriptLogMsg("Script disabled: AntiAFK", "#ff0000")
-}
-
-var AntiAFK = Fusion.AddScript("AntiAFK", AntiAFKOnToggle)
+})

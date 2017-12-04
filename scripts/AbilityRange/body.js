@@ -89,7 +89,8 @@ chkboxpressed = () => {
 	}
 }
 
-AbilityRangeOnToggle = () => {
+Destroy()
+var AbilityRange = Fusion.AddScript("AbilityRange", () => {
 	if (AbilityRange.checked) {
 		var MyID = Game.GetLocalPlayerID()
 		if ( MyID==-1 ){
@@ -165,7 +166,4 @@ AbilityRangeOnToggle = () => {
 		Destroy()
 		Game.ScriptLogMsg("Script disabled: AbilityRange", "#ff0000")
 	}
-}
-
-Destroy()
-var AbilityRange = Fusion.AddScript("AbilityRange", AbilityRangeOnToggle)
+})

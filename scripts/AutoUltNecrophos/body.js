@@ -1,3 +1,10 @@
+AutoUltNecrophosOnInterval = () => {
+	AutoUltNecrophosF()
+
+	if(AutoUltNecrophos.checked)
+		$.Schedule(Fusion.MyTick, AutoUltNecrophosOnInterval)
+}
+
 AutoUltNecrophosF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		Ulti = Entities.GetAbilityByName(MyEnt, "necrolyte_reapers_scythe"),
@@ -57,30 +64,10 @@ AutoUltNecrophosF = () => {
 	})
 }
 
-AutoUltNecrophosOnCheckBoxClick = () => {
-	if (!AutoUltNecrophos.checked) {
-		Fusion.Panels.AutoUltNecrophos.DeleteAsync(0)
+var AutoUltNecrophos = Fusion.AddScript("AutoUltNecrophos", () => {
+	if (AutoUltNecrophos.checked) {
+		AutoUltNecrophosOnInterval()
+		Game.ScriptLogMsg("Script enabled: AutoUltNecrophos", "#00ff00")
+	} else
 		Game.ScriptLogMsg("Script disabled: AutoUltNecrophos", "#ff0000")
-		return
-	}
-	if (Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) !== "npc_dota_hero_necrolyte") {
-		AutoUltNecrophos.checked = false
-		Game.ScriptLogMsg("AutoUltNecrophos: Not Nercophos", "#ff0000")
-		return
-	}
-
-	f = () => {
-		$.Schedule (
-			Fusion.MyTick,
-			() => {
-				AutoUltNecrophosF()
-				if(AutoUltNecrophos.checked)
-					f()
-			}
-		)
-	}
-	f()
-	Game.ScriptLogMsg("Script enabled: AutoUltNecrophos", "#00ff00")
-}
-
-var AutoUltNecrophos = Fusion.AddScript("AutoUltNecrophos", AutoUltNecrophosOnCheckBoxClick)
+})

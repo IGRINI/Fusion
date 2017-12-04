@@ -82,12 +82,10 @@ CastSpark = (MyEnt, Spark, SparkCastPoint, ent) => {
  */
 FindPairs = (el, ar) => ar.filter(ar2 => ar2.indexOf(el) > -1).map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
 
-FurionSparkStealerOnToggle = () => {
+var FurionSparkStealer = Fusion.AddScript("FurionSparkStealer", () => {
 	if (FurionSparkStealer.checked) {
 		FurionSparkStealerOnInterval()
 		Game.ScriptLogMsg("Script enabled: FurionSparkStealer", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: FurionSparkStealer", "#ff0000")
-}
-
-var FurionSparkStealer = Fusion.AddScript("FurionSparkStealer", FurionSparkStealerOnToggle)
+})

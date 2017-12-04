@@ -15,12 +15,10 @@ AutoBottleF = () => {
 		Game.CastNoTarget(MyEnt, Bottle, false)
 }
 
-AutoBottleOnToggle = () => {
+var AutoBottle = Fusion.AddScript("AutoBottle", () => {
 	if (AutoBottle.checked) {
 		AutoBottleOnInterval()
 		Game.ScriptLogMsg("Script enabled: AutoBottle", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: AutoBottle", "#ff0000")
-}
-
-var AutoBottle = Fusion.AddScript("AutoBottle", AutoBottleOnToggle)
+})

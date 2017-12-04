@@ -51,7 +51,7 @@ AntiLeapF = () => {
 	})
 }
 
-AntiLeapToggle = () => {
+var AntiLeap = Fusion.AddScript("AntiLeap", () => {
 	if (AntiLeap.checked) {
 		L = () => {
 			if (AntiLeap.checked) {
@@ -63,6 +63,4 @@ AntiLeapToggle = () => {
 		Game.ScriptLogMsg("Script enabled: AntiLeap", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: AntiLeap", "#ff0000")
-}
-
-var AntiLeap = Fusion.AddScript("AntiLeap", AntiLeapToggle)
+})

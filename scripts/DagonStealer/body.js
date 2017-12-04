@@ -1,13 +1,13 @@
-﻿function DagonStealerOnInterval() {
+﻿DagonStealerOnInterval = () => {
 	DagonSteal()
 	
 	if(DagonStealer.checked)
 		$.Schedule(Fusion.MyTick, DagonStealerOnInterval)
 }
 
-function DagonSteal() {
+DagonSteal = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt) || Abilities.GetLocalPlayerActiveAbility() !== -1)
 		return
 	
 	var Dagon = Fusion.GetDagon(MyEnt)
@@ -38,12 +38,10 @@ function DagonSteal() {
 		})
 }
 
-function DagonStealerOnToggle() {
+var DagonStealer = Fusion.AddScript("DagonStealer", () => {
 	if (DagonStealer.checked) {
 		DagonStealerOnInterval()
 		Game.ScriptLogMsg("Script enabled: DagonStealer", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: DagonStealer", "#ff0000")
-}
-
-var DagonStealer = Fusion.AddScript("DagonStealer", DagonStealerOnToggle)
+})

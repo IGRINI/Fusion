@@ -46,19 +46,18 @@ AutoSaveF = () => {
 	}))
 }
 
-AutoSaveToggle = () => {
+/*var AutoSave = Fusion.AddScript("AutoSave", () => {
 	if (!AutoSave.checked)
-		Game.ScriptLogMsg("Script disabled: AutoSave", "#ff0000")
-	else {
-		L = () => {
-			if (AutoSave.checked) {
-				AutoSaveF()
-				$.Schedule(Fusion.MyTick, L)
-			}
+	Game.ScriptLogMsg("Script disabled: AutoSave", "#ff0000")
+else {
+	L = () => {
+		if (AutoSave.checked) {
+			AutoSaveF()
+			$.Schedule(Fusion.MyTick, L)
 		}
-		L()
-		Game.ScriptLogMsg("Script enabled: AutoSave", "#00ff00")
 	}
+	L()
+	Game.ScriptLogMsg("Script enabled: AutoSave", "#00ff00")
 }
-
-//var AutoSave = Fusion.AddScript("AutoSave", AutoSaveToggle)
+})
+*/

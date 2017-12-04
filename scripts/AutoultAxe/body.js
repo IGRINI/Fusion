@@ -1,3 +1,10 @@
+AxeUltiOnCheckOnInterval = () => {
+	AxeUltiF()
+
+	if(AxeUlti.checked)
+		$.Schedule(Fusion.MyTick, AxeUltiOnCheckOnInterval)
+}
+
 AxeUltiF = () => {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
@@ -35,27 +42,10 @@ AxeUltiF = () => {
 	})
 }
 
-AxeUltiOnCheckBoxClick = () => {
-	if (!AxeUlti.checked) {
+var AxeUlti = Fusion.AddScript("AutoultAxe", () => {
+	if (AxeUlti.checked) {
+		AxeUltiOnCheckOnInterval()
+		Game.ScriptLogMsg("Script enabled: AxeUlti", "#00ff00")
+	} else
 		Game.ScriptLogMsg("Script disabled: AxeUlti", "#ff0000")
-		return
-	} else {
-		if (Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) != "npc_dota_hero_axe") {
-			AxeUlti.checked = false
-			AxeUltiOnCheckBoxClick()
-			return
-		} else {
-			f = () => {
-				if(AxeUlti.checked)
-					$.Schedule(Fusion.MyTick, () => {
-						AxeUltiF()
-						f()
-					})
-			}
-			f()
-			Game.ScriptLogMsg("Script enabled: AxeUlti", "#00ff00")
-		}
-	}
-}
-
-var AxeUlti = Fusion.AddScript("AutoultAxe", AxeUltiOnCheckBoxClick)
+})

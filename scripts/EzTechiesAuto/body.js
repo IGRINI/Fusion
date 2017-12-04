@@ -135,17 +135,10 @@ EzTechiesF = () => {
 		$.Schedule(Fusion.MyTick, EzTechiesF)
 }
 
-EzTechiesCheckBoxClick = () => {
+var EzTechies = Fusion.AddScript("EzTechiesAuto", () => {
 	if (EzTechies.checked) {
-		if (Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) != "npc_dota_hero_techies") {
-			EzTechies.checked = false
-			Game.ScriptLogMsg("Error: Your hero must be Techies to run this script", "#ff0000")
-			return
-		}
 		EzTechiesF()
 		Game.ScriptLogMsg("Script enabled: EzTechies", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: EzTechies", "#ff0000")
-}
-
-var EzTechies = Fusion.AddScript("EzTechiesAuto", EzTechiesCheckBoxClick)
+})

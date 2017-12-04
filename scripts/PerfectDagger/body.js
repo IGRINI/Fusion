@@ -1,17 +1,18 @@
 ﻿Fusion.BlinkDistance = 1200
 GameUI.SetMouseCallback((eventName, arg) => {
 	var ab = Abilities.GetLocalPlayerActiveAbility()
-	var abn = Abilities.GetAbilityName(ab)
-	if (GameUI.GetClickBehaviors() !== 3 || abn !== "item_blink")
+	if (GameUI.GetClickBehaviors() !== 3 || Abilities.GetAbilityName(ab) !== "item_blink")
 		return false
-	if (eventName == "pressed") {
+	if (eventName == "pressed")
 		if (arg === 0) {
-			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-			var entVec = Entities.GetAbsOrigin(MyEnt)
-			var entForward = Entities.GetForward(ent)
-			var cursorVec = GameUI.GetScreenWorldPosition(GameUI.GetCursorPosition())
+			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
+				entVec = Entities.GetAbsOrigin(MyEnt),
+				entForward = Entities.GetForward(ent),
+				cursorVec = GameUI.GetScreenWorldPosition(GameUI.GetCursorPosition())
+
 			if(Game.PointDistance(entVec, cursorVec) <= Fusion.BlinkDistance)
 				return false
+
 			Game.CastPosition (
 				MyEnt,
 				ab,
@@ -24,6 +25,5 @@ GameUI.SetMouseCallback((eventName, arg) => {
 			)
 			return true
 		}
-	}
 	return false
 })

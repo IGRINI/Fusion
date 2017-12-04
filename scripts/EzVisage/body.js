@@ -66,16 +66,16 @@ Souls = MyEnt => {
 	})
 }
 
+EzVisageOnInterval = () => {
+	EzVisageF()
+
+	if(EzVisage.checked)
+		$.Schedule(Fusion.MyTick, EzVisageOnInterval)
+}
+
 var EzVisage = Fusion.AddScript("EzVisage", () => {
 	if (EzVisage.checked) {
-		function f() {
-			if(EzVisage.checked)
-				$.Schedule(Fusion.MyTick, function() {
-					EzVisageF()
-					f()
-				})
-		}
-		f()
+		EzVisageOnInterval()
 		Game.ScriptLogMsg("Script enabled: EzVisage", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: EzVisage", "#ff0000")

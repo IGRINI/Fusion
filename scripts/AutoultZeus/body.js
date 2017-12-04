@@ -1,4 +1,12 @@
 ﻿var flag = false
+
+ZeusAutoultOnInterval = () => {
+	ZeusAutoultF()
+
+	if(ZeusAutoult.checked)
+		$.Schedule(Fusion.MyTick, ZeusAutoultOnInterval)
+}
+
 ZeusAutoultF = () => {
 	if(flag)
 		return
@@ -28,27 +36,10 @@ ZeusAutoultF = () => {
 		})
 }
 
-ZeusAutoultOnCheckBoxClick = () => {
+var ZeusAutoult = Fusion.AddScript("AutoultZeus", () => {
 	if (ZeusAutoult.checked) {
-		if (Players.GetPlayerSelectedHero(Game.GetLocalPlayerID()) != "npc_dota_hero_zuus"){
-			ZeusAutoult.checked = false
-			Game.ScriptLogMsg("ZeusAutoult: Not Zeus", "#ff0000")
-			return
-		}
-		f = () => {
-			$.Schedule (
-				Fusion.MyTick,
-				() => {
-					ZeusAutoultF()
-					if(ZeusAutoult.checked)
-						f()
-				}
-			)
-		}
-		f()
+		ZeusAutoultOnInterval()
 		Game.ScriptLogMsg("Script enabled: ZeusAutoult", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: ZeusAutoult", "#ff0000")
-}
-
-var ZeusAutoult = Fusion.AddScript("AutoultZeus", ZeusAutoultOnCheckBoxClick)
+})

@@ -1,8 +1,4 @@
-﻿var BSName = "item_bloodstone"
-var AegisName = "item_aegis"
-var RotDamage = [30, 60, 90, 120]
-
-PudgeInvisRotOnInterval = () => {
+﻿PudgeInvisRotOnInterval = () => {
 	PudgeInvisRotF()
 
 	if(PudgeInvisRot.checked)

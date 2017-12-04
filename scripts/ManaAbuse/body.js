@@ -1,5 +1,4 @@
 var AbuseManaItems = [
-	"item_arcane_boots",
 	"item_guardian_greaves",
 	"item_soul_ring",
 	"item_bottle",

@@ -51,12 +51,10 @@ GetDewardItem = MyEnt => {
 	return result
 }
 
-AutoDewardOnToggle = () => {
+var AutoDeward = Fusion.AddScript("AutoDeward", () => {
 	if (AutoDeward.checked) {
 		AutoDewardF()
 		Game.ScriptLogMsg("Script enabled: AutoDeward", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: AutoDeward", "#ff0000")
-}
-
-var AutoDeward = Fusion.AddScript("AutoDeward", AutoDewardOnToggle)
+})

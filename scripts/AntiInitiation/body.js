@@ -195,8 +195,7 @@ Disable = (MyEnt, ent, Abil) => {
 	return true
 }
 
-
-AntiInitiationToggle = () => {
+var AntiInitiation = Fusion.AddScript("AntiInitiation", () => {
 	if (!AntiInitiation.checked){
 		Game.ScriptLogMsg("Script disabled: AntiInitiation", "#ff0000")
 		return
@@ -214,6 +213,4 @@ AntiInitiationToggle = () => {
 		f()
 		Game.ScriptLogMsg("Script enabled: AntiInitiation", "#00ff00")
 	}
-}
-
-var AntiInitiation = Fusion.AddScript("AntiInitiation", AntiInitiationToggle)
+})

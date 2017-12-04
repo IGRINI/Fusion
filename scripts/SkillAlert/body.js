@@ -128,7 +128,7 @@ CreateTimerParticle = (vec, time, ent) => {
 	)
 }
 
-SkillAlertToggle = () => {
+var SkillAlert = Fusion.AddScript("SkillAlert", () => {
 	if (SkillAlert.checked) {
 		Fusion.GetConfig("SkillAlert", config => {
 			Fusion.Configs.SkillAlert = config
@@ -137,6 +137,4 @@ SkillAlertToggle = () => {
 		Game.ScriptLogMsg("Script enabled: SkillAlert", "#00ff00")
 	} else
 		Game.ScriptLogMsg("Script disabled: SkillAlert", "#ff0000")
-}
-
-var SkillAlert = Fusion.AddScript("SkillAlert", SkillAlertToggle)
+})

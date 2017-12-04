@@ -74,8 +74,6 @@ SnatcherF = () => {
 		$.Schedule(Fusion.MyTick, SnatcherF)
 }
 
-function SnatcherToggle
-
 var Snatcher = Fusion.AddScript("Snatcher", () => {
 	if(Snatcher.checked) {
 		CreateParticle()

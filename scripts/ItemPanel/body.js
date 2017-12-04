@@ -78,7 +78,7 @@ ItemPanelLoad = () => {
 	})
 }
 
-ItemPanelLoadOnOff = () => {
+var ItemPanel = Fusion.AddScript("ItemPanel", () => {
 	if (ItemPanel.checked) {
 		ItemPanelLoad()
 		Game.ScriptLogMsg("Script enabled: ItemPanel", "#00ff00")
@@ -88,6 +88,4 @@ ItemPanelLoadOnOff = () => {
 			Fusion.Panels.ItemPanel.DeleteAsync(0)
 		Game.ScriptLogMsg("Script disabled: ItemPanel", "#ff0000")
 	}
-}
-
-var ItemPanel = Fusion.AddScript("ItemPanel", ItemPanelLoadOnOff)
+})
