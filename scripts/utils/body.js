@@ -6,6 +6,26 @@ Fusion.ForceStaffNames = [
 	"item_hurricane_pike",
 ]
 
+Game.GetHideItem = ent => {
+	var ret = undefined
+	[
+		"item_shadow_amulet", // shadow amulet
+		"item_glimmer_cape",  // glimmer cape
+		"item_silver_edge",   // shadow blade
+		"item_invis_sword"    // silver edge
+	].every(itemName => {
+		var item = Game.GetAbilityByName(ent, itemName)
+		if(item !== undefined) {
+			ret = item
+			return false
+		}
+
+		return true
+	})
+
+	return ret
+}
+
 Fusion.DrawLineInGameWorld = (a, b) => {
 	var temp = Particles.CreateParticle("particles/ui_mouseactions/bounding_area_view_a.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN, 0)
 	Particles.SetParticleControl(temp, 0, a)

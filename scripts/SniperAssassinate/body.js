@@ -6,15 +6,14 @@ SniperAssassinateOnInterval = () => {
 }
 
 SniperAssassinateF = () => {
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	
-	var Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate")
-	var Glimmer = Game.GetAbilityByName(MyEnt, "item_glimmer_cape")
-	var UltiRange = Abilities.GetCastRangeFix(Ulti)
-	var UltiLvl = Abilities.GetLevel(Ulti)
-	var UltiCd = Abilities.GetCooldownTimeRemaining(Ulti)
-	var UltiDmg = Abilities.GetAbilityDamage(Ulti)
-	var UltiManaCost = Abilities.GetManaCost(Ulti)
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
+		Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate"),
+		HideItem = Game.GetHideItem(MyEnt),
+		UltiRange = Abilities.GetCastRangeFix(Ulti),
+		UltiLvl = Abilities.GetLevel(Ulti),
+		UltiCd = Abilities.GetCooldownTimeRemaining(Ulti),
+		UltiDmg = Abilities.GetAbilityDamage(Ulti),
+		UltiManaCost = Abilities.GetManaCost(Ulti)
 
 	if(UltiLvl === 0 || UltiCd > 0 || UltiManaCost > Entities.GetMana(MyEnt) || Abilities.IsInAbilityPhase(Ulti))
 		return
@@ -28,6 +27,8 @@ SniperAssassinateF = () => {
 		&& Entities.IsEnemy(ent)
 		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange
 		&& !Entities.IsMagicImmune(ent)
+		&& !Fusion.HasLinkenAtTime(ent, 2)
+		&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= UltiDmg
 	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
@@ -39,17 +40,11 @@ SniperAssassinateF = () => {
 		else
 			return -1
 	}).every(ent => {
-		if(Fusion.HasLinkenAtTime(ent, 2))
-			return true
-		
-		if(Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= UltiDmg) {
-			GameUI.SelectUnit(MyEnt, false)
-			if(Glimmer !== undefined)
-				Game.CastTarget(MyEnt, Glimmer, MyEnt, false)
-			Game.CastTarget(MyEnt, Ulti, ent, false)
-			return false
-		}
-		return true
+		GameUI.SelectUnit(MyEnt, false)
+		if(HideItem !== undefined)
+			Game.CastTarget(MyEnt, HideItem, MyEnt, false)
+		Game.CastTarget(MyEnt, Ulti, ent, false)
+		return false
 	})
 }
 
