@@ -51,7 +51,7 @@ AutoUltNecrophosF = () => {
 				var DagonDamage = Fusion.GetDagonDamage(Dagon)
 				if (
 					Abilities.GetCooldownTimeRemaining(Dagon) === 0 &&
-					NeededDmg <= (dmg + DagonDamage)
+					NeededDmg <= dmg + DagonDamage
 				) {
 					GameUI.SelectUnit(MyEnt, false)
 					Game.CastTarget(MyEnt, Dagon, ent, false)

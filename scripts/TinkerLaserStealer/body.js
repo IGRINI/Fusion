@@ -28,60 +28,48 @@ LaserSteal = () => {
 	if(Abilities.GetCooldownTimeRemaining(Laser) !== 0)
 		return
 	
-	var ents = Entities.PlayersHeroEnts().filter(ent =>
+	Entities.PlayersHeroEnts()
+		.filter(ent =>
 			Entities.IsEnemy(ent)
 			&& Entities.IsAlive(ent)
 			&& !Entities.IsMagicImmune(ent)
 			&& !Fusion.HasLinkenAtTime(ent, LaserCastPoint)
 			&& !Entities.IsBuilding(ent)
 			&& !Entities.IsInvulnerable(ent)
-		),
-		targets = ents.filter(ent => Entities.GetHealth(ent) < LaserDamage),
-		starts = ents.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) <= LaserRange)
-	/*var nearMap = Fusion.BuildNearMap(ents, LaserRange)
-
-	starts.some(ent => {
-		if(Entities.GetHealth(ent) < LaserDamage) {
-			CastLaser(MyEnt, Laser, LaserCastPoint, ent)
-			return true
-		}
-		
-	})
-
-	targets.some(ent => {
-		if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange) {
-			// Generate paths to ent by near map
-			// FIXME: Not working.
-			var pairs
-			while((pairs = FindPairs(ent, nearMap)).length !== 0)
-				pairs.forEach(pair => {
-					if(Entities.GetRangeToUnit(MyEnt, pair) < Entities.GetRangeToUnit(MyEnt, ent))
-						ent = pair
-				})
-			
-			
-			if(Entities.GetRangeToUnit(MyEnt, ent) > LaserRange)
-				return false
-		}
-		
-		CastLaser(MyEnt, Laser, LaserCastPoint, ent)
-		return true
-	})
-} else*/
-		targets
-			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange)
-			.every(ent => {
+		)
+		.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange)
+		.every(ent => {
+			if(Entities.GetHealth(ent) < LaserDamage) {
 				CastLaser(MyEnt, Laser, LaserCastPoint, ent)
 				return false
-			})
+			} else {
+				var Dagon = Fusion.GetDagon(MyEnt)
+				if(Dagon !== undefined) {
+					var DagonDamage = Fusion.GetDagonDamage(Dagon)
+					if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) <= LaserDamage + DagonDamage) {
+						CastDagon(MyEnt, Dagon, ent)
+						return false
+					}
+				}
+			}
+
+			return true
+		})
 }
 
 CastLaser = (MyEnt, Laser, LaserCastPoint, ent) => {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Laser, ent, false)
+	Game.EntStop(MyEnt, false)
 	
 	flag = true
 	$.Schedule(LaserCastPoint, () => flag = false)
+}
+
+CastDagon = (MyEnt, Dagon, ent) => {
+	GameUI.SelectUnit(MyEnt, false)
+	Game.CastTarget(MyEnt, Dagon, ent, false)
+	Game.EntStop(MyEnt, false)
 }
 
 /**
