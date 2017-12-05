@@ -51,7 +51,7 @@ AxeUltiF = () => {
 			var Dagon = Fusion.GetDagon(MyEnt)
 			if(Dagon !== undefined) {
 				var DagonDamage = Fusion.GetDagonDamage(Dagon)
-				if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) <= kill_threshold + DagonDamage) {
+				if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) - kill_threshold) < DagonDamage) {
 					CastDagon(MyEnt, Dagon, ent)
 					return false
 				}
@@ -65,7 +65,6 @@ AxeUltiF = () => {
 CastUlti = (MyEnt, Ulti, UltiCastPoint, ent) => {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Ulti, ent, false)
-	Game.EntStop(MyEnt, false)
 	
 	CastUltiFlag = true
 	$.Schedule(UltiCastPoint, () => CastUltiFlag = false)
@@ -74,7 +73,6 @@ CastUlti = (MyEnt, Ulti, UltiCastPoint, ent) => {
 CastDagon = (MyEnt, Dagon, ent) => {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Dagon, ent, false)
-	Game.EntStop(MyEnt, false)
 }
 
 var AxeUlti = Fusion.AddScript("AutoultAxe", () => {
