@@ -51,13 +51,13 @@ AxeUltiF = () => {
 			var Dagon = Fusion.GetDagon(MyEnt)
 			if(Dagon !== undefined) {
 				var DagonDamage = Fusion.GetDagonDamage(Dagon)
-				if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) <= LaserDamage + DagonDamage) {
+				if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) <= kill_threshold + DagonDamage) {
 					CastDagon(MyEnt, Dagon, ent)
 					return false
 				}
 			}
 		}
-		
+
 		return true
 	})
 }
