@@ -64,7 +64,7 @@ AxeUltiF = () => {
 
 CastUlti = (MyEnt, Ulti, UltiCastPoint, ent) => {
 	GameUI.SelectUnit(MyEnt, false)
-	Game.CastTarget(MyEnt, Laser, ent, false)
+	Game.CastTarget(MyEnt, Ulti, ent, false)
 	Game.EntStop(MyEnt, false)
 	
 	CastUltiFlag = true
