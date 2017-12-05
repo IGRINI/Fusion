@@ -68,7 +68,7 @@ CastUlti = (MyEnt, Ulti, UltiCastPoint, ent) => {
 	Game.EntStop(MyEnt, false)
 	
 	CastUltiFlag = true
-	$.Schedule(LaserCastPoint, () => CastUltiFlag = false)
+	$.Schedule(UltiCastPoint, () => CastUltiFlag = false)
 }
 
 CastDagon = (MyEnt, Dagon, ent) => {
