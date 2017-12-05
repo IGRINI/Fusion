@@ -5,7 +5,7 @@
 
 DeleteAll = () => {
 	if(Fusion.Panels.EnemyManaBars)
-		Fusion.Panels.EnemyManaBars.entries().map(ar => ar[1]).forEach(panel =>  panel.DeleteAsync(0))
+		Fusion.Panels.EnemyManaBars.values().forEach(panel => panel.DeleteAsync(0))
 	Fusion.Panels.EnemyManaBars = new Map()
 }
 
@@ -19,7 +19,7 @@ EMBEvery = () => {
 		)
 	)
 	
-	Fusion.Panels.EnemyManaBars.entries().map(ar => ar[0]).filter(ent => HEnts.indexOf(ent) === -1).forEach(ent => Fusion.Panels.EnemyManaBars.get(ent).visible = false)
+	Fusion.Panels.EnemyManaBars.keys().filter(ent => HEnts.indexOf(ent) === -1).forEach(ent => Fusion.Panels.EnemyManaBars.get(ent).visible = false)
 	
 	HEnts.forEach(ent => {
 		var xyz = Entities.GetAbsOrigin(ent),
@@ -31,6 +31,7 @@ EMBEvery = () => {
 			Mana = Entities.GetMana(ent),
 			MaxMana = Entities.GetMaxMana(ent),
 			ManaPercent = Math.floor(Mana / MaxMana * 100)
+		
 		if (!xyz || !healthbaroffset || uix === -1 || uiy === -1 || !isFinite(uixp) || !isFinite(uiyp) || !uixp || !uiyp || !ManaPercent) {
 			var manabar
 			if(manabar = Fusion.Panels.EnemyManaBars.get(ent))
