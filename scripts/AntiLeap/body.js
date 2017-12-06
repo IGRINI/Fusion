@@ -53,7 +53,7 @@ function AntiLeapF() {
 
 var AntiLeap = Fusion.AddScript("AntiLeap", () => {
 	if (AntiLeap.checked) {
-		L = () => {
+		function L() {
 			if (AntiLeap.checked) {
 				AntiLeapF()
 				$.Schedule(Fusion.MyTick, L)

@@ -68,22 +68,22 @@
 		})
 	}
 
-	Quas = () => {
+	function Quas() {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_quas")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
-	Wex = () => {
+	function Wex() {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_wex")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
-	Exort = () => {
+	function Exort() {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_exort")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}
 
-	Invoke = () => {
+	function Invoke() {
 		var Abil = Game.GetAbilityByName(MyEnt, "invoker_invoke")
 		Game.CastNoTarget(MyEnt, Abil, false)
 	}

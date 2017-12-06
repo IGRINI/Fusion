@@ -50,7 +50,7 @@ function AutoSaveF() {
 	if (!AutoSave.checked)
 	Game.ScriptLogMsg("Script disabled: AutoSave", "#ff0000")
 else {
-	L = () => {
+	function L() {
 		if (AutoSave.checked) {
 			AutoSaveF()
 			$.Schedule(Fusion.MyTick, L)

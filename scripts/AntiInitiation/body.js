@@ -200,7 +200,7 @@ var AntiInitiation = Fusion.AddScript("AntiInitiation", () => {
 		Game.ScriptLogMsg("Script disabled: AntiInitiation", "#ff0000")
 		return
 	} else {
-		f = () => {
+		function f() {
 			$.Schedule (
 				Fusion.MyTick,
 				() => {

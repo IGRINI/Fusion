@@ -1,5 +1,5 @@
 destroy()
-var uiw = Game.GetScreenWidth()
+var uiw = Game.GetScreenWidth(),
 	uih = Game.GetScreenHeight(),
 	interval = 0, hpn = false, b = false, z = 0,
 	a = [
@@ -59,10 +59,16 @@ var uiw = Game.GetScreenWidth()
 	camp, myid, ent, team, status
 
 function destroy() {
-	if(Fusion.Subscribes.AncientCreepStack !== undefined)
+	if(Fusion.Subscribes.AncientCreepStack !== undefined) {
 		GameEvents.Unsubscribe(Fusion.Subscribes.AncientCreepStack)
-	Fusion.Panels.AncientCreepStack.DeleteAsync(0)
-	Fusion.Particles.AncientCreepStack.forEach(par => Particles.DestroyParticleEffect(par, true))
+		delete Fusion.Subscribes.AncientCreepStack
+	}
+	if(Fusion.Panels.AncientCreepStack) {
+		Fusion.Panels.AncientCreepStack.DeleteAsync(0)
+		delete Fusion.Panels.AncientCreepStack
+	}
+	if(Fusion.Particles.AncientCreepStack)
+		Fusion.Particles.AncientCreepStack.forEach(par => Particles.DestroyParticleEffect(par, true))
 	Fusion.Particles.AncientCreepStack = []
 }
 
@@ -210,7 +216,7 @@ var AncientCreepStack = Fusion.AddScript("AncientCreepStack", () => {
 		return
 	}
 	Fusion.Commands.AncientCreepStack()
-	f = () => {
+	function f() {
 		$.Schedule(interval, () => {
 			AncientCreepStackF()
 			if(AncientCreepStack.checked)
@@ -218,7 +224,7 @@ var AncientCreepStack = Fusion.AddScript("AncientCreepStack", () => {
 		}
 	)}
 	f()
-	u = () => {
+	function u() {
 		$.Schedule(0, () => {
 			AncientCreepStackU()
 			if(AncientCreepStack.checked)

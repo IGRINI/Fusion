@@ -1,7 +1,7 @@
 ﻿if(Fusion.Panels.EzProcast)
 	Fusion.Panels.EzProcast.DeleteAsync(0)
 
-EzProcast01OnOffLoad = () => {
+function EzProcast01OnOffLoad() {
 	Fusion.GetXML("EzProcast/panel", layout_string => {
 		Fusion.Panels.EzProcast = $.CreatePanel("Panel", Fusion.Panels.Main, "EzProcast")
 		Fusion.Panels.EzProcast.BLoadLayoutFromString(layout_string, false, false)

@@ -33,8 +33,6 @@ Fusion.DrawLineInGameWorld = (a, b) => {
 	return temp
 }
 
-Game.GetLocalPlayerID = () => -1
-
 Entities.IsMine = ent =>
 	[
 		"npc_dota_techies_remote_mine",
@@ -413,7 +411,7 @@ GameUI.MovePanel = (a, callback) => {
 				callback(a)
 			}
 		}
-		L = () => {
+		function L() {
 			$.Schedule (
 				0,
 				() => {

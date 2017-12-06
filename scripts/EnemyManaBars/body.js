@@ -5,7 +5,7 @@
 
 function DeleteAll() {
 	if(Fusion.Panels.EnemyManaBars)
-		Fusion.Panels.EnemyManaBars.values().forEach(panel => panel.DeleteAsync(0))
+		Fusion.Panels.EnemyManaBars.forEach(panel => panel.DeleteAsync(0))
 	Fusion.Panels.EnemyManaBars = new Map()
 }
 
@@ -19,7 +19,11 @@ function EMBEvery() {
 		)
 	)
 	
-	Fusion.Panels.EnemyManaBars.keys().filter(ent => HEnts.indexOf(ent) === -1).forEach(ent => Fusion.Panels.EnemyManaBars.get(ent).visible = false)
+	Fusion.Panels.EnemyManaBars.forEach((panel, ent) => {
+		if(HEnts.indexOf(ent) !== -1)
+			return
+		ent => Fusion.Panels.EnemyManaBars.get(ent).visible = false
+	})
 	
 	HEnts.forEach(ent => {
 		var xyz = Entities.GetAbsOrigin(ent),

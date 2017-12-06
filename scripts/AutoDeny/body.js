@@ -1,4 +1,4 @@
-﻿AutoDenyOnInterval = () => {
+﻿function AutoDenyOnInterval() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -32,7 +32,7 @@ var AutoDeny = Fusion.AddScript("AutoDeny", () => {
 	if (!AutoDeny.checked) {
 		Game.ScriptLogMsg("Script disabled: AutoDeny", "#ff0000")
 	} else {
-		intervalFunc = () => {
+		function intervalFunc() {
 			$.Schedule(
 				Fusion.MyTick / 3,
 				() => {

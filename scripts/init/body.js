@@ -1,4 +1,4 @@
-Fusion = {
+this.Fusion = {
 	Configs: {},
 	Commands: {},
 	Panels: {},
@@ -87,6 +87,12 @@ Fusion.LoadFusion = callback => {
 		Fusion.Panels.MainPanel.scripts = Fusion.Panels.MainPanel.FindChildTraverse("scripts")
 		
 		$.Msg("HUD initializing finished!")
+
+		if(callback !== undefined) {
+			$.Msg("Calling callback (usually - load scripts)...")
+			callback()
+			$.Msg("Callback called successfully!")
+		}
 		
 		Fusion.GetConfig("init", function(config) {
 			Fusion.Configs.init = config
@@ -99,7 +105,7 @@ Fusion.LoadFusion = callback => {
 			Fusion.Panels.MainPanel.Slider.lastValue = -1 // -1 to make sure camera distance will be changed
 			Fusion.Panels.MainPanel.Slider.saved = true
 			
-			OnTickSlider = () => {
+			function OnTickSlider() {
 				if(!Fusion.Panels.MainPanel.Slider.mousedown && !Fusion.Panels.MainPanel.Slider.saved) {
 					Fusion.SaveConfig("init", Fusion.Configs.init)
 					Fusion.Panels.MainPanel.Slider.saved = true
@@ -110,7 +116,7 @@ Fusion.LoadFusion = callback => {
 						Fusion.Configs.init.Slider.Value = Fusion.Panels.MainPanel.Slider.value
 						Fusion.Panels.MainPanel.Slider.saved = false
 					}
-					CamDist.text = `Camera distance: ${Math.floor(Fusion.Panels.MainPanel.Slider.value)}`
+					Fusion.Panels.MainPanel.FindChildTraverse("CamDist").text = `Camera distance: ${Math.floor(Fusion.Panels.MainPanel.Slider.value)}`
 					Fusion.Panels.MainPanel.Slider.lastValue = Fusion.Panels.MainPanel.Slider.value
 				}
 				$.Schedule(Fusion.MyTick, OnTickSlider)
@@ -122,8 +128,6 @@ Fusion.LoadFusion = callback => {
 		
 		Fusion.SteamID = Game.GetLocalPlayerInfo().player_steamid
 		Fusion.Panels.MainPanel.ToggleClass("Popup")
-		if(callback !== undefined)
-			callback()
 	})
 }
 

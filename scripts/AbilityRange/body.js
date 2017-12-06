@@ -11,8 +11,6 @@
 		Fusion.Particles.AbilityRange[abil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
 		Particles.SetParticleControl(Fusion.Particles.AbilityRange[abil], 1,  [Range,0,0])
 	})
-	for(var i in Fusion.Particles.AbilityRange) {
-	}
 }
 
 function Destroy() {
@@ -93,11 +91,6 @@ Destroy()
 var AbilityRange = Fusion.AddScript("AbilityRange", () => {
 	if (AbilityRange.checked) {
 		var MyID = Game.GetLocalPlayerID()
-		if ( MyID==-1 ){
-			AbilityRange.checked = false
-			Destroy()
-			return
-		}
 		MyEnt = Players.GetPlayerHeroEntityIndex(MyID)
 		if ( MyEnt==-1 ){
 			AbilityRange.checked = false
