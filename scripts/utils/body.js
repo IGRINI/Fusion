@@ -583,7 +583,7 @@ Game.GetBuffs = ent => {
 	return buffs
 }
 
-Game.GetBuffsNames = ent => Game.GetBuffs(ent).map(Buffs.GetName(ent, buff))
+Game.GetBuffsNames = ent => Game.GetBuffs(ent).map(buff => Buffs.GetName(ent, buff))
 
 //Panel amimating (c) moddota.com
 var AnimatePanel_DEFAULT_DURATION = "300.0ms"

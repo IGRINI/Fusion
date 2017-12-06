@@ -15,7 +15,7 @@ function ScheduleExplode(rmine) {
 			return true
 		})
 		
-		if(debug)
+		if(Fusion.debug)
 			$.Msg(`RMine will be deleted after ${delta + rmineTimeout}s`)
 		$.Schedule(delta + rmineTimeout, function() {
 			if(Fusion.EzTechies.RMines.indexOf(rmine) < 0)

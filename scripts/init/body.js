@@ -6,7 +6,7 @@ Fusion = {
 	Subscribes: {},
 	MyTick: 1 / 30,
 	debug: false,
-	debugLoad: false,
+	debugLoad: true,
 	debugAnimations: false,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
