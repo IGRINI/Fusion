@@ -28,8 +28,7 @@ DagonSteal = () => {
 			&& !Entities.IsInvulnerable(ent)
 			&& !Fusion.HasLinkenAtTime(ent, 0)
 			&& Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange
-			&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
-			&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= DagonDamage
+			&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 		)
 		.every(ent => {
 			GameUI.SelectUnit(MyEnt, false)

@@ -48,7 +48,7 @@ Souls = MyEnt => {
 		&& Entities.GetRangeToUnit(ent, MyEnt) <= AbilRange
 		&& !Fusion.HasLinkenAtTime(ent, AbilCastPoint)
 		&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
-		&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) <= SoulDamage
+		&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, SoulDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)

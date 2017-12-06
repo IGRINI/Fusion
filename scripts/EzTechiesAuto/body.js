@@ -1,12 +1,12 @@
-﻿var NoTarget = []
-var BlowDelay = 0.25 + Fusion.MyTick * 10
+﻿var NoTarget = [],
+	BlowDelay = 0.25 + Fusion.MyTick * 10,
+	theres
 
 CallMines = (MyEnt, ent, callback, explosionCallback) => {
-	var NeedMagicDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 0.5)
+	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * Fusion.MyTick * 3
 	var RMinesToBlow = []
 	var RMinesDmg = 0
-	if(Fusion.GetMagicMultiplier(MyEnt, ent) === 0)
-		return
+	
 	Fusion.EzTechies.RMines.every(rmine => {
 		var buffs = Game.GetBuffs(rmine)
 		if(buffs.length === 0)
@@ -31,9 +31,9 @@ CallMines = (MyEnt, ent, callback, explosionCallback) => {
 		if(callback(MyEnt, ent, rmine)) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg
-			if(RMinesDmg > (NeedMagicDmg + dmg)) {
+			if(TargetHP < (theres = Fusion.CalculateDamage(MyEnt, ent, RMinesDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL))) {
 				if(Fusion.debug)
-					$.Msg(`[EzTechiesAuto] There's ${RMinesDmg}, needed ${NeedMagicDmg} for ${Entities.GetUnitName(ent)}`)
+					$.Msg(`[EzTechiesAuto] There's ${theres}, needed ${TargetHP} for ${Entities.GetUnitName(ent)}`)
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return true
 			}
@@ -66,9 +66,10 @@ RemoteMines = (MyEnt, HEnts) => {
 	if(UltiLvl == 0)
 		return
 	
-	HEnts.filter(function(ent) {
-		return Fusion.GetMagicMultiplier(MyEnt, ent) !== 0 && NoTarget.indexOf(ent) < 0 // filter out immune/excluded units
-	}).forEach(function(ent) {
+	HEnts.filter(ent =>
+		Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
+		&& NoTarget.indexOf(ent) < 0
+	).forEach(function(ent) {
 		var callBackCalled = false
 		CallMines (
 			MyEnt, ent,

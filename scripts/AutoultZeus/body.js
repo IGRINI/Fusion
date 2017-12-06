@@ -24,8 +24,7 @@ ZeusAutoultF = () => {
 			Entities.IsEnemy(ent)
 			&& !Entities.IsMagicImmune(ent)
 			&& Entities.IsAlive(ent))
-			&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
-			&& Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) < UltiDmg
+			&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, UltiDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 		.every(ent => {
 			Game.CastNoTarget(MyEnt, Ulti, false)
 

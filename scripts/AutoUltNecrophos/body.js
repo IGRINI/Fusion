@@ -39,9 +39,8 @@ AutoUltNecrophosF = () => {
 		if(Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti)))
 			return true
 		var dmg = (Entities.GetMaxHealth(ent) - Entities.GetHealth(ent)) * DamagePerMissHP
-		var NeededDmg = Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent))
 		
-		if(NeededDmg <= dmg) {
+		if(Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, dmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
 			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Ulti, ent, false)
 			return false
@@ -51,7 +50,7 @@ AutoUltNecrophosF = () => {
 				var DagonDamage = Fusion.GetDagonDamage(Dagon)
 				if (
 					Abilities.GetCooldownTimeRemaining(Dagon) === 0 &&
-					NeededDmg <= dmg + DagonDamage
+					Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, dmg + DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 				) {
 					GameUI.SelectUnit(MyEnt, false)
 					Game.CastTarget(MyEnt, Dagon, ent, false)

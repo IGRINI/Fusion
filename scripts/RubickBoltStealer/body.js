@@ -31,7 +31,7 @@ BoltSteal = () => {
 		&& !Entities.IsBuilding(ent)
 		&& !Entities.IsInvulnerable(ent)
 	)
-	var targets = ents.filter(ent => Fusion.GetNeededMagicDmg(MyEnt, ent, Entities.GetHealth(ent)) < BoltDamage)
+	var targets = ents.filter(ent => Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, BoltDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL))
 	var starts = ents.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) <= BoltRange)
 	/*var nearMap = Fusion.BuildNearMap(ents, BoltRange)
 

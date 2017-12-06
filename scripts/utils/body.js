@@ -71,6 +71,9 @@ Fusion.FindNearestEntity = (ent, ents, ignore) => {
 	return ret !== ent ? ret : undefined
 }
 
+Fusion.TryDagon = (MyEnt, ent, damageInfo) => {
+}
+
 Fusion.GetDagon = MyEnt => {
 	var item
 	[
@@ -185,25 +188,74 @@ Fusion.ForceStaffPos = ent => {
 	return forceVec
 }
 
-Fusion.IgnoreBuffs = [
-	"modifier_abaddon_borrowed_time",
-	"modifier_skeleton_king_reincarnation_scepter_active",
-	"modifier_brewmaster_primal_split",
-	"modifier_omniknight_repel",
-	"modifier_phoenix_supernova_hiding",
-	"modifier_juggernaut_blade_fury",
-	"modifier_medusa_stone_gaze",
-	"modifier_nyx_assassin_spiked_carapace",
-	"modifier_templar_assassin_refraction_absorb",
-	"modifier_oracle_false_promise",
-	"modifier_oracle_fates_edict",
-	"modifier_dazzle_shallow_grave",
-	"modifier_treant_living_armor",
-	"modifier_life_stealer_rage",
-	"modifier_item_aegis",
-	"modifier_tusk_snowball_movement",
-	"modifier_tusk_snowball_movement_friendly"
-]
+Fusion.BuffsAbsorbMagicDmg = {
+	"modifier_item_pipe_barrier": {
+		absorbs: 400,
+		damageType: DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL
+	},
+	"modifier_item_hood_of_defiance_barrier": {
+		absorbs: 400,
+		damageType: DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL
+	},
+	"modifier_item_infused_raindrop": {
+		absorbs: 120,
+		damageType: DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL
+	},
+	"modifier_ember_spirit_flame_guard": {
+		absorbs: [50, 200, 350, 500],
+		damageType: DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL
+	},
+	"modifier_abaddon_aphotic_shield": {
+		absorbs: [110, 140, 170, 200],
+		damageType: DAMAGE_TYPES.DAMAGE_TYPE_ALL
+	}
+}
+Fusion.GetAbsorbedDamage = (entTo, damageType) => {
+	var dmg
+	Game.GetBuffs(entTo).forEach(enemyBuff => {
+		var enemyBuffName = Buffs.GetName(entTo, enemyBuff)
+		Fusion.BuffsAbsorbMagicDmg.values().forEach(absorbBuffName => {
+			if(enemyBuffName === absorbBuffName) {
+				var absorbBuff = Fusion.BuffsAbsorbMagicDmg[absorbBuffName]
+				if(absorbBuff.damageType !== DAMAGE_TYPES.DAMAGE_TYPE_ALL && absorbBuff.damageType !== damageType)
+					return
+				
+				if(Array.isArray(absorbBuff.absorbs))
+					dmg += absorbBuff.absorbs[Abilities.GetLevel(Buffs.GetAbility(entTo, enemyBuff)) - 1]
+				else
+					dmg += absorbBuff.absorbs
+			}
+		})
+	})
+
+	return dmg
+}
+
+Fusion.IgnoreBuffs = {
+	1: [], // DAMAGE_TYPES.DAMAGE_TYPE_PHYSICAL
+	2: [   // DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL
+		"modifier_life_stealer_rage",
+		"modifier_oracle_fates_edict",
+		"modifier_medusa_stone_gaze",
+		"modifier_juggernaut_blade_fury",
+		"modifier_omniknight_repel",
+	],
+	4: [], // DAMAGE_TYPES.DAMAGE_TYPE_PURE
+	8: [], // DAMAGE_TYPES.DAMAGE_TYPE_HP_REMOVAL
+	7: [   // DAMAGE_TYPES.DAMAGE_TYPE_ALL
+		"modifier_abaddon_borrowed_time",
+		"modifier_skeleton_king_reincarnation_scepter_active",
+		"modifier_brewmaster_primal_split",
+		"modifier_phoenix_supernova_hiding",
+		"modifier_nyx_assassin_spiked_carapace",
+		"modifier_templar_assassin_refraction_absorb",
+		"modifier_oracle_false_promise",
+		"modifier_dazzle_shallow_grave",
+		"modifier_treant_living_armor",
+		"modifier_item_aegis",
+		"modifier_tusk_snowball_movement",
+	]
+}
 Fusion.GetMagicMultiplier = (entFrom, entTo) => {
 	var multiplier = Entities.GetMagicalArmorValue(entTo)
 	
@@ -213,25 +265,33 @@ Fusion.GetMagicMultiplier = (entFrom, entTo) => {
 	return 1 + multiplier
 }
 
-Fusion.BuffsAbsorbMagicDmg = [
-	["modifier_item_pipe_barrier", 400],
-	["modifier_item_hood_of_defiance_barrier", 400],
-	["modifier_item_infused_raindrop", 120],
-	["modifier_abaddon_aphotic_shield", [110,140,170,200]],
-	["modifier_ember_spirit_flame_guard", [50,200,350,500]]
-]
-Fusion.GetNeededMagicDmg = (entFrom, entTo, dmg) => {
-	Game.GetBuffs(entTo).forEach(enemyBuff => {
-		Fusion.BuffsAbsorbMagicDmg.forEach(absorbBuff => {
-			if(Buffs.GetName(entTo, enemyBuff) === absorbBuff[0])
-				if(Array.isArray(absorbBuff[1]))
-					dmg += absorbBuff[1][Abilities.GetLevel(Buffs.GetAbility(entTo, enemyBuff)) - 1]
-				else
-					dmg += absorbBuff[1]
-		})
-	})
+Fusion.GetNeededMagicDmg = (entFrom, entTo, dmg) => dmg * Fusion.GetMagicMultiplier(entFrom, entTo)
+
+Fusion.CalculateDamage = (entFrom, entTo, damage, damage_type) => {
+	damage -= Fusion.GetAbsorbedDamage(entTo, damage_type)
 	
-	return dmg * Fusion.GetMagicMultiplier(entFrom, entTo)
+	if(damage <= 0 || Game.IntersecArrays(Game.GetBuffsNames(entTo), Fusion.IgnoreBuffs[damage_type]))
+		return 0
+	
+	switch(damage_type) {
+		case DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL:
+			damage *= 1 - Entities.GetMagicalArmorValue(entTo)
+			break
+		case DAMAGE_TYPES.DAMAGE_TYPE_PHYSICAL:
+			var armor = Entities.GetPhysicalArmorValue(entTo)
+			damage *= (1 - (armor * 0.05) / (1 + Math.abs(armor) * 0.05))
+			// damage -= damage * ((armor * 0.05) / (1 + Math.abs(armor) * 0.05))"
+			break
+		case DAMAGE_TYPES.DAMAGE_TYPE_NONE:
+			damage = 0
+		case DAMAGE_TYPES.DAMAGE_TYPE_HP_REMOVAL:
+		case DAMAGE_TYPES.DAMAGE_TYPE_PURE:
+		case DAMAGE_TYPES.DAMAGE_TYPE_ALL:
+		default:
+			break
+	}
+
+	return damage
 }
 
 Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
