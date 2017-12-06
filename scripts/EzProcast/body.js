@@ -2,7 +2,7 @@
 	Fusion.Panels.EzProcast.DeleteAsync(0)
 
 function EzProcast01OnOffLoad() {
-	Fusion.GetXML("EzProcast/panel", layout_string => {
+	Fusion.GetXML("EzProcast/panel").then(layout_string => {
 		Fusion.Panels.EzProcast = $.CreatePanel("Panel", Fusion.Panels.Main, "EzProcast")
 		Fusion.Panels.EzProcast.BLoadLayoutFromString(layout_string, false, false)
 		GameUI.MovePanel(Fusion.Panels.EzProcast, p => {
@@ -11,7 +11,7 @@ function EzProcast01OnOffLoad() {
 			Fusion.Configs.EzProcast.MainPanel.y = position[1]
 			Fusion.SaveConfig("EzProcast", Fusion.Configs.EzProcast)
 		})
-		Fusion.GetConfig("EzProcast", config => {
+		Fusion.GetConfig("EzProcast").then(config => {
 			Fusion.Configs.EzProcast = config
 			Fusion.Panels.EzProcast.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 		})

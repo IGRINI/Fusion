@@ -59,7 +59,7 @@ function ItemPanelEvery() {
 }
 
 function ItemPanelLoad() {
-	Fusion.GetXML("ItemPanel/panel", a => {
+	Fusion.GetXML("ItemPanel/panel").then(a => {
 		Fusion.Panels.ItemPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "ItemPanel1")
 		Fusion.Panels.ItemPanel.BLoadLayoutFromString(a, false, false)
 		Fusion.Panels.ItemPanel.Children().forEach(child => child.style.height = "0")
@@ -70,7 +70,7 @@ function ItemPanelLoad() {
 			Fusion.SaveConfig("ItemPanel", Fusion.Configs.ItemPanel)
 		})
 		
-		Fusion.GetConfig("ItemPanel", config => {
+		Fusion.GetConfig("ItemPanel").then(config => {
 			Fusion.Configs.ItemPanel = config
 			Fusion.Panels.ItemPanel.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 			ItemPanelEvery()

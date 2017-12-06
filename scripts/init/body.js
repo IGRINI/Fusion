@@ -7,24 +7,21 @@ Fusion = {
 	MyTick: 1 / 30,
 	debug: false,
 	debugLoad: false,
-	debugAnimations: true,
+	debugAnimations: false,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
 }
 
-Fusion.ReloadFusion = () => Fusion.LoadFusion(() => Fusion.ServerRequest("scriptlist", "", response => {
+Fusion.ReloadFusion = () => Fusion.LoadFusion().then(() => Fusion.ServerRequest("scriptlist").then(response => {
 	Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
-	JSON.parse(response).forEach(Fusion.LoadScript)
+	var promises = []
+	JSON.parse(response).forEach(scriptName => promises.push(Fusion.GetScript(scriptName)))
+	Promise.all(promises).then(scripts => scripts.forEach(eval))
+	Fusion.Panels.MainPanel.ToggleClass("Popup")
 }))
 
-Fusion.LoadScript = scriptName => Fusion.ServerRequest (
-	"getscript", scriptName, response => {
-		eval(response)
-		$.Msg(`JScript ${scriptName} loaded`)
-	}
-)
 
-Fusion.ServerRequest = (name, val, callback) => {
+Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 	var args = {
 		"type": "POST",
 		"data": {
@@ -32,72 +29,69 @@ Fusion.ServerRequest = (name, val, callback) => {
 		},
 		"complete": a => {
 			if (a.status === 200) {
-				if(a.responseText == null)
-					a.responseText = "\n"
-				callback(a.responseText.substring(0, a.responseText.length - 1))
+				a.responseText = a.responseText || "\n"
+				resolve(a.responseText.substring(0, a.responseText.length - 1))
 			} else {
 				if(Fusion.debugLoad)
 					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(a)}.`
 				if(a.status - 400 <= 0 || a.status - 400 > 99) {
 					if(Fusion.debugLoad)
 						$.Msg(log + " Trying again.")
-					Fusion.ServerRequest(name, val, callback)
-				} else
+					Fusion.ServerRequest(name, val).then(resolve)
+				} else {
 					if(Fusion.debugLoad)
 						$.Msg(log)
+					reject()
+				}
 			}
 		}
 	}
-	args.data[name] = val
+	args.data[name] = val || ""
 	
 	$.AsyncWebRequest(Fusion.FusionServer, args)
-}
-	
-Fusion.GetXML = (file, callback) => Fusion.ServerRequest("getxml", file, callback)
-
-Fusion.GetConfig = (scriptName, callback) => Fusion.ServerRequest (
-	"getconfig", scriptName, json => callback(JSON.parse(json)[0])
-)
-
-Fusion.SaveConfig = (scriptName, config) => Fusion.ServerRequest (
-	"writeconfig",
-	JSON.stringify({
-		"filepath": scriptName,
-		"json": JSON.stringify(config)
-	}),
-	response => {}
+})
+Fusion.GetScript = scriptName => Fusion.ServerRequest("getscript", scriptName)
+Fusion.GetXML = file => Fusion.ServerRequest("getxml", file)
+Fusion.SaveConfig = (scriptName, config) => Fusion.ServerRequest("writeconfig", JSON.stringify({
+	"filepath": scriptName,
+	"json": JSON.stringify(config)
+})).then()
+Fusion.GetConfig = scriptName => new Promise((resolve, reject) =>
+	Fusion.ServerRequest("getconfig", scriptName).then(json => resolve(JSON.parse(json)[0]))
 )
 
 Fusion.StatsEnabled = true
 Fusion.MinimapActsEnabled = true
 Fusion.HUDEnabled = true
-Fusion.LoadFusion = callback => {
+Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 	if(Fusion.Panels.MainPanel !== undefined)
 		Fusion.Panels.MainPanel.DeleteAsync(0)
 	Fusion.Panels.MainPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "DotaOverlay")
-	Fusion.GetXML("init/hud", layout_string => {
-		$.Msg("HUD now are initializing...")
+	Fusion.GetXML("init/hud").then(layout_string => {
+		if(Fusion.debugLoad)
+			$.Msg("HUD now are initializing...")
 		
 		Fusion.Panels.MainPanel.BLoadLayoutFromString(layout_string, false, false)
 		Fusion.Panels.MainPanel.ToggleClass("PopupOpened")
-		Fusion.Panels.MainPanel.ToggleClass("Popup")
 		Fusion.Panels.MainPanel.FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusion)
 		Fusion.Panels.MainPanel.Slider = Fusion.Panels.MainPanel.FindChildInLayoutFile("CameraDistance")
 		Fusion.Panels.MainPanel.CamDist = Fusion.Panels.MainPanel.FindChildTraverse("CamDist")
 		Fusion.Panels.MainPanel.scripts = Fusion.Panels.MainPanel.FindChildTraverse("scripts")
 		
-		$.Msg("HUD initializing finished!")
+		if(Fusion.debugLoad)
+			$.Msg("HUD initializing finished!")
 
-		if(callback !== undefined) {
+		if(Fusion.debugLoad)
 			$.Msg("Calling callback (usually - load scripts)...")
-			callback()
+		resolve()
+		if(Fusion.debugLoad)
 			$.Msg("Callback called successfully!")
-		}
 		
-		Fusion.GetConfig("init", function(config) {
+		Fusion.GetConfig("init").then(config => {
 			Fusion.Configs.init = config
 			
-			$.Msg("Initializing slider...")
+			if(Fusion.debugLoad)
+				$.Msg("Initializing slider...")
 			
 			Fusion.Panels.MainPanel.Slider.min = config.Slider.Min
 			Fusion.Panels.MainPanel.Slider.max = config.Slider.Max
@@ -122,14 +116,15 @@ Fusion.LoadFusion = callback => {
 				$.Schedule(Fusion.MyTick, OnTickSlider)
 			}
 			OnTickSlider()
-			$.Msg("Slider initialized!")
+			if(Fusion.debugLoad)
+				$.Msg("Slider initialized!")
 		})
 		
 		
 		Fusion.SteamID = Game.GetLocalPlayerInfo().player_steamid
 		Fusion.Panels.MainPanel.ToggleClass("Popup")
 	})
-}
+})
 
 if(Fusion.Panels.MainPanel !== undefined)
 	Fusion.Panels.MainPanel.DeleteAsync(0)

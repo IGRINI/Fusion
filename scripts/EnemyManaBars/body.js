@@ -61,7 +61,7 @@ function EMBEvery() {
 DeleteAll()
 var EnemyManaBars = Fusion.AddScript("EnemyManaBars", () => {
 	if (EnemyManaBars.checked) {
-		Fusion.GetXML("EnemyManaBars/manabar", xml => {
+		Fusion.GetXML("EnemyManaBars/manabar").then(xml => {
 			manabar_layout = xml
 			EMBEvery()
 		})

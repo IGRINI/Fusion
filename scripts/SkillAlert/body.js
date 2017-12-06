@@ -130,7 +130,7 @@ function CreateTimerParticle(vec, time, ent) {
 
 var SkillAlert = Fusion.AddScript("SkillAlert", () => {
 	if (SkillAlert.checked) {
-		Fusion.GetConfig("SkillAlert", config => {
+		Fusion.GetConfig("SkillAlert").then(config => {
 			Fusion.Configs.SkillAlert = config
 			SAlertEvery()
 		})

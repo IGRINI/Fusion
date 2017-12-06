@@ -565,7 +565,7 @@ Game.GetInventory = ent => {
 
 Game.IsIllusion = ent => Entities.PlayersHeroEnts().indexOf(ent) === -1
 
-Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(Players.GetPlayerHeroEntityIndex(playerID))
+Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(playerID => Players.GetPlayerHeroEntityIndex(playerID))
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
 Fusion.Behaviors = behavior => behavior.toString(2).split("").reverse().map((val, i) => {

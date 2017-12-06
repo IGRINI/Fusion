@@ -109,7 +109,7 @@ var AbilityRange = Fusion.AddScript("AbilityRange", () => {
 			Fusion.Configs.AbilityRange.MainPanel.y = position[1]
 			Fusion.SaveConfig("AbilityRange", Fusion.Configs.AbilityRange)
 		})
-		Fusion.GetConfig("AbilityRange", config => {
+		Fusion.GetConfig("AbilityRange").then(config => {
 			Fusion.Configs.AbilityRange = config
 			Fusion.Panels.AbilityRange.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
 			Fusion.Panels.AbilityRange.style.flowChildren = config.MainPanel.flow
