@@ -1,4 +1,4 @@
-AxeUltiOnCheckOnInterval = () => {
+function AxeUltiOnCheckOnInterval() {
 	AxeUltiF()
 
 	if(AxeUlti.checked)
@@ -6,7 +6,7 @@ AxeUltiOnCheckOnInterval = () => {
 }
 
 var flag = false
-AxeUltiF = () => {
+function AxeUltiF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
 		UltiLvl = Abilities.GetLevel(Ulti),
@@ -54,7 +54,7 @@ AxeUltiF = () => {
 	})
 }
 
-CastUlti = (MyEnt, Ulti, UltiCastPoint, ent) => {
+function CastUlti(MyEnt, Ulti, UltiCastPoint, ent) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Ulti, ent, false)
 	
@@ -62,7 +62,7 @@ CastUlti = (MyEnt, Ulti, UltiCastPoint, ent) => {
 	$.Schedule(UltiCastPoint, () => CastUltiFlag = false)
 }
 
-CastDagon = (MyEnt, Dagon, ent) => {
+function CastDagon(MyEnt, Dagon, ent) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Dagon, ent, false)
 }

@@ -1,11 +1,11 @@
-SniperAssassinateOnInterval = () => {
+function SniperAssassinateOnInterval() {
 	SniperAssassinateF()
 
 	if(SniperAssassinate.checked)
 		$.Schedule(Fusion.MyTick, SniperAssassinateOnInterval)
 }
 
-SniperAssassinateF = () => {
+function SniperAssassinateF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate"),
 		HideItem = Game.GetHideItem(MyEnt),

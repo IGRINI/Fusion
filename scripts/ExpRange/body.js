@@ -1,7 +1,7 @@
 ﻿var ExpRange = 1300
 var DaggerRange = 1200
 
-DestroyParticles = () => {
+function DestroyParticles() {
 	if(Fusion.Particles.ExpRange) {
 		Particles.DestroyParticleEffect(Fusion.Particles.ExpRange, true)
 		delete Fusion.Particles.ExpRange
@@ -13,7 +13,7 @@ DestroyParticles = () => {
 	}
 }
 
-ExpRangeEnable = () => {
+function ExpRangeEnable() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	Fusion.Particles.ExpRange = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
 	Fusion.Particles.DaggerRange = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)

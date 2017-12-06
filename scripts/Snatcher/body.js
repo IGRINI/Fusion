@@ -10,7 +10,7 @@ var RunePositions = [
 	[3686.9375,-3624.8125,304]   // radiantTop
 ]
 
-DestroyParticle = () => {
+function DestroyParticle() {
 	if(Fusion.Particles.RuneSnatcher) {
 		Particles.DestroyParticleEffect(Fusion.Particles.RuneSnatcher, true)
 		delete Fusion.Particles.RuneSnatcher
@@ -21,7 +21,7 @@ DestroyParticle = () => {
 	}
 }
 
-CreateParticle = () => {
+function CreateParticle() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 
 	Fusion.Particles.RuneSnatcher = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
@@ -31,7 +31,7 @@ CreateParticle = () => {
 	Particles.SetParticleControl(Fusion.Particles.RuneSnatcherTrue, 1, [TruePickupRadius, 0, 0])
 }
 
-RuneSnatcherF = () => {
+function RuneSnatcherF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -54,7 +54,7 @@ RuneSnatcherF = () => {
 		.forEach(Rune => Game.PickupRune(MyEnt, Rune, false))
 }
 
-ItemSnatcherF = () => {
+function ItemSnatcherF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -66,7 +66,7 @@ ItemSnatcherF = () => {
 	).forEach(ent => Game.PickupItem(MyEnt, ent, false))
 }
 
-SnatcherF = () => {
+function SnatcherF() {
 	ItemSnatcherF()
 	RuneSnatcherF()
 

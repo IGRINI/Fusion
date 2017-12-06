@@ -1,11 +1,11 @@
-AutoUltNecrophosOnInterval = () => {
+function AutoUltNecrophosOnInterval() {
 	AutoUltNecrophosF()
 
 	if(AutoUltNecrophos.checked)
 		$.Schedule(Fusion.MyTick, AutoUltNecrophosOnInterval)
 }
 
-AutoUltNecrophosF = () => {
+function AutoUltNecrophosF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		Ulti = Entities.GetAbilityByName(MyEnt, "necrolyte_reapers_scythe"),
 		UltiRange = Abilities.GetCastRangeFix(Ulti),

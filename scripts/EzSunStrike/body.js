@@ -1,13 +1,13 @@
 ﻿var SunStrikeDamage = [ 100, 162, 225, 287, 350, 412, 475, 537 ]
 
-EzSunstrikeOnInterval = () => {
+function EzSunstrikeOnInterval() {
 	EzSunstrikeF()
 
 	if(EzSunstrike.checked)
 		$.Schedule(Fusion.MyTick, EzSunstrikeOnInterval)
 }
 
-EzSunstrikeF = () => {
+function EzSunstrikeF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		SunStrike = Game.GetAbilityByName(MyEnt, "invoker_sun_strike"),
 		SunStrikeDamageCur = SunStrikeDamage[Abilities.GetLevel(Game.GetAbilityByName(MyEnt, "invoker_exort")) - 2 + (Entities.HasScepter(MyEnt) ? 1 : 0)],

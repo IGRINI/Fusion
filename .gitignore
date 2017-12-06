@@ -1,1 +1,3 @@
-*.conf.7656*
+*.conf.*
+node_modules
+package*.json

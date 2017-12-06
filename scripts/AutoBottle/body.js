@@ -1,11 +1,11 @@
-﻿AutoBottleOnInterval = () => {
+﻿function AutoBottleOnInterval() {
 	AutoBottleF()
 	
 	if(AutoBottle.checked)
 		$.Schedule(Fusion.MyTick, AutoBottleOnInterval)
 }
 
-AutoBottleF = () => {
+function AutoBottleF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return

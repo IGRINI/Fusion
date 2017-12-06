@@ -3,13 +3,13 @@
 	uih = Fusion.Panels.Main.actuallayoutheight,
 	manabar_layout
 
-DeleteAll = () => {
+function DeleteAll() {
 	if(Fusion.Panels.EnemyManaBars)
 		Fusion.Panels.EnemyManaBars.values().forEach(panel => panel.DeleteAsync(0))
 	Fusion.Panels.EnemyManaBars = new Map()
 }
 
-EMBEvery = () => {
+function EMBEvery() {
 	var HEnts = Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& Entities.IsEnemy(ent)

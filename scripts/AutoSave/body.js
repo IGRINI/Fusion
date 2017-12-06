@@ -7,7 +7,7 @@ var BuffsNames = [
 ]
 
 var flag = false
-Save = (MyEnt, ent) => {
+function Save(MyEnt, ent) {
 	if(flag)
 		return
 	var distance = Entities.GetRangeToUnit(MyEnt, ent)
@@ -26,7 +26,7 @@ Save = (MyEnt, ent) => {
 	})
 }
 
-AutoSaveF = () => {
+function AutoSaveF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return

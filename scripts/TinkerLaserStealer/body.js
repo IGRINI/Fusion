@@ -1,4 +1,4 @@
-TinkerLaserStealerOnInterval = () => {
+function TinkerLaserStealerOnInterval() {
 	LaserSteal()
 	
 	if(TinkerLaserStealer.checked)
@@ -6,7 +6,7 @@ TinkerLaserStealerOnInterval = () => {
 }
 
 var flag = false
-LaserSteal = () => {
+function LaserSteal() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(flag || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -47,7 +47,7 @@ LaserSteal = () => {
 		})
 }
 
-CastLaser = (MyEnt, Laser, LaserCastPoint, ent) => {
+function CastLaser(MyEnt, Laser, LaserCastPoint, ent) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Laser, ent, false)
 	
@@ -55,7 +55,7 @@ CastLaser = (MyEnt, Laser, LaserCastPoint, ent) => {
 	$.Schedule(LaserCastPoint, () => flag = false)
 }
 
-CastDagon = (MyEnt, Dagon, ent) => {
+function CastDagon(MyEnt, Dagon, ent) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Dagon, ent, false)
 }
@@ -65,7 +65,11 @@ CastDagon = (MyEnt, Dagon, ent) => {
  * @argument ar 2D array to search in
  * @returns pairs
  */
-FindPairs = (el, ar) => ar.filter(ar2 => ar2.indexOf(el) > -1).map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
+function FindPairs(el, ar) {
+	return ar
+			.filter(ar2 => ar2.indexOf(el) > -1)
+			.map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
+}
 
 var TinkerLaserStealer = Fusion.AddScript("TinkerLaserStealer", () => {
 	if (TinkerLaserStealer.checked) {

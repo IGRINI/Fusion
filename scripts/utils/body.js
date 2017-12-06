@@ -315,17 +315,15 @@ Fusion.CalculateDamage = (entFrom, entTo, damage, damage_type) => {
 }
 
 Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
-	with(Math) {
-		var distancevector = [
-			b_pos[0] - a_pos[0],
-			b_pos[1] - a_pos[1]
-		]
-		var normalize = [
-			distancevector[0] / sqrt(pow(distancevector[0], 2) + pow(distancevector[1], 2)),
-			distancevector[1] / sqrt(pow(distancevector[0], 2) + pow(distancevector[1], 2))
-		]
-		return acos((a_facing[0] * normalize[0]) + (a_facing[1] * normalize[1]))
-	}
+	var distancevector = [
+		b_pos[0] - a_pos[0],
+		b_pos[1] - a_pos[1]
+	]
+	var normalize = [
+		distancevector[0] / Math.sqrt(distancevector[0] ** 2 + distancevector[1] ** 2),
+		distancevector[1] / Math.sqrt(distancevector[0] ** 2 + distancevector[1] ** 2)
+	]
+	return Math.acos((a_facing[0] * normalize[0]) + (a_facing[1] * normalize[1]))
 }
 
 Game.AngleBetweenTwoFaces = (a_facing, b_facing) => Math.acos((a_facing[0] * b_facing[0]) + (a_facing[1] * b_facing[1]))
@@ -538,7 +536,7 @@ Game.ItemLock = (ent, item, queue) => Game.PrepareUnitOrders({
 })
 
 //Получение расстояния между двумя точками в пространстве, высшая математика епта
-Game.PointDistance = (a, b) => Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2) + Math.pow(a[2] - b[2], 2))
+Game.PointDistance = (a, b) => Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2)
 
 //логарифм по основанию
 Math.logb = (number, base) => Math.log(number) / Math.log(base)
@@ -574,7 +572,7 @@ Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(Players.GetPlayerHer
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
 Fusion.Behaviors = behavior => behavior.toString(2).split("").reverse().map((val, i) => {
 	if(val === "1")
-		return Math.pow(2, i + 1)
+		return 2 ** (i + 1)
 	else
 		return 0
 })

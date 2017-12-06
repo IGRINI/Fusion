@@ -9,7 +9,7 @@ var DisableModifiers = new Map([
 ])
 
 var flags = []
-Disable = (MyEnt, ent) => {
+function Disable(MyEnt, ent) {
 	if(flags[ent])
 		return
 	var distance = Entities.GetRangeToUnit(MyEnt, ent)
@@ -27,7 +27,7 @@ Disable = (MyEnt, ent) => {
 	})
 }
 
-AntiLeapF = () => {
+function AntiLeapF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return

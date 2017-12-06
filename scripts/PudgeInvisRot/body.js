@@ -1,11 +1,11 @@
-﻿PudgeInvisRotOnInterval = () => {
+﻿function PudgeInvisRotOnInterval() {
 	PudgeInvisRotF()
 
 	if(PudgeInvisRot.checked)
 		$.Schedule(Fusion.MyTick, PudgeInvisRotOnInterval)
 }
 
-PudgeInvisRotF = () => {
+function PudgeInvisRotF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return

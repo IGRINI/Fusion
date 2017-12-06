@@ -1,5 +1,5 @@
 ﻿Fusion.MeepoClassname = "npc_dota_hero_meepo"
-GetMeepos = () => {
+function GetMeepos() {
 	var playerID = Game.GetLocalPlayerID()
 	return Entities.GetAllEntitiesByClassname(Fusion.MeepoClassname).filter(ent =>
 		Entities.IsAlive(ent)
@@ -15,15 +15,19 @@ GetMeepos = () => {
 	)
 }
 
-PoofAllMeeposToMeepo = (playerID, To, WithCheck, Queue) => GetMeepos().forEach(ent => {
-	GameUI.SelectUnit(ent, false)
-	Game.CastTarget(ent, Game.GetAbilityByName(ent, "meepo_poof"), To, Queue)
-})
+function PoofAllMeeposToMeepo(playerID, To, WithCheck, Queue) {
+		GetMeepos().forEach(ent => {
+		GameUI.SelectUnit(ent, false)
+		Game.CastTarget(ent, Game.GetAbilityByName(ent, "meepo_poof"), To, Queue)
+	})
+}
 
-PoofAllMeeposToPos = (playerID, To, WithCheck, Queue) => GetMeepos().forEach(ent => {
-	GameUI.SelectUnit(ent, false)
-	Game.CastPosition(ent, Game.GetAbilityByName(ent, "meepo_poof"), To, Queue)
-})
+function PoofAllMeeposToPos(playerID, To, WithCheck, Queue) {
+	GetMeepos().forEach(ent => {
+		GameUI.SelectUnit(ent, false)
+		Game.CastPosition(ent, Game.GetAbilityByName(ent, "meepo_poof"), To, Queue)
+	})
+}
 
 if(!Fusion.Commands.MeepoAutoPoof) {
 	Fusion.Commands.MeepoAutoPoof = (flag, WithCheck) => {

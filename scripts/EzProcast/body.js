@@ -41,12 +41,12 @@ EzProcast01OnOffLoad = () => {
 </root>", false, false )
 			P.Children()[0].abilityname = Abilities.GetAbilityName(Ab)
 		}
-		Game.GetInventory(MyEnt).forEach(item => {
-			Behaviors = Fusion.Behaviors(item)
-			if( Behaviors.indexOf(2)!=-1 )
-				continue
-			var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
-			P.BLoadLayoutFromString("\
+		Game.GetInventory(MyEnt)
+			.filter(item => Behaviors.indexOf(2) === -1)
+			.forEach(item => {
+				Behaviors = Fusion.Behaviors(item)
+				var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
+				P.BLoadLayoutFromString("\
 <root>\
 	<script>\
 		function Add() {\
@@ -63,7 +63,7 @@ EzProcast01OnOffLoad = () => {
 		<DOTAItemImage/>\
 	</Panel>\
 </root>", false, false )
-			P.Children()[0].itemname = Abilities.GetAbilityName(item)
+				P.Children()[0].itemname = Abilities.GetAbilityName(item)
 		})
 	});
 }

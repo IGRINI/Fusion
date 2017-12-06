@@ -1,21 +1,21 @@
-﻿GetAbilityRange = Abil => Abilities.GetCastRangeFix(Abil)
-
-InventoryChanged = data => {
+﻿function InventoryChanged(data) {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Fusion.Particles.AbilityRange.length == 0)
 		return
 	
-	for(var i in Fusion.Particles.AbilityRange) {
-		var Range = GetAbilityRange(i)
-		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[i], true)
-		if ( !Range || Range <= 0 )
+	Fusion.Particles.AbilityRange.forEach((par, abil) => {
+		var Range = Abilities.GetCastRangeFix(abil)
+		Particles.DestroyParticleEffect(par, true)
+		if (!Range || Range <= 0)
 			return
-		Fusion.Particles.AbilityRange[i] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
-		Particles.SetParticleControl(Fusion.Particles.AbilityRange[i], 1,  [Range,0,0])
+		Fusion.Particles.AbilityRange[abil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
+		Particles.SetParticleControl(Fusion.Particles.AbilityRange[abil], 1,  [Range,0,0])
+	})
+	for(var i in Fusion.Particles.AbilityRange) {
 	}
 }
 
-Destroy = () => {
+function Destroy() {
 	if(Fusion.Panels.AbilityRange)
 		Fusion.Panels.AbilityRange.DeleteAsync(0)
 	if(Fusion.Subscribes.AbilityRange)
@@ -27,7 +27,7 @@ Destroy = () => {
 	delete Fusion.Panels.AbilityRange
 }
 
-SkillLearned = data => {
+function SkillLearned(data) {
 	var MyID = Game.GetLocalPlayerID()
 	var MyEnt = Players.GetPlayerHeroEntityIndex(MyID)
 	if (data.PlayerID != MyID)
@@ -35,7 +35,7 @@ SkillLearned = data => {
 	var LearnedAbil = Entities.GetAbilityByName(MyEnt, data.abilityname)
 	if ( LearnedAbil == -1 )
 		return
-	var Range = GetAbilityRange(LearnedAbil)
+	var Range = Abilities.GetCastRangeFix(LearnedAbil)
 	if (data.abilityname === "attribute_bonus" || Range <= 0)
 		return
 	if (Fusion.Particles.AbilityRange[LearnedAbil]){
@@ -66,7 +66,7 @@ SkillLearned = data => {
 	CheckB.SetPanelEvent( "onactivate", chkboxpressed )
 }
 
-chkboxpressed = () => {
+function chkboxpressed() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	var CheckBs = AbilityRangePanel.Children()
 	for(c=0;c<CheckBs.length;c++){
@@ -77,7 +77,7 @@ chkboxpressed = () => {
 		if (Checked){
 			if (!Fusion.Particles.AbilityRange[Abil]){
 				Fusion.Particles.AbilityRange[Abil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
-				Range = GetAbilityRange( Abil )
+				Range = Abilities.GetCastRangeFix(Abil)
 				Particles.SetParticleControl(Fusion.Particles.AbilityRange[Abil], 1,  [Range,0,0])
 			}
 		}else{
@@ -139,7 +139,7 @@ var AbilityRange = Fusion.AddScript("AbilityRange", () => {
 			Abil = Entities.GetAbility(MyEnt,i)
 			if ( Abil == -1 )
 				continue
-			Range = GetAbilityRange( Abil )
+			Range = Abilities.GetCastRangeFix(Abil)
 			if (Abilities.GetAbilityName(Abil) == "attribute_bonus" || Range<=0 )
 				continue
 			Behavior = Abilities.GetBehavior( Abil )

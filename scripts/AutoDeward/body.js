@@ -1,4 +1,4 @@
-﻿AutoDewardF = () =>{
+﻿function AutoDewardF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -10,7 +10,7 @@
 		$.Schedule(Fusion.MyTick, AutoDewardF)
 }
 
-Deward = (MyEnt, HEnts) => {
+function Deward(MyEnt, HEnts) {
 	var Abil = GetDewardItem(MyEnt)
 	if(Abil === -1)
 		return
@@ -30,9 +30,11 @@ Deward = (MyEnt, HEnts) => {
 	})
 }
 
-AreDeward = ent => Entities.IsWard(ent) || Entities.IsMine(ent)
+function AreDeward(ent) {
+	return Entities.IsWard(ent) || Entities.IsMine(ent)
+}
 
-GetDewardItem = MyEnt => {
+function GetDewardItem(MyEnt) {
 	var result = -1
 	[
 		"item_quelling_blade",

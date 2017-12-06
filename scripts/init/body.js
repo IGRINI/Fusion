@@ -78,15 +78,13 @@ Fusion.LoadFusion = callback => {
 	Fusion.GetXML("init/hud", layout_string => {
 		$.Msg("HUD now are initializing...")
 		
-		with(Fusion.Panels.MainPanel) {
-			BLoadLayoutFromString(layout_string, false, false)
-			ToggleClass("PopupOpened")
-			ToggleClass("Popup")
-			FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusion)
-			Fusion.Panels.MainPanel.Slider = FindChildInLayoutFile("CameraDistance")
-			Fusion.Panels.MainPanel.CamDist = FindChildTraverse("CamDist")
-			Fusion.Panels.MainPanel.scripts = FindChildTraverse("scripts")
-		}
+		Fusion.Panels.MainPanel.BLoadLayoutFromString(layout_string, false, false)
+		Fusion.Panels.MainPanel.ToggleClass("PopupOpened")
+		Fusion.Panels.MainPanel.ToggleClass("Popup")
+		Fusion.Panels.MainPanel.FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusion)
+		Fusion.Panels.MainPanel.Slider = Fusion.Panels.MainPanel.FindChildInLayoutFile("CameraDistance")
+		Fusion.Panels.MainPanel.CamDist = Fusion.Panels.MainPanel.FindChildTraverse("CamDist")
+		Fusion.Panels.MainPanel.scripts = Fusion.Panels.MainPanel.FindChildTraverse("scripts")
 		
 		$.Msg("HUD initializing finished!")
 		
@@ -95,29 +93,25 @@ Fusion.LoadFusion = callback => {
 			
 			$.Msg("Initializing slider...")
 			
-			with(Fusion.Panels.MainPanel) {
-				Slider.min = config.Slider.Min
-				Slider.max = config.Slider.Max
-				Slider.value = config.Slider.Value
-				Slider.lastValue = -1 // -1 to make sure camera distance will be changed
-				Slider.saved = true
-			}
+			Fusion.Panels.MainPanel.Slider.min = config.Slider.Min
+			Fusion.Panels.MainPanel.Slider.max = config.Slider.Max
+			Fusion.Panels.MainPanel.Slider.value = config.Slider.Value
+			Fusion.Panels.MainPanel.Slider.lastValue = -1 // -1 to make sure camera distance will be changed
+			Fusion.Panels.MainPanel.Slider.saved = true
 			
 			OnTickSlider = () => {
-				with(Fusion.Panels.MainPanel) {
-					if(!Slider.mousedown && !Slider.saved) {
-						Fusion.SaveConfig("init", Fusion.Configs.init)
-						Slider.saved = true
+				if(!Fusion.Panels.MainPanel.Slider.mousedown && !Fusion.Panels.MainPanel.Slider.saved) {
+					Fusion.SaveConfig("init", Fusion.Configs.init)
+					Fusion.Panels.MainPanel.Slider.saved = true
+				}
+				if (Fusion.Panels.MainPanel.Slider.lastValue != Fusion.Panels.MainPanel.Slider.value) {
+					GameUI.SetCameraDistance(Fusion.Panels.MainPanel.Slider.value)
+					if(Fusion.Panels.MainPanel.Slider.lastValue != -1) {
+						Fusion.Configs.init.Slider.Value = Fusion.Panels.MainPanel.Slider.value
+						Fusion.Panels.MainPanel.Slider.saved = false
 					}
-					if (Slider.lastValue != Slider.value) {
-						GameUI.SetCameraDistance(Slider.value)
-						if(Slider.lastValue != -1) {
-							Fusion.Configs.init.Slider.Value = Slider.value
-							Slider.saved = false
-						}
-						CamDist.text = `Camera distance: ${Math.floor(Slider.value)}`
-						Slider.lastValue = Slider.value
-					}
+					CamDist.text = `Camera distance: ${Math.floor(Fusion.Panels.MainPanel.Slider.value)}`
+					Fusion.Panels.MainPanel.Slider.lastValue = Fusion.Panels.MainPanel.Slider.value
 				}
 				$.Schedule(Fusion.MyTick, OnTickSlider)
 			}
@@ -136,7 +130,7 @@ Fusion.LoadFusion = callback => {
 if(Fusion.Panels.MainPanel !== undefined)
 	Fusion.Panels.MainPanel.DeleteAsync(0)
 
-InstallMainHUD = () => {
+function InstallMainHUD() {
 	var globalContext = $.GetContextPanel()
 	while(true)
 		if(globalContext.paneltype == "DOTAHud")
@@ -147,7 +141,7 @@ InstallMainHUD = () => {
 	Fusion.Panels.Main.HUDElements = Fusion.Panels.Main.FindChild("HUDElements")
 }
 
-WaitForGameStart = () => {
+function WaitForGameStart() {
 	$.Schedule (
 		Fusion.MyTick,
 		function() {
@@ -157,10 +151,8 @@ WaitForGameStart = () => {
 				GameUI.SetCameraPitchMax(60)
 				
 				Game.AddCommand( "__ReloadFusion", Fusion.ReloadFusion, "", 0)
-				Game.AddCommand("__TogglePanel", function() {
-					Fusion.Panels.MainPanel.ToggleClass("Popup")
-				}, "",0)
-				Game.AddCommand("__ToggleMinimapActs", function() {
+				Game.AddCommand("__TogglePanel", () => Fusion.Panels.MainPanel.ToggleClass("Popup"), "",0)
+				Game.AddCommand("__ToggleMinimapActs", () => {
 					var panel = Fusion.Panels.Main.HUDElements
 					
 					if(panel = panel.FindChild("minimap_container").FindChild("GlyphScanContainer"))
@@ -169,7 +161,7 @@ WaitForGameStart = () => {
 							else
 								panel.style.visibility = "collapse"
 				}, "",0)
-				Game.AddCommand("__ToggleStats", function() {
+				Game.AddCommand("__ToggleStats", () => {
 					var panel = Fusion.Panels.Main.HUDElements
 					
 					if(panel = panel.FindChild("quickstats"))

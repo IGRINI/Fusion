@@ -2,7 +2,7 @@
 	Fusion.Panels.ItemPanel.DeleteAsync(0)
 Fusion.ItemPanel = []
 
-NewItem = (oldinv, newinv, ent) => {
+function NewItem(oldinv, newinv, ent) {
 	newinv.forEach(n => {
 		if(oldinv.indexOf(n) === -1 && Fusion.Configs.ItemPanel.Items.indexOf(Abilities.GetAbilityName(n)) > -1){
 			if(Fusion.Configs.ItemPanel.Notify === "true") {
@@ -26,7 +26,7 @@ NewItem = (oldinv, newinv, ent) => {
 	})
 }
 
-ItemPanelEvery = () => {
+function ItemPanelEvery() {
 	if (!ItemPanel.checked)
 		return
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)) {
@@ -47,7 +47,7 @@ ItemPanelEvery = () => {
 				Fusion.ItemPanel[Ent] = []
 			if (Array.isArray(Fusion.ItemPanel[Ent]))
 				if(Game.CompareArrays(Fusion.ItemPanel[Ent], Inv))
-					continue
+					return
 			NewItem(Fusion.ItemPanel[Ent], Inv, Ent)
 			Fusion.ItemPanel[Ent] = Inv
 			P.Children().forEach(child => child.itemname = "")
@@ -58,7 +58,7 @@ ItemPanelEvery = () => {
 		$.Schedule(Fusion.MyTick, ItemPanelEvery)
 }
 
-ItemPanelLoad = () => {
+function ItemPanelLoad() {
 	Fusion.GetXML("ItemPanel/panel", a => {
 		Fusion.Panels.ItemPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "ItemPanel1")
 		Fusion.Panels.ItemPanel.BLoadLayoutFromString(a, false, false)

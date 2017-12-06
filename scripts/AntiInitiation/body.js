@@ -62,7 +62,7 @@ var Abils = [
 	OtherAbils
 ]
 
-GetAbilArray = abilNameToSearch => {
+function GetAbilArray(abilNameToSearch) {
 	var abilArFound
 	Abils.every(ar => ar.every(abilAr => {
 		var abilName = abilAr[0]
@@ -78,7 +78,7 @@ GetAbilArray = abilNameToSearch => {
 }
 
 var flags = []
-AntiInitiationF = () => {
+function AntiInitiationF() {
 	if(!AntiInitiation.checked)
 		return
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
@@ -142,7 +142,7 @@ AntiInitiationF = () => {
 	})
 }
 
-Disable = (MyEnt, ent, Abil) => {
+function Disable (MyEnt, ent, Abil) {
 	var AbilName = Abilities.GetAbilityName(Abil)
 	if (
 		Abil === -1 ||

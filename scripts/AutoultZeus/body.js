@@ -1,13 +1,13 @@
 ﻿var flag = false
 
-ZeusAutoultOnInterval = () => {
+function ZeusAutoultOnInterval() {
 	ZeusAutoultF()
 
 	if(ZeusAutoult.checked)
 		$.Schedule(Fusion.MyTick, ZeusAutoultOnInterval)
 }
 
-ZeusAutoultF = () => {
+function ZeusAutoultF() {
 	if(flag)
 		return
 	

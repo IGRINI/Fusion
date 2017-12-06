@@ -1,4 +1,4 @@
-GetFamiliars = () => {
+function GetFamiliars() {
 	return Entities.GetAllEntitiesByClassname("npc_dota_visage_familiar").filter(ent =>
 		Entities.IsAlive(ent)
 		&& !Entities.IsBuilding(ent)
@@ -9,14 +9,14 @@ GetFamiliars = () => {
 	)
 }
 
-EzVisageF = () => {
+function EzVisageF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	Familiars(MyEnt)
 	Souls(MyEnt)
 }
 
 var HealBarrierPercent = 50
-Familiars = MyEnt => {
+function Familiars(MyEnt) {
 	var familiars = GetFamiliars()
 	familiars.forEach(ent => {
 		var StoneForm = Entities.GetAbilityByName(ent, "visage_summon_familiars_stone_form")
@@ -30,7 +30,7 @@ Familiars = MyEnt => {
 	})
 }
 
-Souls = MyEnt => {
+function Souls(MyEnt) {
 	var Abil = Entities.GetAbilityByName(MyEnt, "visage_soul_assumption")
 	if(Abilities.GetLevel(Abil) === 0 || Abilities.GetCooldownTimeRemaining(Abil) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Abil))
 		return
@@ -66,7 +66,7 @@ Souls = MyEnt => {
 	})
 }
 
-EzVisageOnInterval = () => {
+function EzVisageOnInterval() {
 	EzVisageF()
 
 	if(EzVisage.checked)

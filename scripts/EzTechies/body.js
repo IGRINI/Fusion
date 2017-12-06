@@ -1,7 +1,9 @@
-﻿SummonParticle = (range, ent) => Particles.SetParticleControl(Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent), 1, [range, 0, 0])
+﻿function SummonParticle(range, ent) {
+	Particles.SetParticleControl(Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent), 1, [range, 0, 0])
+}
 
 var rmineTimeout = 598 // 600 is mine duration
-ScheduleExplode = rmine => {
+function ScheduleExplode(rmine) {
 	$.Schedule(2 + Fusion.MyTick, () => {
 		var time = Game.GetGameTime()
 		var delta = time - rmineTimeout + Fusion.MyTick
@@ -27,7 +29,7 @@ ScheduleExplode = rmine => {
 	})
 }
 
-HandleEntity = ent => {
+function HandleEntity(ent) {
 	var TriggerRadius = Abilities.GetSpecialValueFor(Entities.GetAbility(Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()), 5), "radius")
 	if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine") {
 		var range = TriggerRadius
@@ -41,7 +43,7 @@ HandleEntity = ent => {
 	SummonParticle(range, ent)
 }
 
-HandleMines = () => {
+function HandleMines() {
 	Entities.GetAllEntities().filter(ent =>
 		!Entities.IsEnemy(ent)
 		&& Entities.IsAlive(ent)
@@ -52,7 +54,7 @@ HandleMines = () => {
 	).forEach(HandleEntity)
 }
 
-RemoteMines = (MyEnt, ents) => {
+function RemoteMines(MyEnt, ents) {
 	var Ulti = Entities.GetAbility(MyEnt, 5)
 	var TriggerRadius = Abilities.GetSpecialValueFor(Ulti, "radius")
 	var UltiLvl = Abilities.GetLevel(Ulti)
@@ -104,7 +106,7 @@ RemoteMines = (MyEnt, ents) => {
 	})
 }
 
-SubscribeEvents = () => {
+function SubscribeEvents() {
 	if(!Fusion.Subscribes.UltiUp)
 		Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", event => {
 			if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname != "techies_remote_mines")

@@ -1,4 +1,4 @@
-RubickBoltStealerOnInterval = () => {
+function RubickBoltStealerOnInterval() {
 	BoltSteal()
 	
 	if(RubickBoltStealer.checked)
@@ -6,7 +6,7 @@ RubickBoltStealerOnInterval = () => {
 }
 
 var flag = false
-BoltSteal = () => {
+function BoltSteal() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(flag || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -71,7 +71,7 @@ BoltSteal = () => {
 			})
 }
 
-CastBolt = (MyEnt, Bolt, BoltCastPoint, ent) => {
+function CastBolt(MyEnt, Bolt, BoltCastPoint, ent) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Bolt, ent, false)
 	
@@ -84,7 +84,11 @@ CastBolt = (MyEnt, Bolt, BoltCastPoint, ent) => {
  * @argument ar 2D array to search in
  * @returns pairs
  */
-FindPairs = (el, ar) => ar.filter(ar2 => ar2.indexOf(el) > -1).map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
+function FindPairs(el, ar) {
+	return ar
+			.filter(ar2 => ar2.indexOf(el) > -1)
+			.map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
+}
 
 var RubickBoltStealer = Fusion.AddScript("RubickBoltStealer", () => {
 	if (RubickBoltStealer.checked) {

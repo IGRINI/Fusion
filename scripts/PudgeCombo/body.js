@@ -1,4 +1,4 @@
-Hook = callback => {
+function Hook(callback) {
 	myVec = Entities.GetAbsOrigin(MyEnt)
 	myForwardVec = Entities.GetForward(MyEnt)
 	enVec = Entities.GetAbsOrigin(ent)
@@ -23,7 +23,7 @@ Hook = callback => {
 	})
 }
 
-CancelHook = (MyEnt, ent, hookwidth) => {
+function CancelHook(MyEnt, ent, hookwidth) {
 	var distance = Game.PointDistance(enVec, Entities.GetAbsOrigin(ent))
 	
 	if(distance > hookwidth) {
@@ -34,12 +34,12 @@ CancelHook = (MyEnt, ent, hookwidth) => {
 		return false
 }
 
-Rot = MyEnt => {
+function Rot(MyEnt) {
 	if(Game.GetBuffsNames(MyEnt).indexOf("modifier_pudge_rot") === -1)
 		Abilities.ExecuteAbility(Entities.GetAbilityByName(MyEnt, "pudge_rot"), MyEnt, false)
 }
 
-Urn = (MyEnt, ent) => {
+function Urn(MyEnt, ent) {
 	var urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
 		urncharges = urn === undefined ? -1 : Items.GetCurrentCharges(urn)
 		
@@ -47,7 +47,9 @@ Urn = (MyEnt, ent) => {
 		Game.CastTarget(MyEnt, urn, ent, false)
 }
 
-Dismember = (MyEnt, ent) => Game.CastTarget(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_dismember"), ent, false)
+function Dismember(MyEnt, ent) {
+	Game.CastTarget(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_dismember"), ent, false)
+}
 
 if(!Fusion.Commands.PudgeCombo) {
 	Fusion.Commands.PudgeCombo = () => {

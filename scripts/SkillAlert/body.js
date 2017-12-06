@@ -16,7 +16,7 @@ var waitingPosModifiers = {
 var z = []
 var panels = []
 
-SAlertEvery = () => {
+function SAlertEvery() {
 	if (!SkillAlert.checked)
 		return
 	
@@ -54,7 +54,7 @@ SAlertEvery = () => {
 		$.Schedule(Fusion.MyTick, SAlertEvery)
 }
 
-AlertTarget = (modifier, ent) => {
+function AlertTarget(modifier, ent) {
 	CreateFollowParticle(modifier[0], modifier[1], ent)
 	if(Fusion.Panels.ItemPanel !== undefined && Fusion.Configs.SkillAlert.Notify === "true" && panels[ent] === undefined) {
 		var A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, `Alert${ent}`)
@@ -77,7 +77,7 @@ AlertTarget = (modifier, ent) => {
 		Game.EmitSound(modifier[4])
 }
 
-AlertPosition = (modifier, vec, thinker) => {
+function AlertPosition(modifier, vec, thinker) {
 	CreateTimerParticle(vec, modifier[0], thinker)
 	if(Fusion.Panels.ItemPanel !== undefined && Fusion.Configs.SkillAlert.Notify === "true" && panels[thinker] === undefined) {
 		var A = $.CreatePanel("Panel", Fusion.Panels.ItemPanel, `Alert${thinker}`)
@@ -98,7 +98,7 @@ AlertPosition = (modifier, vec, thinker) => {
 		Game.EmitSound(modifier[4])
 }
 
-CreateFollowParticle = (particlepath, time, ent) => {
+function CreateFollowParticle(particlepath, time, ent) {
 	if(z.indexOf(ent) !== -1)
 		return
 	var p = Particles.CreateParticle(particlepath, ParticleAttachment_t.PATTACH_OVERHEAD_FOLLOW, ent)
@@ -113,7 +113,7 @@ CreateFollowParticle = (particlepath, time, ent) => {
 	)
 }
 
-CreateTimerParticle = (vec, time, ent) => {
+function CreateTimerParticle(vec, time, ent) {
 	if(z.indexOf(ent) !== -1)
 		return
 	var p = Particles.CreateParticle("particles/neutral_fx/roshan_spawn.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN, 0)

@@ -1,6 +1,6 @@
 ﻿var feeder = false
 
-AntiAFKF = () => {
+function AntiAFKF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -15,7 +15,7 @@ AntiAFKF = () => {
 		$.Schedule(Fusion.MyTick, AntiAFKF)
 }
 
-AFK = (MyEnt, HEnts) => {
+function AFK(MyEnt, HEnts) {
 	var lastMin = HEnts.filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(

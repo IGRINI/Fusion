@@ -2,7 +2,7 @@
 	BlowDelay = 0.25 + Fusion.MyTick * 10,
 	theres
 
-CallMines = (MyEnt, ent, callback, explosionCallback) => {
+function CallMines(MyEnt, ent, callback, explosionCallback) {
 	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * Fusion.MyTick * 3
 	var RMinesToBlow = []
 	var RMinesDmg = 0
@@ -42,24 +42,24 @@ CallMines = (MyEnt, ent, callback, explosionCallback) => {
 	})
 }
 
-DenyMines = MyEnt => {
+function DenyMines(MyEnt) {
 	var selected = false
-	Fusion.EzTechies.RMines.filter(function(ent) {
-		return Entities.GetHealthPercent(ent) !== 100
-	}).forEach(function(rmine) {
-		if(!Entities.IsAlive(rmine)) {
-			Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
-			return
-		}
-		GameUI.SelectUnit(rmine, false)
-		Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
-		selected = true
-	})
+	Fusion.EzTechies.RMines
+		.filter(ent => Entities.GetHealthPercent(ent) !== 100)
+		.forEach(rmine => {
+			if(!Entities.IsAlive(rmine)) {
+				Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
+				return
+			}
+			GameUI.SelectUnit(rmine, false)
+			Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
+			selected = true
+		})
 	if(selected)
 		GameUI.SelectUnit(MyEnt, false)
 }
 
-RemoteMines = (MyEnt, HEnts) => {
+function RemoteMines(MyEnt, HEnts) {
 	var Ulti = Entities.GetAbility(MyEnt, 5)
 	var TriggerRadius = Abilities.GetSpecialValueFor(Ulti, "radius")
 	var UltiLvl = Abilities.GetLevel(Ulti)
@@ -69,16 +69,14 @@ RemoteMines = (MyEnt, HEnts) => {
 	HEnts.filter(ent =>
 		Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
 		&& NoTarget.indexOf(ent) < 0
-	).forEach(function(ent) {
+	).forEach(ent => {
 		var callBackCalled = false
 		CallMines (
 			MyEnt, ent,
-			function(MyEnt, ent, rmine) {
-				return Entities.GetRangeToUnit(rmine, ent) <= TriggerRadius
-			},
-			function(MyEnt, ent, RMinesToBlow) {
+			(MyEnt, ent, rmine) => Entities.GetRangeToUnit(rmine, ent) <= TriggerRadius,
+			(MyEnt, ent, RMinesToBlow) => {
 				callBackCalled = true
-				RMinesToBlow.forEach(function(rmine) {
+				RMinesToBlow.forEach(rmine => {
 					GameUI.SelectUnit(rmine, false)
 					Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 				})
@@ -98,13 +96,13 @@ RemoteMines = (MyEnt, HEnts) => {
 		)
 			CallMines (
 				MyEnt, ent,
-				function(MyEnt, ent, rmine) {
+				(MyEnt, ent, rmine) => {
 					var mineVec = Entities.GetAbsOrigin(rmine)
 					var forceVec = Fusion.ForceStaffPos(ent)
 					
 					return Game.PointDistance(forceVec, mineVec) <= TriggerRadius
 				},
-				function(MyEnt, ent) {
+				(MyEnt, ent) => {
 					GameUI.SelectUnit(MyEnt, false)
 					Game.CastTarget(MyEnt, force, ent, false)
 				}
@@ -114,11 +112,16 @@ RemoteMines = (MyEnt, HEnts) => {
 	return
 }
 
-EzTechiesF = () => {
+function EzTechiesF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
-		return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
-	}).sort(function(ent1, ent2) {
+	var HEnts = Entities.PlayersHeroEnts().filter(ent =>
+		Entities.IsAlive(ent)
+		&& !(
+			Entities.IsBuilding(ent)
+			|| Entities.IsInvulnerable(ent)
+		)
+		&& Entities.IsEnemy(ent)
+	).sort(function(ent1, ent2) {
 		var h1 = Entities.GetHealth(ent1)
 		var h2 = Entities.GetHealth(ent2)
 		

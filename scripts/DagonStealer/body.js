@@ -1,11 +1,11 @@
-﻿DagonStealerOnInterval = () => {
+﻿function DagonStealerOnInterval() {
 	DagonSteal()
 	
 	if(DagonStealer.checked)
 		$.Schedule(Fusion.MyTick, DagonStealerOnInterval)
 }
 
-DagonSteal = () => {
+function DagonSteal() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt) || Abilities.GetLocalPlayerActiveAbility() !== -1)
 		return

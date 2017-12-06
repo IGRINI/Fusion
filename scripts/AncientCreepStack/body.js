@@ -58,7 +58,7 @@ var uiw = Game.GetScreenWidth()
 	],
 	camp, myid, ent, team, status
 
-destroy = () => {
+function destroy() {
 	if(Fusion.Subscribes.AncientCreepStack !== undefined)
 		GameEvents.Unsubscribe(Fusion.Subscribes.AncientCreepStack)
 	Fusion.Panels.AncientCreepStack.DeleteAsync(0)
@@ -66,7 +66,7 @@ destroy = () => {
 	Fusion.Particles.AncientCreepStack = []
 }
 
-DrawBox = box => {
+function DrawBox(box) {
 	Fusion.Particles.AncientCreepStack.push(Fusion.DrawLineInGameWorld(
 		[box[0], box[1], box[4]],
 		[box[0], box[3], box[4]]
@@ -85,13 +85,11 @@ DrawBox = box => {
 	))
 }
 
-ComparePoints = (a,b,c) => {
-	if(Math.abs(a[0]-b[0])>c||Math.abs(a[1]-b[1])>c||Math.abs(a[2]-b[2])>c)
-		return false
-	else
-		return true
+function ComparePoints(a, b, c) {
+	return Game.PointDistance(a, b) <= c
 }
-GetNeutral = (ent,maxrange) => {
+
+function GetNeutral(ent,maxrange) {
 	var neutrals = Entities.GetAllEntitiesByClassname("npc_dota_creep_neutral")
 	var mr = maxrange
 	var n = -1
@@ -99,27 +97,31 @@ GetNeutral = (ent,maxrange) => {
 	var e = -1
 	var gold = 0
 	var exp = 0
-	neutrals.forEach(neutral => {
-		var p = Entities.GetAbsOrigin(neutral)
-		if(!Entities.IsAncient(neutral)||Entities.NoHealthBar(neutral))
-			continue
-		var name = Entities.GetUnitName(neutral)
-		if(!ancients[name]) {
-			gold += ancients[name][0]
-			exp += ancients[name][1]
-		}
-		if(p[0]>spots[team][0]-500&&p[0]<spots[team][2]+500&&p[1]<spots[team][1]+500&&p[1]>spots[team][3]-500)
-			l++
-		if(Entities.GetRangeToUnit(ent, neutral)<maxrange)
-			n++
-		if(Entities.GetRangeToUnit(ent, neutral)<mr&&Entities.GetRangeToUnit(ent, neutral) < maxrange && ent != neutral){
-			mr = Entities.GetRangeToUnit(ent, neutral)
-			e = neutral
+	neutrals
+		.filter(neutral =>
+			Entities.IsAncient(neutral)
+			&& !Entities.NoHealthBar(neutral)
+		)
+		.forEach(neutral => {
+			var p = Entities.GetAbsOrigin(neutral)
+			var name = Entities.GetUnitName(neutral)
+			if(!ancients[name]) {
+				gold += ancients[name][0]
+				exp += ancients[name][1]
+			}
+			if(p[0]>spots[team][0]-500&&p[0]<spots[team][2]+500&&p[1]<spots[team][1]+500&&p[1]>spots[team][3]-500)
+				l++
+			if(Entities.GetRangeToUnit(ent, neutral)<maxrange)
+				n++
+			if(Entities.GetRangeToUnit(ent, neutral)<mr&&Entities.GetRangeToUnit(ent, neutral) < maxrange && ent != neutral){
+				mr = Entities.GetRangeToUnit(ent, neutral)
+				e = neutral
 		}
 	})
 	return [e,mr,n,l,gold,exp]
 }
-AncientCreepStackF = () => {
+
+function AncientCreepStackF() {
 	if ( !AncientCreepStack.checked || Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)){
 		AncientCreepStack.checked = false
 		destroy()
@@ -178,7 +180,7 @@ AncientCreepStackF = () => {
 		}
 	}
 }
-AncientCreepStackU = () => {
+function AncientCreepStackU() {
 	if ( !AncientCreepStack.checked || (Game.GetState()!=7 && Game.GetState()!=6))
 		return
 	var xy = [Game.WorldToScreenX(spots[team][2]-400,spots[team][1],spots[team][4])+50,Game.WorldToScreenY(spots[team][2]-400,spots[team][1],spots[team][4]+50)]
@@ -195,7 +197,7 @@ AncientCreepStackU = () => {
 	Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg ) translate3d( 0px, "+((time-Math.floor(time))*20)+"px, 0px );"}, 0.3, "ease-in-out", 0)
 }
 
-move = (ent, toSelect, vec) => {
+function move(ent, toSelect, vec) {
 	GameUI.SelectUnit(ent, false)
 	Game.MoveToPos(ent, vec, false)
 	GameUI.SelectUnit(toSelect,false)
