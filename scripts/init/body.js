@@ -1,4 +1,4 @@
-this.Fusion = {
+Fusion = {
 	Configs: {},
 	Commands: {},
 	Panels: {},
