@@ -229,10 +229,10 @@ Fusion.BuffsAbsorbMagicDmg = {
 	}
 }
 Fusion.GetAbsorbedDamage = (entTo, damageType) => {
-	var dmg
+	var dmg = 0
 	Game.GetBuffs(entTo).forEach(enemyBuff => {
 		var enemyBuffName = Buffs.GetName(entTo, enemyBuff)
-		Fusion.BuffsAbsorbMagicDmg.values().forEach(absorbBuffName => {
+		Fusion.BuffsAbsorbMagicDmg.forEach(absorbBuffName => {
 			if(enemyBuffName === absorbBuffName) {
 				var absorbBuff = Fusion.BuffsAbsorbMagicDmg[absorbBuffName]
 				if(absorbBuff.damageType !== DAMAGE_TYPES.DAMAGE_TYPE_ALL && absorbBuff.damageType !== damageType)
@@ -298,7 +298,6 @@ Fusion.CalculateDamage = (entFrom, entTo, damage, damage_type) => {
 		case DAMAGE_TYPES.DAMAGE_TYPE_PHYSICAL:
 			var armor = Entities.GetPhysicalArmorValue(entTo)
 			damage *= (1 - (armor * 0.05) / (1 + Math.abs(armor) * 0.05))
-			// damage -= damage * ((armor * 0.05) / (1 + Math.abs(armor) * 0.05))"
 			break
 		case DAMAGE_TYPES.DAMAGE_TYPE_NONE:
 			damage = 0
