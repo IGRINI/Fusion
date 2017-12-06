@@ -47,16 +47,8 @@ AxeUltiF = () => {
 		if(Entities.GetHealth(ent) < kill_threshold) {
 			CastUlti(MyEnt, Ulti, Abilities.GetCastPoint(Ulti), ent)
 			return false
-		} else {
-			var Dagon = Fusion.GetDagon(MyEnt)
-			if(Dagon !== undefined) {
-				var DagonDamage = Fusion.GetDagonDamage(Dagon)
-				if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) - kill_threshold < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
-					CastDagon(MyEnt, Dagon, ent)
-					return false
-				}
-			}
-		}
+		} else
+			return !Fusion.TryDagon(MyEnt, ent, kill_threshold, DAMAGE_TYPES.DAMAGE_TYPE_PURE)
 
 		return true
 	})

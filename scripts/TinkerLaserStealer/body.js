@@ -42,18 +42,8 @@ LaserSteal = () => {
 			if(Entities.GetHealth(ent) < LaserDamage) {
 				CastLaser(MyEnt, Laser, LaserCastPoint, ent)
 				return false
-			} else {
-				var Dagon = Fusion.GetDagon(MyEnt)
-				if(Dagon !== undefined) {
-					var DagonDamage = Fusion.GetDagonDamage(Dagon)
-					if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) - LaserDamage < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
-						CastDagon(MyEnt, Dagon, ent)
-						return false
-					}
-				}
-			}
-
-			return true
+			} else
+				return !Fusion.TryDagon(MyEnt, ent, LaserDamage, DAMAGE_TYPES.DAMAGE_TYPE_PURE)
 		})
 }
 

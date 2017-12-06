@@ -13,8 +13,8 @@ DagonSteal = () => {
 	var Dagon = Fusion.GetDagon(MyEnt)
 	if(Dagon === undefined)
 		return
-	var DagonDamage = Fusion.GetDagonDamage(Dagon)
-	var DagonRange = Abilities.GetCastRangeFix(Dagon)
+	var DagonDamage = Fusion.GetDagonDamage(Dagon),
+		DagonRange = Abilities.GetCastRangeFix(Dagon)
 	
 	if(Abilities.GetCooldownTimeRemaining(Dagon) !== 0)
 		return

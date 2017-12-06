@@ -71,7 +71,27 @@ Fusion.FindNearestEntity = (ent, ents, ignore) => {
 	return ret !== ent ? ret : undefined
 }
 
-Fusion.TryDagon = (MyEnt, ent, damageInfo) => {
+/**
+ * Tries dagon
+ * @param {*} MyEnt entity that'll output damage
+ * @param {*} ent entity that'll receive damage
+ * @param {*} damage damage that we already have
+ * @param {*} damage_type damage type that we already have
+ * @returns used dagon or not
+ */
+Fusion.TryDagon = (MyEnt, ent, damage, damage_type) => {
+	damage_type = damage_type || DAMAGE_TYPES.DAMAGE_TYPE_NONE
+	var Dagon = Fusion.GetDagon(MyEnt)
+	if(Dagon !== undefined) {
+		var DagonDamage = Fusion.GetDagonDamage(Dagon)
+		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) - Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
+			GameUI.SelectUnit(MyEnt, false)
+			Game.CastTarget(MyEnt, Dagon, ent, false)
+			return true
+		}
+	}
+
+	return false
 }
 
 Fusion.GetDagon = MyEnt => {

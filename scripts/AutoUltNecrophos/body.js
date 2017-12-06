@@ -44,20 +44,8 @@ AutoUltNecrophosF = () => {
 			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Ulti, ent, false)
 			return false
-		} else {
-			var Dagon = Fusion.GetDagon(MyEnt)
-			if(Dagon !== undefined) {
-				var DagonDamage = Fusion.GetDagonDamage(Dagon)
-				if (
-					Abilities.GetCooldownTimeRemaining(Dagon) === 0 &&
-					Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, dmg + DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
-				) {
-					GameUI.SelectUnit(MyEnt, false)
-					Game.CastTarget(MyEnt, Dagon, ent, false)
-					Game.EntStop(MyEnt, false)
-				}
-			}
-		}
+		} else
+			return !Fusion.TryDagon(MyEnt, ent, dmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 
 		return true
 	})
