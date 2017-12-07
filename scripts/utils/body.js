@@ -584,36 +584,34 @@ Game.GetBuffsNames = ent => Game.GetBuffs(ent).map(buff => Buffs.GetName(ent, bu
 //Panel amimating (c) moddota.com
 var AnimatePanel_DEFAULT_DURATION = "300.0ms"
 var AnimatePanel_DEFAULT_EASE = "linear"
-Fusion.AnimatePanel = (panel, values, duration, ease, delay) => {
-	var durationString = (duration != null ? (duration * 1000) + ".0ms" : AnimatePanel_DEFAULT_DURATION)
-	var easeString = (ease != null ? ease : AnimatePanel_DEFAULT_EASE)
-	var delayString = (delay != null ? (delay * 1000) + ".0ms" : "0.0ms")
-	var transitionString = `${durationString} ${easeString} ${delayString}`
-	var i = 0
-	var finalTransition = ""
-	for (var property in values) {
-		finalTransition = `${finalTransition}${(i > 0 ? ", " : "")}${property} ${transitionString}`
+Fusion.AnimatePanel = (panel, properties, duration, ease, delay) => {
+	duration = duration || 0.3
+	delay = delay || 0
+	ease = ease || "linear"
+
+	var transitionString = `${duration * 1000}.0ms ${ease} ${delay * 1000}.0ms`,
+		finalTransition = "",
+		i
+	properties.forEach((property, value) => {
+		finalTransition += `${i > 0 ? ", " : ""}${value} ${transitionString}`
 		i++
-	}
+	})
 	panel.style.transition = finalTransition + ";"
-	for (var property in values)
-		panel.style[property] = values[property]
+	properties.forEach(property => panel.style[property] = properties[property])
 }
 
 Fusion.AddScript = (scriptName, onCheckBoxClick) => {
 	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
 	Temp.SetPanelEvent("onactivate", onCheckBoxClick)
-	Temp.BLoadLayoutFromString(`\
-		<root>\
-			<styles>\
-				<include src="s2r://panorama/styles/dotastyles.vcss_c"/>\
-				<include src="s2r://panorama/styles/magadan.vcss_c"/>\
-			</styles>\
-			<Panel>\
-				<ToggleButton class="CheckBox" id="${scriptName}" text="${scriptName}"/>\
-			</Panel>\
-		</root>\
-`, false, false)
+	Temp.BLoadLayoutFromString(`<root>\
+	<styles>\
+		<include src="s2r://panorama/styles/dotastyles.vcss_c"/>\
+		<include src="s2r://panorama/styles/magadan.vcss_c"/>\
+	</styles>\
+	<Panel>\
+		<ToggleButton class="CheckBox" id="${scriptName}" text="${scriptName}"/>\
+	</Panel>\
+</root>`, false, false)
 	/*var scripts = Fusion.Panels.MainPanel.scripts, // potential fix for sort
 		Child = scripts.Children()
 	for(var k = 1; k < Child.length - 1; k++) {

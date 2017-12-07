@@ -166,7 +166,7 @@ function AncientCreepStackF() {
 	}
 	if(status==1&&!b){
 		GameUI.SelectUnit(ent,false)
-		Game.MoveToAttackPos(ent, xyz, false) //FIXIT
+		Game.MoveToAttackPos(ent, xyz, false)
 		GameUI.SelectUnit(entnow,false)
 	}else if(status==1&&b){
 		if(z>=a[team].length-2){

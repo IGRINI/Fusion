@@ -18,11 +18,11 @@ function AntiAFKF() {
 function AFK(MyEnt, HEnts) {
 	var lastMin = HEnts.filter(ent =>
 		Entities.IsAlive(ent)
+		&& ent !== MyEnt
 		&& !(
 			Entities.IsBuilding(ent)
 			|| Entities.IsInvulnerable(ent)
 			 && !Entities.IsEnemy(ent)
-			 && ent !== MyEnt
 		)
 	).sort((ent1, ent2) => {
 		var rng1 = Entities.GetRangeToUnit(MyEnt, ent1)
