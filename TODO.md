@@ -11,6 +11,7 @@
 
 ## InDev:
 * Make Fusion site, native support
+* Rewrite scripts for Node.js
 
 ## Realized:
 * Make AutoDeny use soul ring together with pudge's rot
