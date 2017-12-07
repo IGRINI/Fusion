@@ -17,9 +17,9 @@ function Destroy() {
 	if(Fusion.Panels.AbilityRange)
 		Fusion.Panels.AbilityRange.DeleteAsync(0)
 	if(Fusion.Subscribes.AbilityRange)
-		Fusion.Subscribes.AbilityRange.forEach(GameEvents.Unsubscribe)
+		Fusion.Subscribes.AbilityRange.forEach(sub => GameEvents.Unsubscribe(sub)) // Optimize this line by native
 	if(Fusion.Particles.AbilityRange)
-		Fusion.Particles.AbilityRange.forEach(Particles.DestroyParticleEffect)
+		Fusion.Particles.AbilityRange.forEach(par => Particles.DestroyParticleEffect(par, true))
 	Fusion.Subscribes.AbilityRange = []
 	Fusion.Particles.AbilityRange = []
 	delete Fusion.Panels.AbilityRange

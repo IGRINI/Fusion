@@ -13,8 +13,7 @@ function DagonSteal() {
 	var Dagon = Fusion.GetDagon(MyEnt)
 	if(Dagon === undefined)
 		return
-	var DagonDamage = Fusion.GetDagonDamage(Dagon),
-		DagonRange = Abilities.GetCastRangeFix(Dagon)
+	var DagonRange = Abilities.GetCastRangeFix(Dagon)
 	
 	if(Abilities.GetCooldownTimeRemaining(Dagon) !== 0)
 		return
@@ -28,13 +27,8 @@ function DagonSteal() {
 			&& !Entities.IsInvulnerable(ent)
 			&& !Fusion.HasLinkenAtTime(ent, 0)
 			&& Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange
-			&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 		)
-		.every(ent => {
-			GameUI.SelectUnit(MyEnt, false)
-			Game.CastTarget(MyEnt, Dagon, ent, false)
-			return false
-		})
+		.every(ent => !Fusion.TryDagon(MyEnt, ent))
 }
 
 var DagonStealer = Fusion.AddScript("DagonStealer", () => {

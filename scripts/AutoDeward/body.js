@@ -39,7 +39,6 @@ function GetDewardItem(MyEnt) {
 	[
 		"item_quelling_blade",
 		"item_bfury",
-		"item_iron_talon",
 		"item_tango"
 	].every(itemName => {
 		let item = Game.GetAbilityByName(MyEnt, itemName)

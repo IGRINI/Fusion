@@ -78,6 +78,7 @@ Fusion.FindNearestEntity = (ent, ents, ignore) => {
  * @returns used dagon or not
  */
 Fusion.TryDagon = (MyEnt, ent, damage, damage_type) => {
+	damage = damage || 0
 	damage_type = damage_type || DAMAGE_TYPES.DAMAGE_TYPE_NONE
 	var Dagon = Fusion.GetDagon(MyEnt)
 	if(Dagon !== undefined) {
