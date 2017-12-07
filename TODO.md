@@ -10,11 +10,10 @@
 * Add invoker skills' functions with callbacks, integrate to code and turn into commands
 
 ## InDev:
-* Fully rewrite rubick autosteal
-* Rework AutoDeny (ex.: use soul ring together with pudge's rot)
 * Make Fusion site, native support
 
 ## Realized:
+* Make AutoDeny use soul ring together with pudge's rot
 * ~~Make server based on NIO (non-blocking IO)~~ *_discontinued, as new platform will not require server_*
 * Snatcher
 * AutoBottle
@@ -29,11 +28,15 @@
 * AnnoyingPinger *_Will debug ASAP_*
 
 # FixMe:
-## InDev:
-* Fix EzTechies
+## Unordered soon:
 * Fix TinkerLaserStealer' pathing for scepter
+* Fix coordinates for AncientCreepStack
+
+## Soon:
+* Fully rewrite rubick autosteal
 
 ## Realized:
+* Fix EzTechies
 * Fix command re-binding on reload
 * Fix Snatcher
 * Fix ItemsPanel, EnemyManaBars
