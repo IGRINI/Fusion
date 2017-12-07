@@ -16,8 +16,10 @@ Fusion.ReloadFusion = () => Fusion.LoadFusion().then(() => Fusion.ServerRequest(
 	Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
 	var promises = []
 	JSON.parse(response).forEach(scriptName => promises.push(Fusion.GetScript(scriptName)))
-	Promise.all(promises).then(scripts => scripts.forEach(eval))
-	Fusion.Panels.MainPanel.ToggleClass("Popup")
+	Promise.all(promises).then(scripts => {
+		scripts.forEach(eval)
+		Fusion.Panels.MainPanel.ToggleClass("Popup")
+	})
 }))
 
 
