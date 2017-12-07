@@ -1,20 +1,21 @@
 ﻿var positionModifiers = {
-	"modifier_invoker_sun_strike": [1.7, "npc_dota_hero_invoker", "invoker_sun_strike", "invoker_invo_ability_sunstrike_01"],
-	"modifier_kunkka_torrent_thinker": [1.6, "npc_dota_hero_kunkka", "kunkka_torrent", "kunkka_kunk_ability_torrent_01"],
-	"modifier_lina_light_strike_array": [0.5, "npc_dota_hero_lina", "lina_light_strike_array", " lina_lina_ability_lightstrike_02"],
-	"modifier_leshrac_split_earth_thinker": [0.35, "npc_dota_hero_leshrac", "leshrac_split_earth", "leshrac_lesh_ability_split_05"]
-}
-var targetModifiers = {
-	"modifier_spirit_breaker_charge_of_darkness_vision": ["particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge_target_mark.vpcf", 1.5, "npc_dota_hero_spirit_breaker", "spirit_breaker_charge_of_darkness", "spirit_breaker_spir_ability_charge_17"],
-	"modifier_tusk_snowball_visible": ["particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge_target_mark.vpcf", 1.5, "npc_dota_hero_tusk", "tusk_snowball", " tusk_tusk_snowball_01"],
-	"modifier_life_stealer_infest_effect": ["particles/units/heroes/hero_life_stealer/life_stealer_infested_unit_icon.vpcf", 1.5, "npc_dota_hero_life_stealer", "life_stealer_infest", "Hero_LifeStealer.Infest"],
-	"modifier_life_stealer_assimilate_effect": ["particles/units/heroes/hero_life_stealer/life_stealer_infested_unit_icon.vpcf", 1.5, "npc_dota_hero_life_stealer", "life_stealer_assimilate", "Hero_LifeStealer.Assimilate.Target"]
-}
-var waitingPosModifiers = {
-	"modifier_techies_suicide_leap": [1.5, "npc_dota_hero_techies", "techies_suicide", "Hero_Techies.Suicide.Arcana"]
-}
-var z = []
-var panels = []
+		"modifier_invoker_sun_strike": [1.7, "npc_dota_hero_invoker", "invoker_sun_strike", "invoker_invo_ability_sunstrike_01"],
+		"modifier_kunkka_torrent_thinker": [1.6, "npc_dota_hero_kunkka", "kunkka_torrent", "kunkka_kunk_ability_torrent_01"],
+		"modifier_lina_light_strike_array": [0.5, "npc_dota_hero_lina", "lina_light_strike_array", " lina_lina_ability_lightstrike_02"],
+		"modifier_leshrac_split_earth_thinker": [0.35, "npc_dota_hero_leshrac", "leshrac_split_earth", "leshrac_lesh_ability_split_05"]
+	},
+	targetModifiers = {
+		"modifier_spirit_breaker_charge_of_darkness_vision": ["particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge_target_mark.vpcf", 1.5, "npc_dota_hero_spirit_breaker", "spirit_breaker_charge_of_darkness", "spirit_breaker_spir_ability_charge_17"],
+		"modifier_tusk_snowball_visible": ["particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge_target_mark.vpcf", 1.5, "npc_dota_hero_tusk", "tusk_snowball", " tusk_tusk_snowball_01"],
+		"modifier_life_stealer_infest_effect": ["particles/units/heroes/hero_life_stealer/life_stealer_infested_unit_icon.vpcf", 1.5, "npc_dota_hero_life_stealer", "life_stealer_infest", "Hero_LifeStealer.Infest"],
+		"modifier_life_stealer_assimilate_effect": ["particles/units/heroes/hero_life_stealer/life_stealer_infested_unit_icon.vpcf", 1.5, "npc_dota_hero_life_stealer", "life_stealer_assimilate", "Hero_LifeStealer.Assimilate.Target"]
+	},
+	waitingPosModifiers = {
+		"modifier_techies_suicide_leap": [1.5, "npc_dota_hero_techies", "techies_suicide", "Hero_Techies.Suicide.Arcana"]
+	},
+	z = [],
+	panels = [],
+	enabled = false
 
 function SAlertEvery() {
 	if (!SkillAlert.checked)
@@ -50,7 +51,7 @@ function SAlertEvery() {
 		})
 	})
 
-	if(SkillAlert.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, SAlertEvery)
 }
 
@@ -128,13 +129,19 @@ function CreateTimerParticle(vec, time, ent) {
 	)
 }
 
-var SkillAlert = Fusion.AddScript("SkillAlert", () => {
-	if (SkillAlert.checked) {
-		Fusion.GetConfig("SkillAlert").then(config => {
-			Fusion.Configs.SkillAlert = config
-			SAlertEvery()
-		})
-		Game.ScriptLogMsg("Script enabled: SkillAlert", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: SkillAlert", "#ff0000")
-})
+return {
+	name: "SkillAlert",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			Fusion.GetConfig("SkillAlert").then(config => {
+				Fusion.Configs.SkillAlert = config
+				SAlertEvery()
+			})
+			Game.ScriptLogMsg("Script enabled: SkillAlert", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: SkillAlert", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

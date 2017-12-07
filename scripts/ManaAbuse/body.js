@@ -6,7 +6,10 @@ var AbuseManaItems = [
 	"item_magic_wand"
 ]
 
-if(!Fusion.Commands.ManaAbuseF) {
+function onPreloadF() {
+	if(Fusion.Commands.ManaAbuseF)
+		return
+	
 	Fusion.Commands.ManaAbuseF = () => {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 			myVec = Entities.GetAbsOrigin(MyEnt),
@@ -31,6 +34,10 @@ if(!Fusion.Commands.ManaAbuseF) {
 			&& Game.PointDistance(Entities.GetAbsOrigin(ent), myVec) <= 150
 		).forEach(ent => Game.PickupItem(MyEnt, ent, false))
 	}
-
 	Game.AddCommand("__ManaAbuse", Fusion.Commands.ManaAbuseF, "", 0)
+}
+return {
+	name: "ManaAbuse",
+	isVisible: false,
+	onPreload: onPreloadF
 }

@@ -56,6 +56,7 @@ var uiw = Game.GetScreenWidth(),
 		[-3307, 383, -2564, -413, 400],
 		[3456, -384, 4543, -1151, 300]
 	],
+	enabled = false,
 	camp, myid, ent, team, status
 
 function destroy() {
@@ -128,14 +129,14 @@ function GetNeutral(ent,maxrange) {
 }
 
 function AncientCreepStackF() {
-	if ( !AncientCreepStack.checked || Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)){
-		AncientCreepStack.checked = false
+	if ( !enabled || Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)){
+		enabled = false
 		destroy()
 		return
 	}
 	if(!Entities.IsAlive(ent)){
 		GameEvents.SendEventClientSide( "antiaddiction_toast", {"message":"Ваш крип помер смертью храбрых :(\nСкрипт деактивирован!","duration":"2"})
-		AncientCreepStack.checked = false
+		enabled = false
 		destroy()
 		return
 	}
@@ -187,7 +188,7 @@ function AncientCreepStackF() {
 	}
 }
 function AncientCreepStackU() {
-	if ( !AncientCreepStack.checked || (Game.GetState()!=7 && Game.GetState()!=6))
+	if ( !enabled || (Game.GetState()!=7 && Game.GetState()!=6))
 		return
 	var xy = [Game.WorldToScreenX(spots[team][2]-400,spots[team][1],spots[team][4])+50,Game.WorldToScreenY(spots[team][2]-400,spots[team][1],spots[team][4]+50)]
 	if(xy[0]<0||xy[1]<0)
@@ -209,31 +210,10 @@ function move(ent, toSelect, vec) {
 	GameUI.SelectUnit(toSelect,false)
 }
 
-var AncientCreepStack = Fusion.AddScript("AncientCreepStack", () => {
-	if ( !AncientCreepStack.checked ){
-		destroy()
-		Game.ScriptLogMsg("Script disabled: AncientCreepStack", "#ff0000")
+function onPreloadF() {
+	if(Fusion.Commands.AncientCreepStack)
 		return
-	}
-	Fusion.Commands.AncientCreepStack()
-	function f() {
-		$.Schedule(interval, () => {
-			AncientCreepStackF()
-			if(AncientCreepStack.checked)
-				f()
-		}
-	)}
-	f()
-	function u() {
-		$.Schedule(0, () => {
-			AncientCreepStackU()
-			if(AncientCreepStack.checked)
-				u()
-		}
-	)}
-	u()
-})
-if(!Fusion.Commands.AncientCreepStack) {
+	
 	Fusion.Commands.AncientCreepStack = () => {
 		myid = Players.GetLocalPlayer()
 		team = Players.GetTeam(myid)-2
@@ -245,7 +225,7 @@ if(!Fusion.Commands.AncientCreepStack) {
 				"message": "Выбранный юнит не является союзным подконтрольным крипом дальнего боя :(\nДоступна команда: __AncientCreepStack_Activate",
 				"duration": "5"
 			})
-			AncientCreepStack.checked = false
+			enabled = false
 			return
 		}
 		DrawBox(spots[team])
@@ -269,4 +249,40 @@ if(!Fusion.Commands.AncientCreepStack) {
 		Game.ScriptLogMsg("Script enabled: AncientCreepStack", "#00ff00")
 	}
 	Game.AddCommand("__AncientCreepStack_Activate", Fusion.Commands.AncientCreepStack, "", 0)
+}
+
+return {
+	name: "AncientCreepStack",
+	onPreload: onPreloadF,
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (!checkbox.checked) {
+			destroy()
+			Game.ScriptLogMsg("Script disabled: AncientCreepStack", "#ff0000")
+			return
+		}
+		Fusion.Commands.AncientCreepStack()
+		function f() {
+			$.Schedule(interval, () => {
+				AncientCreepStackF()
+				if(enabled)
+					f()
+			}
+		)}
+		f()
+		function u() {
+			$.Schedule(0, () => {
+				AncientCreepStackU()
+				if(enabled)
+					u()
+			}
+		)}
+		u()
+		Game.ScriptLogMsg("Script enabled: AncientCreepStack", "#00ff00")
+	},
+	onDestroy: () => {
+		enabled = false
+		destroy()
+	}
 }

@@ -1,7 +1,9 @@
+var enabled = false
+
 function AutoUltNecrophosOnInterval() {
 	AutoUltNecrophosF()
 
-	if(AutoUltNecrophos.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, AutoUltNecrophosOnInterval)
 }
 
@@ -51,10 +53,16 @@ function AutoUltNecrophosF() {
 	})
 }
 
-var AutoUltNecrophos = Fusion.AddScript("AutoUltNecrophos", () => {
-	if (AutoUltNecrophos.checked) {
-		AutoUltNecrophosOnInterval()
-		Game.ScriptLogMsg("Script enabled: AutoUltNecrophos", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: AutoUltNecrophos", "#ff0000")
-})
+return {
+	name: "AutoultNecrophos",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			AutoUltNecrophosOnInterval()
+			Game.ScriptLogMsg("Script enabled: AutoUltNecrophos", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AutoUltNecrophos", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

@@ -1,7 +1,9 @@
-﻿function AutoBottleOnInterval() {
+﻿var enabled = false
+
+function AutoBottleOnInterval() {
 	AutoBottleF()
 	
-	if(AutoBottle.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, AutoBottleOnInterval)
 }
 
@@ -15,10 +17,16 @@ function AutoBottleF() {
 		Game.CastNoTarget(MyEnt, Bottle, false)
 }
 
-var AutoBottle = Fusion.AddScript("AutoBottle", () => {
-	if (AutoBottle.checked) {
-		AutoBottleOnInterval()
-		Game.ScriptLogMsg("Script enabled: AutoBottle", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: AutoBottle", "#ff0000")
-})
+return {
+	name: "AntiLeap",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			AutoBottleOnInterval()
+			Game.ScriptLogMsg("Script enabled: AutoBottle", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AutoBottle", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

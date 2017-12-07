@@ -1,7 +1,9 @@
-﻿function PudgeInvisRotOnInterval() {
+﻿var enabled = false
+
+function PudgeInvisRotOnInterval() {
 	PudgeInvisRotF()
 
-	if(PudgeInvisRot.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, PudgeInvisRotOnInterval)
 }
 
@@ -14,10 +16,16 @@ function PudgeInvisRotF() {
 	Game.ToggleAbil(MyEnt, Abil, false)
 }
 
-var PudgeInvisRot = Fusion.AddScript("PudgeInvisRot", () => {
-	if (PudgeInvisRot.checked) {
-		PudgeInvisRotOnInterval()
-		Game.ScriptLogMsg("Script enabled: PudgeInvisRot", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: PudgeInvisRot", "#ff0000")
-})
+return {
+	name: "PudgeInvisRot",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			PudgeInvisRotOnInterval()
+			Game.ScriptLogMsg("Script enabled: PudgeInvisRot", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: PudgeInvisRot", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

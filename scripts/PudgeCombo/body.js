@@ -51,7 +51,10 @@ function Dismember(MyEnt, ent) {
 	Game.CastTarget(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_dismember"), ent, false)
 }
 
-if(!Fusion.Commands.PudgeCombo) {
+function onPreloadF() {
+	if(Fusion.Commands.PudgeCombo)
+		return
+
 	Fusion.Commands.PudgeCombo = () => {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var ent = Entities.NearestToMouse(MyEnt, 1000, true)
@@ -66,4 +69,10 @@ if(!Fusion.Commands.PudgeCombo) {
 	}
 
 	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
+}
+
+return {
+	name: "PudgeCombo",
+	isVisible: false,
+	onPreload: onPreloadF
 }

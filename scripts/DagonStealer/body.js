@@ -1,4 +1,6 @@
-﻿function DagonStealerOnInterval() {
+﻿var enabled = false
+
+function DagonStealerOnInterval() {
 	DagonSteal()
 	
 	if(DagonStealer.checked)
@@ -38,3 +40,16 @@ var DagonStealer = Fusion.AddScript("DagonStealer", () => {
 	} else
 		Game.ScriptLogMsg("Script disabled: DagonStealer", "#ff0000")
 })
+return {
+	name: "DagonStealer",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			DagonStealerOnInterval()
+			Game.ScriptLogMsg("Script enabled: DagonStealer", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: DagonStealer", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

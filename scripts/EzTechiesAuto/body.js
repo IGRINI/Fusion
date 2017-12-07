@@ -1,5 +1,6 @@
 ﻿var NoTarget = [],
 	BlowDelay = 0.25 + Fusion.MyTick * 10,
+	enabled = false,
 	theres
 
 function CallMines(MyEnt, ent, callback, explosionCallback) {
@@ -135,14 +136,20 @@ function EzTechiesF() {
 
 	RemoteMines(MyEnt, HEnts)
 	DenyMines(MyEnt)
-	if(EzTechies.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, EzTechiesF)
 }
 
-var EzTechies = Fusion.AddScript("EzTechiesAuto", () => {
-	if (EzTechies.checked) {
-		EzTechiesF()
-		Game.ScriptLogMsg("Script enabled: EzTechies", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: EzTechies", "#ff0000")
-})
+return {
+	name: "EzTechiesAuto",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			EzTechiesF()
+			Game.ScriptLogMsg("Script enabled: EzTechiesAuto", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: EzTechiesAuto", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

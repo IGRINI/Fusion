@@ -1,9 +1,10 @@
-﻿var flag = false
+﻿var flag = false,
+	enabled = false
 
 function ZeusAutoultOnInterval() {
 	ZeusAutoultF()
 
-	if(ZeusAutoult.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, ZeusAutoultOnInterval)
 }
 
@@ -35,10 +36,16 @@ function ZeusAutoultF() {
 		})
 }
 
-var ZeusAutoult = Fusion.AddScript("AutoultZeus", () => {
-	if (ZeusAutoult.checked) {
-		ZeusAutoultOnInterval()
-		Game.ScriptLogMsg("Script enabled: ZeusAutoult", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: ZeusAutoult", "#ff0000")
-})
+return {
+	name: "AutoultZeus",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			ZeusAutoultOnInterval()
+			Game.ScriptLogMsg("Script enabled: AutoultZeus", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AutoultZeus", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

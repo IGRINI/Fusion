@@ -1,7 +1,9 @@
+var enabled = false
+
 function TinkerLaserStealerOnInterval() {
 	LaserSteal()
 	
-	if(TinkerLaserStealer.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, TinkerLaserStealerOnInterval)
 }
 
@@ -71,10 +73,16 @@ function FindPairs(el, ar) {
 			.map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
 }
 
-var TinkerLaserStealer = Fusion.AddScript("TinkerLaserStealer", () => {
-	if (TinkerLaserStealer.checked) {
-		TinkerLaserStealerOnInterval()
-		Game.ScriptLogMsg("Script enabled: TinkerLaserStealer", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: TinkerLaserStealer", "#ff0000")
-})
+return {
+	name: "TinkerLaserStealer",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			TinkerLaserStealerOnInterval()
+			Game.ScriptLogMsg("Script enabled: TinkerLaserStealer", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: TinkerLaserStealer", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

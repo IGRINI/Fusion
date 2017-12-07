@@ -1,6 +1,7 @@
 ﻿var MainHud = Fusion.Panels.Main,
 	uiw = Fusion.Panels.Main.actuallayoutwidth,
 	uih = Fusion.Panels.Main.actuallayoutheight,
+	enabled = false,
 	manabar_layout
 
 function DeleteAll() {
@@ -52,20 +53,26 @@ function EMBEvery() {
 		manabar.style.position = `${uixp}% ${uiyp}% 0`
 		manabar.Children()[0].style.width = `${ManaPercent}%`
 	})
-	if(EnemyManaBars.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, EMBEvery)
 	else
 		DeleteAll()
 }
 
-DeleteAll()
-var EnemyManaBars = Fusion.AddScript("EnemyManaBars", () => {
-	if (EnemyManaBars.checked) {
-		Fusion.GetXML("EnemyManaBars/manabar").then(xml => {
-			manabar_layout = xml
-			EMBEvery()
-		})
-		Game.ScriptLogMsg("Script enabled: EnemyManaBars", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: EnemyManaBars", "#ff0000")
-})
+return {
+	name: "ExpRange",
+	onPreload: DeleteAll,
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			Fusion.GetXML("EnemyManaBars/manabar").then(xml => {
+				manabar_layout = xml
+				EMBEvery()
+			})
+			Game.ScriptLogMsg("Script enabled: EnemyManaBars", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: EnemyManaBars", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

@@ -1,4 +1,5 @@
-﻿var feeder = false
+﻿var feeder = false,
+	enabled = false
 
 function AntiAFKF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
@@ -11,7 +12,7 @@ function AntiAFKF() {
 	GameUI.SelectUnit(MyEnt, false)
 	AFK(MyEnt, HEnts)
 
-	if(AntiAFK.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, AntiAFKF)
 }
 
@@ -46,10 +47,16 @@ function AFK(MyEnt, HEnts) {
 		Game.MoveToTarget(MyEnt, lastMin, false)
 }
 
-var AntiAFK = Fusion.AddScript("AntiAFK", () => {
-	if (AntiAFK.checked) {
-		AntiAFKF()
-		Game.ScriptLogMsg("Script enabled: AntiAFK", "#00ff00")
-	} else 
-		Game.ScriptLogMsg("Script disabled: AntiAFK", "#ff0000")
-})
+return {
+	name: "AntiAFK",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			AntiAFKF()
+			Game.ScriptLogMsg("Script enabled: AntiAFK", "#00ff00")
+		} else 
+			Game.ScriptLogMsg("Script disabled: AntiAFK", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

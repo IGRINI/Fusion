@@ -1,4 +1,6 @@
-﻿function AutoDenyOnInterval() {
+﻿var enabled = false
+
+function AutoDenyOnInterval() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -28,21 +30,26 @@
 	Game.CastPosition(MyEnt, item, Entities.GetAbsOrigin(MyEnt), false)
 }
 
-var AutoDeny = Fusion.AddScript("AutoDeny", () => {
-	if (!AutoDeny.checked) {
-		Game.ScriptLogMsg("Script disabled: AutoDeny", "#ff0000")
-	} else {
-		function intervalFunc() {
-			$.Schedule(
-				Fusion.MyTick / 3,
-				() => {
-					AutoDenyOnInterval()
-					if(AutoDeny.checked)
-						intervalFunc()
-				}
-			)
-		}
-		intervalFunc()
-		Game.ScriptLogMsg("Script enabled: AutoDeny", "#00ff00")
-	}
-})
+return {
+	name: "AutoDeny",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			function intervalFunc() {
+				$.Schedule(
+					Fusion.MyTick / 3,
+					() => {
+						AutoDenyOnInterval()
+						if(enabled)
+							intervalFunc()
+					}
+				)
+			}
+			intervalFunc()
+			Game.ScriptLogMsg("Script enabled: AutoDeny", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AutoDeny", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

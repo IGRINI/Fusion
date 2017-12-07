@@ -87,13 +87,12 @@ function chkboxpressed() {
 	}
 }
 
-Destroy()
-var AbilityRange = Fusion.AddScript("AbilityRange", () => {
-	if (AbilityRange.checked) {
+function onToggleF(checkbox) {
+	if (checkbox.checked) {
 		var MyID = Game.GetLocalPlayerID()
 		MyEnt = Players.GetPlayerHeroEntityIndex(MyID)
 		if ( MyEnt==-1 ){
-			AbilityRange.checked = false
+			checkbox.checked = false
 			Destroy()
 			return
 		}
@@ -128,7 +127,7 @@ var AbilityRange = Fusion.AddScript("AbilityRange", () => {
 			Game.AddCommand( "__AbilityRange_Rotate", Fusion.Commands.AbilityRange_Rotate, "",0)
 		}
 		AbilityRangePanel = Fusion.Panels.Main.FindChildrenWithClassTraverse("AbilityRangePanel")[0]
-		for ( i = 0; i < Entities.GetAbilityCount(MyEnt ); i++){
+		for (var i = 0; i < Entities.GetAbilityCount(MyEnt ); i++){
 			Abil = Entities.GetAbility(MyEnt,i)
 			if ( Abil == -1 )
 				continue
@@ -159,4 +158,10 @@ var AbilityRange = Fusion.AddScript("AbilityRange", () => {
 		Destroy()
 		Game.ScriptLogMsg("Script disabled: AbilityRange", "#ff0000")
 	}
-})
+}
+
+return {
+	name: "AbilityRange",
+	onToggle: onToggleF,
+	onDestroy: Destroy
+}

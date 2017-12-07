@@ -1,7 +1,7 @@
 ﻿if(Fusion.Panels.EzProcast)
 	Fusion.Panels.EzProcast.DeleteAsync(0)
 
-function EzProcast01OnOffLoad() {
+function EzProcastOnOffLoad() {
 	Fusion.GetXML("EzProcast/panel").then(layout_string => {
 		Fusion.Panels.EzProcast = $.CreatePanel("Panel", Fusion.Panels.Main, "EzProcast")
 		Fusion.Panels.EzProcast.BLoadLayoutFromString(layout_string, false, false)
@@ -68,7 +68,9 @@ function EzProcast01OnOffLoad() {
 	});
 }
 
-if(!Fusion.Commands.EzProcastF) {
+function onPreloadF() {
+	if(Fusion.Commands.EzProcastF)
+		return
 	Fusion.Commands.EzProcastF = () => {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var EntOnCursor = GameUI.FindScreenEntities( GameUI.GetCursorPosition() )
@@ -113,12 +115,18 @@ if(!Fusion.Commands.EzProcastF) {
 	}
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
 }
-var EzProcast01 = Fusion.AddScript("EzProcast", () => {
-	if (EzProcast01.checked) {
-		EzProcast01OnOffLoad()
-		Game.ScriptLogMsg("Script enabled: EzProcast", "#00ff00")
-	} else {
-		Fusion.Panels.EzProcast.DeleteAsync(0)
-		Game.ScriptLogMsg("Script disabled: EzProcast", "#ff0000")
-	}
-})
+
+return {
+	name: "EzProcast",
+	onPreload: onPreloadF,
+	onToggle: checkbox => {
+		if (checkbox.checked) {
+			EzProcastOnOffLoad()
+			Game.ScriptLogMsg("Script enabled: EzProcast", "#00ff00")
+		} else {
+			Fusion.Panels.EzProcast.DeleteAsync(0)
+			Game.ScriptLogMsg("Script disabled: EzProcast", "#ff0000")
+		}
+	},
+	onDestroy: () => Fusion.Panels.EzProcast.DeleteAsync(0)
+}

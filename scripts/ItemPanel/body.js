@@ -1,4 +1,5 @@
-﻿if(Fusion.Panels.ItemPanel)
+﻿var enabled = false
+if(Fusion.Panels.ItemPanel)
 	Fusion.Panels.ItemPanel.DeleteAsync(0)
 Fusion.ItemPanel = []
 
@@ -27,8 +28,9 @@ function NewItem(oldinv, newinv, ent) {
 }
 
 function ItemPanelEvery() {
-	if (!ItemPanel.checked)
+	if (!enabled)
 		return
+	
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)) {
 		ItemPanel.checked = false
 		Game.ScriptLogMsg("ItemPanel cannot be enabled before pre-game", "#ff0000")
@@ -54,6 +56,7 @@ function ItemPanelEvery() {
 			for(var n in Inv)
 				P.Children()[n + 1].itemname = Abilities.GetAbilityName(Inv[n])
 		})
+	
 	if(ItemPanel.checked)
 		$.Schedule(Fusion.MyTick, ItemPanelEvery)
 }
@@ -78,14 +81,20 @@ function ItemPanelLoad() {
 	})
 }
 
-var ItemPanel = Fusion.AddScript("ItemPanel", () => {
-	if (ItemPanel.checked) {
-		ItemPanelLoad()
-		Game.ScriptLogMsg("Script enabled: ItemPanel", "#00ff00")
-	} else {
-		Fusion.ItemPanel = []
-		if(Fusion.Panels.ItemPanel)
-			Fusion.Panels.ItemPanel.DeleteAsync(0)
-		Game.ScriptLogMsg("Script disabled: ItemPanel", "#ff0000")
-	}
-})
+return {
+	name: "ItemPanel",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			ItemPanelLoad()
+			Game.ScriptLogMsg("Script enabled: ItemPanel", "#00ff00")
+		} else {
+			Fusion.ItemPanel = []
+			if(Fusion.Panels.ItemPanel)
+				Fusion.Panels.ItemPanel.DeleteAsync(0)
+			Game.ScriptLogMsg("Script disabled: ItemPanel", "#ff0000")
+		}
+	},
+	onDestroy: () => enabled = false
+}

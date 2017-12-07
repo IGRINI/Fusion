@@ -1,6 +1,5 @@
-var DisablingAbils = [
-	"item_cyclone"
-]
+var DisablingAbils = [ "item_cyclone" ],
+	enabled = false
 DisablingAbils.push(Fusion.ForceStaffNames)
 
 var DisableModifiers = new Map([
@@ -51,16 +50,22 @@ function AntiLeapF() {
 	})
 }
 
-var AntiLeap = Fusion.AddScript("AntiLeap", () => {
-	if (AntiLeap.checked) {
-		function L() {
-			if (AntiLeap.checked) {
-				AntiLeapF()
-				$.Schedule(Fusion.MyTick, L)
+return {
+	name: "AntiLeap",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			function L() {
+				if (enabled) {
+					AntiLeapF()
+					$.Schedule(Fusion.MyTick, L)
+				}
 			}
-		}
-		L()
-		Game.ScriptLogMsg("Script enabled: AntiLeap", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: AntiLeap", "#ff0000")
-})
+			L()
+			Game.ScriptLogMsg("Script enabled: AntiLeap", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AntiLeap", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

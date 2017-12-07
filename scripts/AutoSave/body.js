@@ -46,6 +46,10 @@ function AutoSaveF() {
 	}))
 }
 
+return {
+	name: "AutoSave",
+	isVisible: false
+}
 /*var AutoSave = Fusion.AddScript("AutoSave", () => {
 	if (!AutoSave.checked)
 	Game.ScriptLogMsg("Script disabled: AutoSave", "#ff0000")

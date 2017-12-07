@@ -1,7 +1,9 @@
+var enabled = false
+
 function SniperAssassinateOnInterval() {
 	SniperAssassinateF()
 
-	if(SniperAssassinate.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, SniperAssassinateOnInterval)
 }
 
@@ -48,10 +50,16 @@ function SniperAssassinateF() {
 	})
 }
 
-var SniperAssassinate = Fusion.AddScript("SniperAssassinate", () => {
-	if (SniperAssassinate.checked) {
-		SniperAssassinateOnInterval()
-		Game.ScriptLogMsg("Script enabled: SniperAssassinate", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: SniperAssassinate", "#ff0000")
-})
+return {
+	name: "SniperAssassinate",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			SniperAssassinateOnInterval()
+			Game.ScriptLogMsg("Script enabled: SniperAssassinate", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: SniperAssassinate", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

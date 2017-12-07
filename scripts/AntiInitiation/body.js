@@ -1,4 +1,5 @@
 ﻿// 3rd arg means that this ability can"t be disabled because of castpoint (ex. eul has 0.0 castpoint)
+var enabled = false
 var HexAbils = [
 	["item_sheepstick", true, true],
 	["lion_voodoo", true, true],
@@ -79,8 +80,9 @@ function GetAbilArray(abilNameToSearch) {
 
 var flags = []
 function AntiInitiationF() {
-	if(!AntiInitiation.checked)
+	if(!enabled)
 		return
+	
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
@@ -195,22 +197,26 @@ function Disable (MyEnt, ent, Abil) {
 	return true
 }
 
-var AntiInitiation = Fusion.AddScript("AntiInitiation", () => {
-	if (!AntiInitiation.checked){
-		Game.ScriptLogMsg("Script disabled: AntiInitiation", "#ff0000")
-		return
-	} else {
-		function f() {
-			$.Schedule (
-				Fusion.MyTick,
-				() => {
-					AntiInitiationF()
-					if(AntiInitiation.checked)
-						f()
-				}
-			)
-		}
-		f()
-		Game.ScriptLogMsg("Script enabled: AntiInitiation", "#00ff00")
-	}
-})
+return {
+	name: "AntiInitiation",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			function f() {
+				$.Schedule (
+					Fusion.MyTick,
+					() => {
+						AntiInitiationF()
+						if(AntiInitiation.checked)
+							f()
+					}
+				)
+			}
+			f()
+			Game.ScriptLogMsg("Script enabled: AntiInitiation", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AntiInitiation", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

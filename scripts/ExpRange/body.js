@@ -1,5 +1,5 @@
-﻿var ExpRange = 1300
-var DaggerRange = 1200
+﻿var ExpRange = 1300,
+	DaggerRange = 1200
 
 function DestroyParticles() {
 	if(Fusion.Particles.ExpRange) {
@@ -21,13 +21,16 @@ function ExpRangeEnable() {
 	Particles.SetParticleControl(Fusion.Particles.DaggerRange, 1, [DaggerRange, 0, 0])
 }
 
-var ExpRangeCheckBox = Fusion.AddScript("ExpRange", () => {
-	if (ExpRangeCheckBox.checked) {
-		ExpRangeEnable()
-		Game.ScriptLogMsg("Script enabled: ExpRange", "#00ff00")
-	} else {
-		DestroyParticles()
-		Game.ScriptLogMsg("Script disabled: ExpRange", "#ff0000")
-	}
-})
-DestroyParticles()
+return {
+	name: "ExpRange",
+	onToggle: checkbox => {
+		if (checkbox.checked) {
+			ExpRangeEnable()
+			Game.ScriptLogMsg("Script enabled: ExpRange", "#00ff00")
+		} else {
+			DestroyParticles()
+			Game.ScriptLogMsg("Script disabled: ExpRange", "#ff0000")
+		}
+	},
+	onDestroy: DestroyParticles
+}

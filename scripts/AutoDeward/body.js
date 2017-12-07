@@ -1,4 +1,6 @@
-﻿function AutoDewardF() {
+﻿var enabled = false
+
+function AutoDewardF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
 		return
@@ -6,7 +8,7 @@
 	
 	Deward(MyEnt, HEnts)
 
-	if(AutoDeward.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, AutoDewardF)
 }
 
@@ -52,10 +54,16 @@ function GetDewardItem(MyEnt) {
 	return result
 }
 
-var AutoDeward = Fusion.AddScript("AutoDeward", () => {
-	if (AutoDeward.checked) {
-		AutoDewardF()
-		Game.ScriptLogMsg("Script enabled: AutoDeward", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: AutoDeward", "#ff0000")
-})
+return {
+	name: "AutoDeward",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			AutoDewardF()
+			Game.ScriptLogMsg("Script enabled: AutoDeward", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AutoDeward", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

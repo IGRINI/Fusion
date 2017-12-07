@@ -1,3 +1,5 @@
+var enabled = false
+
 function GetFamiliars() {
 	return Entities.GetAllEntitiesByClassname("npc_dota_visage_familiar").filter(ent =>
 		Entities.IsAlive(ent)
@@ -69,14 +71,20 @@ function Souls(MyEnt) {
 function EzVisageOnInterval() {
 	EzVisageF()
 
-	if(EzVisage.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, EzVisageOnInterval)
 }
 
-var EzVisage = Fusion.AddScript("EzVisage", () => {
-	if (EzVisage.checked) {
-		EzVisageOnInterval()
-		Game.ScriptLogMsg("Script enabled: EzVisage", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: EzVisage", "#ff0000")
-})
+return {
+	name: "EzVisage",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			EzVisageOnInterval()
+			Game.ScriptLogMsg("Script enabled: EzVisage", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: EzVisage", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

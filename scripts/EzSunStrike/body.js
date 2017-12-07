@@ -1,9 +1,10 @@
-﻿var SunStrikeDamage = [ 100, 162, 225, 287, 350, 412, 475, 537 ]
+﻿var SunStrikeDamage = [ 100, 162, 225, 287, 350, 412, 475, 537 ],
+	enabled = false
 
 function EzSunstrikeOnInterval() {
 	EzSunstrikeF()
 
-	if(EzSunstrike.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, EzSunstrikeOnInterval)
 }
 
@@ -58,10 +59,16 @@ function EzSunstrikeF() {
 	})
 }
 
-var EzSunstrike = Fusion.AddScript("EzSunstrike", () => {
-	if (EzSunstrike.checked) {
-		EzSunstrikeOnInterval()
-		Game.ScriptLogMsg("Script enabled: EzSunstrike", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: EzSunstrike", "#ff0000")
-})
+return {
+	name: "EzSunstrike",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			EzSunstrikeOnInterval()
+			Game.ScriptLogMsg("Script enabled: EzSunstrike", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: EzSunstrike", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

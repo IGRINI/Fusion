@@ -1,11 +1,13 @@
+var enabled = false,
+	flag = false
+
 function AxeUltiOnCheckOnInterval() {
 	AxeUltiF()
 
-	if(AxeUlti.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, AxeUltiOnCheckOnInterval)
 }
 
-var flag = false
 function AxeUltiF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
@@ -67,10 +69,16 @@ function CastDagon(MyEnt, Dagon, ent) {
 	Game.CastTarget(MyEnt, Dagon, ent, false)
 }
 
-var AxeUlti = Fusion.AddScript("AutoultAxe", () => {
-	if (AxeUlti.checked) {
-		AxeUltiOnCheckOnInterval()
-		Game.ScriptLogMsg("Script enabled: AxeUlti", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: AxeUlti", "#ff0000")
-})
+return {
+	name: "AntiAFK",
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			AxeUltiOnCheckOnInterval()
+			Game.ScriptLogMsg("Script enabled: AxeUlti", "#00ff00")
+		} else
+			Game.ScriptLogMsg("Script disabled: AxeUlti", "#ff0000")
+	},
+	onDestroy: () => enabled = false
+}

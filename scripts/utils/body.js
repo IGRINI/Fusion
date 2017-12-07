@@ -581,47 +581,7 @@ Game.GetBuffs = ent => {
 
 Game.GetBuffsNames = ent => Game.GetBuffs(ent).map(buff => Buffs.GetName(ent, buff))
 
-//Panel amimating (c) moddota.com
-var AnimatePanel_DEFAULT_DURATION = "300.0ms"
-var AnimatePanel_DEFAULT_EASE = "linear"
-Fusion.AnimatePanel = (panel, properties, duration, ease, delay) => {
-	duration = duration || 0.3
-	delay = delay || 0
-	ease = ease || "linear"
-
-	var transitionString = `${duration * 1000}.0ms ${ease} ${delay * 1000}.0ms`,
-		finalTransition = "",
-		i
-	properties.forEach((property, value) => {
-		finalTransition += `${i > 0 ? ", " : ""}${value} ${transitionString}`
-		i++
-	})
-	panel.style.transition = finalTransition + ";"
-	properties.forEach(property => panel.style[property] = properties[property])
-}
-
-Fusion.AddScript = (scriptName, onCheckBoxClick) => {
-	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
-	Temp.SetPanelEvent("onactivate", onCheckBoxClick)
-	Temp.BLoadLayoutFromString(`<root>\
-	<styles>\
-		<include src="s2r://panorama/styles/dotastyles.vcss_c"/>\
-		<include src="s2r://panorama/styles/magadan.vcss_c"/>\
-	</styles>\
-	<Panel>\
-		<ToggleButton class="CheckBox" id="${scriptName}" text="${scriptName}"/>\
-	</Panel>\
-</root>`, false, false)
-	/*var scripts = Fusion.Panels.MainPanel.scripts, // potential fix for sort
-		Child = scripts.Children()
-	for(var k = 1; k < Child.length - 1; k++) {
-		var a = Child[k], aText = a.Children()[0].text
-			b = Child[k + 1], bText = b.Children()[0].text
-		if(aText > bText)
-			scripts.MoveChildBefore(b, a)
-		else if(aText < bText)
-			scripts.MoveChildBefore(a, b)
-	}*/
-
-	return $.GetContextPanel().FindChildTraverse(scriptName).Children()[0]
+return {
+	name: "Utilities",
+	isVisible: false
 }

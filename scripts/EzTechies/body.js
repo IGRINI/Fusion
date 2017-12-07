@@ -133,26 +133,34 @@ function SubscribeEvents() {
 		})
 }
 
-if(!Fusion.EzTechies) {
-	Fusion.EzTechies = {
-		LVLUp: [-1, -1, -1],
-		RMines: [],
-		RemoveRMine: rmine => Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
-	}
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
-	Fusion.EzTechies.LVLUp[lvl] = 0
-	HandleMines()
-}
-SubscribeEvents()
-
-if(!Fusion.Commands.EzTechies) {
-	Fusion.Commands.EzTechies = () => {
+function onPreloadF() {
+	if(!Fusion.EzTechies) {
+		Fusion.EzTechies = {
+			LVLUp: [-1, -1, -1],
+			RMines: [],
+			RemoveRMine: rmine => Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
+		}
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var TriggerRadius = Abilities.GetSpecialValueFor(Entities.GetAbility(MyEnt, 5), "radius")
-		var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), TriggerRadius, true)
-		
-		RemoteMines(MyEnt, ents.filter(ent => Fusion.GetMagicMultiplier(MyEnt, ent) !== 0))
+		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
+		Fusion.EzTechies.LVLUp[lvl] = 0
+		HandleMines()
 	}
-	Game.AddCommand("__EzTechies", Fusion.Commands.EzTechies, "", 0)
+	SubscribeEvents()
+
+	if(!Fusion.Commands.EzTechies) {
+		Fusion.Commands.EzTechies = () => {
+			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+			var TriggerRadius = Abilities.GetSpecialValueFor(Entities.GetAbility(MyEnt, 5), "radius")
+			var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), TriggerRadius, true)
+			
+			RemoteMines(MyEnt, ents.filter(ent => Fusion.GetMagicMultiplier(MyEnt, ent) !== 0))
+		}
+		Game.AddCommand("__EzTechies", Fusion.Commands.EzTechies, "", 0)
+	}
+}
+
+return {
+	name: "EzTechies",
+	onPreload: onPreloadF,
+	isVisible: false
 }

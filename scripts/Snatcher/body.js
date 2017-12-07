@@ -1,14 +1,15 @@
 var TruePickupRadius = 150
-var PickupRadius = 450
-var NoTarget = []
-var RunePositions = [
-	[-3149.0625,3725.8125,304],  // direTop
-	[-1760,1216,176],            // riverTop
-	[-4328.09375,1591.9375,432], // radiantTop
-	[4167.90625,-1704.0625,448], // direBot
-	[2250.5625,-1857.84375,192], // riverBot
-	[3686.9375,-3624.8125,304]   // radiantTop
-]
+	PickupRadius = 450,
+	NoTarget = [],
+	RunePositions = [
+		[-3149.0625,3725.8125,304],  // direTop
+		[-1760,1216,176],            // riverTop
+		[-4328.09375,1591.9375,432], // radiantTop
+		[4167.90625,-1704.0625,448], // direBot
+		[2250.5625,-1857.84375,192], // riverBot
+		[3686.9375,-3624.8125,304]   // radiantTop
+	],
+	enabled = false
 
 function DestroyParticle() {
 	if(Fusion.Particles.RuneSnatcher) {
@@ -70,18 +71,24 @@ function SnatcherF() {
 	ItemSnatcherF()
 	RuneSnatcherF()
 
-	if(Snatcher.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, SnatcherF)
 }
 
-var Snatcher = Fusion.AddScript("Snatcher", () => {
-	if(Snatcher.checked) {
-		CreateParticle()
-		SnatcherF()
-		Game.ScriptLogMsg("Script enabled: Snatcher", "#00ff00")
-	} else {
-		DestroyParticle()
-		Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
-	}
-})
-DestroyParticle()
+return {
+	name: "Snatcher",
+	onPreload: DestroyParticle,
+	onToggle: checkbox => {
+		enabled = checkbox.checked
+
+		if (checkbox.checked) {
+			CreateParticle()
+			SnatcherF()
+			Game.ScriptLogMsg("Script enabled: Snatcher", "#00ff00")
+		} else {
+			DestroyParticle()
+			Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
+		}
+	},
+	onDestroy: () => enabled = false
+}
