@@ -232,18 +232,14 @@ Fusion.GetAbsorbedDamage = (entTo, damageType) => {
 	var dmg = 0
 	Game.GetBuffs(entTo).forEach(enemyBuff => {
 		var enemyBuffName = Buffs.GetName(entTo, enemyBuff)
-		Fusion.BuffsAbsorbMagicDmg.forEach(absorbBuffName => {
-			if(enemyBuffName === absorbBuffName) {
-				var absorbBuff = Fusion.BuffsAbsorbMagicDmg[absorbBuffName]
-				if(absorbBuff.damageType !== DAMAGE_TYPES.DAMAGE_TYPE_ALL && absorbBuff.damageType !== damageType)
-					return
-				
-				if(Array.isArray(absorbBuff.absorbs))
-					dmg += absorbBuff.absorbs[Abilities.GetLevel(Buffs.GetAbility(entTo, enemyBuff)) - 1]
-				else
-					dmg += absorbBuff.absorbs
-			}
-		})
+		var absorbBuff = Fusion.BuffsAbsorbMagicDmg[enemyBuffName]
+		if(!absorbBuff || (absorbBuff.damageType !== DAMAGE_TYPES.DAMAGE_TYPE_ALL && absorbBuff.damageType !== damageType))
+			return
+		
+		if(Array.isArray(absorbBuff.absorbs))
+			dmg += absorbBuff.absorbs[Abilities.GetLevel(Buffs.GetAbility(entTo, enemyBuff)) - 1]
+		else
+			dmg += absorbBuff.absorbs
 	})
 
 	return dmg
