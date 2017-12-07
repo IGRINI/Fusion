@@ -54,7 +54,7 @@ Fusion.GetScript = scriptName => Fusion.ServerRequest("getscript", scriptName)
 Fusion.GetXML = file => Fusion.ServerRequest("getxml", file)
 Fusion.SaveConfig = (scriptName, config) => Fusion.ServerRequest("writeconfig", JSON.stringify({
 	"filepath": scriptName,
-	"json": JSON.stringify(config)
+	"json": JSON.stringify([config])
 })).then()
 Fusion.GetConfig = scriptName => new Promise((resolve, reject) =>
 	Fusion.ServerRequest("getconfig", scriptName).then(json => resolve(JSON.parse(json)[0]))
