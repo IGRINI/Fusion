@@ -115,13 +115,13 @@ Fusion.AnimatePanel = (panel, properties, duration, ease, delay) => {
 
 	var transitionString = `${duration * 1000}.0ms ${ease} ${delay * 1000}.0ms`,
 		finalTransition = "",
-		i
-	properties.forEach((property, value) => {
-		finalTransition += `${i > 0 ? ", " : ""}${value} ${transitionString}`
-		i++
+		isFirst = true
+	Object.entries(properties).forEach(([key, value]) => {
+		finalTransition += `${!isFirst ? ", " : ""}${key}=${value} ${transitionString}`
+		if(isFirst)
+			isFirst = false
 	})
 	panel.style.transition = finalTransition + ";"
-	properties.forEach(property => panel.style[property] = properties[property])
 }
 
 Fusion.StatsEnabled = true
