@@ -45,14 +45,17 @@ function RuneSnatcherF() {
 			Fusion.GetEntitiesOnPosition(RunePos).every(ent => {
 				if(!Entities.IsSelectable(ent)) {
 					rune = ent
-					return true
+					return false
 				}
-				return false
+				return true
 			})
 			return rune
 		})
 		.filter(ent => ent !== undefined)
-		.forEach(Rune => Game.PickupRune(MyEnt, Rune, false))
+		.every(Rune => {
+			Game.PickupRune(MyEnt, Rune, false)
+			return false
+		})
 }
 
 function ItemSnatcherF() {
@@ -64,7 +67,10 @@ function ItemSnatcherF() {
 		Entities.GetRangeToUnit(ent, MyEnt) <= PickupRadius
 		&& !Entities.IsSelectable(ent)
 		&& Entities.IsItemPhysical(ent)
-	).forEach(ent => Game.PickupItem(MyEnt, ent, false))
+	).every(ent => {
+		Game.PickupItem(MyEnt, ent, false)
+		return false
+	})
 }
 
 function SnatcherF() {

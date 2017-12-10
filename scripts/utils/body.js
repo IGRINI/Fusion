@@ -129,7 +129,7 @@ Fusion.GetEntitiesOnPosition = vec => {
 	).map(entData => entData.entityIndex)
 }
 
-GameUI.FindScreenEntitiesAtCursor = () => GameUI.FindScreenEntities(GameUI.GetCursorPosition())
+GameUI.FindScreenEntitiesAtCursor = () => GameUI.FindScreenEntities(GameUI.GetCursorPosition()).map(entData => entData.entityIndex)
 
 Fusion.arrayRemove = (ar, obj) => {
 	var i = ar.indexOf(obj)
