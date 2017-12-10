@@ -29,7 +29,7 @@ function EMBEvery() {
 	HEnts.forEach(ent => {
 		var xyz = Entities.GetAbsOrigin(ent),
 			healthbaroffset = Entities.GetHealthBarOffset(ent),
-			uix = Game.WorldToScreenX(xyz[0], xyz[1], xyz[2] + healthbaroffset),
+			uix = Game.WorldToScreenX(xyz[0], xyz[1], xyz[2] + healthbaroffset) + 2,
 			uiy = Game.WorldToScreenY(xyz[0], xyz[1], xyz[2] + healthbaroffset),
 			uixp = uix / uiw * 100,
 			uiyp = uiy / uih * 100,
