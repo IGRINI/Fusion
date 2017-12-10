@@ -37,24 +37,27 @@ function ItemPanelEvery() {
 		ItemPanelLoadOnOff()
 		return
 	}
-	Game.GetAllPlayerIDs()
-		.map(playerID => Players.GetPlayerHeroEntityIndex(IDs[i]))
-		.filter(ent => Entities.IsEnemy(Ent))
+	var k = 0
+	Entities.PlayersHeroEnts()
+		.filter(ent => Entities.IsEnemy(ent))
 		.forEach(ent => {
 			var P = Fusion.Panels.ItemPanel.Children()[k]
 			P.style.height = "24px"
-			P.Children()[0].heroname = Entities.GetUnitName(Ent)
-			var Inv = Game.GetInventory(Ent)
-			if(Fusion.ItemPanel[Ent] === undefined)
-				Fusion.ItemPanel[Ent] = []
-			if (Array.isArray(Fusion.ItemPanel[Ent]))
-				if(Game.CompareArrays(Fusion.ItemPanel[Ent], Inv))
+			P.Children()[0].heroname = Entities.GetUnitName(ent)
+			var Inv = Game.GetInventory(ent)
+			if(Fusion.ItemPanel[ent] === undefined)
+				Fusion.ItemPanel[ent] = []
+			if (Array.isArray(Fusion.ItemPanel[ent]))
+				if(Game.CompareArrays(Fusion.ItemPanel[ent], Inv)) {
+					k++
 					return
-			NewItem(Fusion.ItemPanel[Ent], Inv, Ent)
-			Fusion.ItemPanel[Ent] = Inv
+				}
+			NewItem(Fusion.ItemPanel[ent], Inv, ent)
+			Fusion.ItemPanel[ent] = Inv
 			P.Children().forEach(child => child.itemname = "")
 			for(var n in Inv)
-				P.Children()[n + 1].itemname = Abilities.GetAbilityName(Inv[n])
+				P.Children()[parseInt(n) + 1].itemname = Abilities.GetAbilityName(Inv[n])
+			k++
 		})
 	
 	if(ItemPanel.checked)

@@ -164,6 +164,10 @@ Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 			Fusion.Panels.MainPanel.Slider.saved = true
 			
 			function OnTickSlider() {
+				if(!Fusion.Panels.MainPanel.Slider || Fusion.Panels.MainPanel.Slider.value === 0) {
+					$.Schedule(Fusion.MyTick, OnTickSlider)
+					return
+				}
 				if(!Fusion.Panels.MainPanel.Slider.mousedown && !Fusion.Panels.MainPanel.Slider.saved) {
 					Fusion.SaveConfig("init", Fusion.Configs.init)
 					Fusion.Panels.MainPanel.Slider.saved = true

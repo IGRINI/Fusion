@@ -7,7 +7,6 @@ function AntiAFKF() {
 		return
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME))
 		return
-	var HEnts = Entities.PlayersHeroEnts()
 	
 	GameUI.SelectUnit(MyEnt, false)
 	AFK(MyEnt, HEnts)
@@ -17,13 +16,13 @@ function AntiAFKF() {
 }
 
 function AFK(MyEnt, HEnts) {
-	var lastMin = HEnts.filter(ent =>
+	Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
+		&& !Entities.IsEnemy(ent)
 		&& ent !== MyEnt
 		&& !(
 			Entities.IsBuilding(ent)
 			|| Entities.IsInvulnerable(ent)
-			 && !Entities.IsEnemy(ent)
 		)
 	).sort((ent1, ent2) => {
 		var rng1 = Entities.GetRangeToUnit(MyEnt, ent1)
@@ -35,16 +34,14 @@ function AFK(MyEnt, HEnts) {
 			return 1
 		else
 			return -1
-	})[0]
-
-	if(!lastMin)
-		return
-	if(pos == undefined)
-		return
-	if(feeder)
-		Game.MoveToAttackPos(MyEnt, Entities.GetAbsOrigin(lastMin), false)
-	else
-		Game.MoveToTarget(MyEnt, lastMin, false)
+	}).every(ent => {
+		if(feeder)
+			Game.MoveToAttackPos(MyEnt, Entities.GetAbsOrigin(ent), false)
+		else
+			Game.MoveToTarget(MyEnt, ent, false)
+		
+		return false
+	})
 }
 
 return {
