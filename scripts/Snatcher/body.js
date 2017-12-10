@@ -34,15 +34,6 @@ function CreateParticle() {
 }
 
 function RuneSnatcherF() {
-	var nearbyRunes = RunePositions.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius)
-	if(nearbyRunes.length === 0) {
-		Interval = Fusion.MyTick * 3
-		if(enabled)
-			$.Schedule(Interval, RuneSnatcherF)
-		return
-	} else
-		Interval = Fusion.MyTick
-	
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
 		if(enabled)
@@ -51,6 +42,16 @@ function RuneSnatcherF() {
 	}
 	
 	var myVec = Entities.GetAbsOrigin(MyEnt)
+
+	var nearbyRunes = RunePositions.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius)
+	if(nearbyRunes.length === 0) {
+		Interval = Fusion.MyTick * 3
+		if(enabled)
+			$.Schedule(Interval, RuneSnatcherF)
+		return
+	} else
+		Interval = Fusion.MyTick
+
 	nearbyRunes
 		.map(RunePos => {
 			var rune = undefined
