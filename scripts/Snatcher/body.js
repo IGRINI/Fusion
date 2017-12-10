@@ -1,4 +1,4 @@
-var TruePickupRadius = 150
+var TruePickupRadius = 150,
 	PickupRadius = 450,
 	NoTarget = [],
 	RunePositions = [
@@ -9,6 +9,7 @@ var TruePickupRadius = 150
 		[2250.5625,-1857.84375,192], // riverBot
 		[3686.9375,-3624.8125,304]   // radiantTop
 	],
+	Interval = 0.1,
 	enabled = false
 
 function DestroyParticle() {
@@ -33,13 +34,24 @@ function CreateParticle() {
 }
 
 function RuneSnatcherF() {
-	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+	var nearbyRunes = RunePositions.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius)
+	if(nearbyRunes.length === 0) {
+		Interval = Fusion.MyTick * 3
+		if(enabled)
+			$.Schedule(Interval, RuneSnatcherF)
 		return
+	} else
+		Interval = Fusion.MyTick
+	
+	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
+		if(enabled)
+			$.Schedule(Interval, RuneSnatcherF)
+		return
+	}
 	
 	var myVec = Entities.GetAbsOrigin(MyEnt)
-	RunePositions
-		.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius)
+	nearbyRunes
 		.map(RunePos => {
 			var rune = undefined
 			Fusion.GetEntitiesOnPosition(RunePos).every(ent => {
@@ -56,12 +68,18 @@ function RuneSnatcherF() {
 			Game.PickupRune(MyEnt, Rune, false)
 			return false
 		})
+	
+	if(enabled)
+		$.Schedule(Interval, RuneSnatcherF)
 }
 
 function ItemSnatcherF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
+		if(enabled)
+			$.Schedule(Fusion.MyTick, ItemSnatcherF)
 		return
+	}
 	
 	Entities.GetAllEntities().filter(ent =>
 		Entities.GetRangeToUnit(ent, MyEnt) <= PickupRadius
@@ -71,14 +89,9 @@ function ItemSnatcherF() {
 		Game.PickupItem(MyEnt, ent, false)
 		return false
 	})
-}
-
-function SnatcherF() {
-	ItemSnatcherF()
-	RuneSnatcherF()
 
 	if(enabled)
-		$.Schedule(Fusion.MyTick, SnatcherF)
+		$.Schedule(Fusion.MyTick, ItemSnatcherF)
 }
 
 return {
@@ -89,7 +102,8 @@ return {
 
 		if (checkbox.checked) {
 			CreateParticle()
-			SnatcherF()
+			ItemSnatcherF()
+			RuneSnatcherF()
 			Game.ScriptLogMsg("Script enabled: Snatcher", "#00ff00")
 		} else {
 			DestroyParticle()

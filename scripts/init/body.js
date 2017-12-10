@@ -43,12 +43,15 @@ Fusion.ReloadFusion = () => {
 		
 		delete Fusion.Scripts[scriptName]
 	})
-	var promises = []
-	JSON.parse(response).forEach(scriptName => promises.push(Fusion.GetScript(scriptName)))
-	Promise.all(promises).then(scriptsCode => {
+	Promise.all(JSON.parse(response).map(Fusion.GetScript)).then(scriptsCode => {
 		scriptsCode.forEach(scriptCode => {
-			var script = new Function(scriptCode)()
-			Fusion.Scripts[script.name] = script
+			try {
+				var script = new Function(scriptCode)()
+				Fusion.Scripts[script.name] = script
+			} catch(e) {
+				$.Msg(script);
+				$.Msg(e);
+			}
 		})
 		Fusion.LoadFusion().then(() => Fusion.ServerRequest("scriptlist").then(response => {
 			Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
@@ -63,6 +66,9 @@ Fusion.ReloadFusion = () => {
 
 			Fusion.Panels.MainPanel.ToggleClass("Popup") // unhide popup
 		}))
+	}).catch(err => {
+		$.Msg("error @ Fusion.ReloadFusion");
+		$.Msg(err);
 	})
 }
 
@@ -79,14 +85,15 @@ Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 			} else {
 				if(Fusion.debugLoad)
 					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(a)}.`
-				if(a.status - 400 <= 0 || a.status - 400 > 99) {
+				if(a.status !== 403) {
 					if(Fusion.debugLoad)
 						$.Msg(log + " Trying again.")
 					Fusion.ServerRequest(name, val).then(resolve)
 				} else {
 					if(Fusion.debugLoad)
 						$.Msg(log)
-					reject()
+					//reject();
+					resolve("");
 				}
 			}
 		}
@@ -218,6 +225,9 @@ function WaitForGameStart() {
 				
 				Game.AddCommand( "__ReloadFusion", Fusion.ReloadFusion, "", 0)
 				Game.AddCommand("__TogglePanel", () => Fusion.Panels.MainPanel.ToggleClass("Popup"), "",0)
+				Game.AddCommand('__eval', function (name, arg1) {
+					eval(arg1);
+				}, '', 0);	
 				Game.AddCommand("__ToggleMinimapActs", () => {
 					var panel = Fusion.Panels.Main.HUDElements
 					

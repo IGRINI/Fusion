@@ -8,8 +8,10 @@
 * Good GUI with config changing
 * InvokerCombo
 * Add invoker skills' functions with callbacks, integrate to code and turn into commands
+* Shadow Fiend autocoil
 
 ## InDev:
+* AggrUnAggr
 * Make Fusion site, native support
 * Rewrite scripts for Node.js
 

@@ -1,11 +1,4 @@
 function onPreloadF() {
-	if(!Fusion.Commands.Eval) {
-		Fusion.Commands.Eval = function(name, arg1) {
-			eval(arg1)
-		}
-		Game.AddCommand('__eval', Fusion.Commands.Eval, '', 0)
-	}
-
 	if(!Fusion.Commands.DumpEnemyAbilities) {
 		var lastBuffs = []
 		Fusion.Commands.DumpEnemyAbilities = function() {
