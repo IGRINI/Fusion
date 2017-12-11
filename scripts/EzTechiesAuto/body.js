@@ -37,7 +37,7 @@ function CallMines(MyEnt, Ulti, ent, callback, explosionCallback) {
 					$.Msg(`[EzTechiesAuto] There's ${theres}, needed ${TargetHP} for ${Entities.GetUnitName(ent)}`)
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
 				return false
-			}
+			} else return !Fusion.TryDagon(MyEnt, ent, RMinesDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 		}
 		
 		return true

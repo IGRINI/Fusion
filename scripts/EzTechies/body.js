@@ -2,9 +2,10 @@
 	Particles.SetParticleControl(Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent), 1, [range, 0, 0])
 }
 
-var rmineTimeout = 598 // 600 is mine duration
+var rmineTimeout = 598, // 600 is mine duration
+	shedules = []
 function ScheduleExplode(rmine) {
-	$.Schedule(2 + Fusion.MyTick, () => {
+	shedules[rmine] = $.Schedule(2 + Fusion.MyTick, () => {
 		var time = Game.GetGameTime()
 		var delta = time - rmineTimeout + Fusion.MyTick
 		Game.GetBuffs(rmine).every(buff => {
@@ -25,6 +26,7 @@ function ScheduleExplode(rmine) {
 			GameUI.SelectUnit(rmine, false)
 			Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 			GameUI.SelectUnit(MyEnt, false)
+			delete shedules[rmine]
 		})
 	})
 }
@@ -108,11 +110,12 @@ function RemoteMines(MyEnt, ents) {
 
 function SubscribeEvents() {
 	if(!Fusion.Subscribes.UltiUp)
-		Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", event => {
-			if(event.PlayerID != Game.GetLocalPlayerID() || event.abilityname != "techies_remote_mines")
+		Fusion.Subscribes.UltiUp = GameEvents.Subscribe("dota_player_learned_ability", event => { // bug here
+			//$.Msg(`${JSON.stringify(event)}, ${event.PlayerID} ${event.PlayerID === Game.GetLocalPlayerID() ? "=" : "!"}== ${Game.GetLocalPlayerID()}`)
+			if(/*event.PlayerID != Game.GetLocalPlayerID() || */event.abilityname != "techies_remote_mines")
 				return
 			
-			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+			var MyEnt = Players.GetPlayerHeroEntityIndex(event.PlayerID)
 			var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1
 			Fusion.EzTechies.LVLUp[lvl] = Game.GetGameTime()
 		})
@@ -128,15 +131,20 @@ function SubscribeEvents() {
 	if(!Fusion.Subscribes.EzTechiesMineDeath)
 		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", event => {
 			var ent = event.entindex_killed
-			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
+			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine") {
+				if(shedules[ent]) {
+					$.CancelScheduled(shedules[ent])
+					delete shedules[ent]
+				}
 				Fusion.EzTechies.RemoveRMine(ent)
+			}
 		})
 }
 
 function onPreloadF() {
 	if(!Fusion.EzTechies) {
 		Fusion.EzTechies = {
-			LVLUp: [-1, -1, -1],
+			LVLUp: [0, -1, -1],
 			RMines: [],
 			RemoveRMine: rmine => Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
 		}

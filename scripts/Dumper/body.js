@@ -19,9 +19,9 @@ function onPreloadF() {
 				$.Msg(`${entName}: {`)
 				available.map(function(abil) {
 					var abilName = Abilities.GetAbilityName(abil)
-					if(typeof abilName !== 'string' || abilName === '')
+					if(typeof abilName !== "string" || abilName === "")
 						return
-					$.Msg('\t${abilName} {')
+					$.Msg(`\t${abilName} {`)
 					$.Msg(`\t\tLevel: ${Abilities.GetLevel(abil)}`)
 					$.Msg(`\t\tCooldown: ${Math.ceil(Abilities.GetCooldownTimeRemaining(abil))}`)
 					$.Msg("\t}")
@@ -29,7 +29,7 @@ function onPreloadF() {
 				$.Msg("}")
 			})
 		}
-		Game.AddCommand('__DumpEnemyAbilities', Fusion.Commands.DumpEnemyAbilities, '', 0)
+		Game.AddCommand("__DumpEnemyAbilities", Fusion.Commands.DumpEnemyAbilities, "", 0)
 	}
 
 	if(!Fusion.Commands.ModifierDebugging) {
@@ -51,7 +51,7 @@ function onPreloadF() {
 				$.Schedule(Fusion.MyTick, Fusion.Commands.ModifierDebugging.Function)
 			}
 		}
-		Game.AddCommand('__StartModifierDebugging', Fusion.Commands.ModifierDebugging.Command, '', 0)
+		Game.AddCommand("__StartModifierDebugging", Fusion.Commands.ModifierDebugging.Command, "", 0)
 	}
 }
 
