@@ -530,11 +530,19 @@ Game.ItemLock = (ent, item, queue) => Game.PrepareUnitOrders({
 	ShowEffects: Fusion.debugAnimations
 })
 
-Game.PurchaseItem = (ent, itemid, queue) => Game.PrepareUnitOrders({
+Game.PurchaseItem = (ent, itemid) => Game.PrepareUnitOrders({
 	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM,
 	UnitIndex: ent,
 	AbilityIndex: itemid,
-	Queue: queue,
+	Queue: false,
+	ShowEffects: Fusion.debugAnimations
+})
+
+Game.SellItem = (ent, item) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_SELL_ITEM,
+	UnitIndex: ent,
+	AbilityIndex: item,
+	Queue: false,
 	ShowEffects: Fusion.debugAnimations
 })
 
