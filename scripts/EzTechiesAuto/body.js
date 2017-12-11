@@ -1,9 +1,8 @@
 ﻿var NoTarget = [],
 	BlowDelay = 0.25 + Fusion.MyTick * 10,
-	enabled = false,
-	theres
+	enabled = false
 
-function CallMines(MyEnt, ent, callback, explosionCallback) {
+function CallMines(MyEnt, Ulti, ent, callback, explosionCallback) {
 	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * Fusion.MyTick * 3
 	var RMinesToBlow = []
 	var RMinesDmg = 0
@@ -32,14 +31,16 @@ function CallMines(MyEnt, ent, callback, explosionCallback) {
 		if(callback(MyEnt, ent, rmine)) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg
-			if(TargetHP < (theres = Fusion.CalculateDamage(MyEnt, ent, RMinesDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL))) {
+			var theres = Fusion.CalculateDamage(MyEnt, ent, RMinesDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
+			if(TargetHP < theres) {
 				if(Fusion.debug)
 					$.Msg(`[EzTechiesAuto] There's ${theres}, needed ${TargetHP} for ${Entities.GetUnitName(ent)}`)
 				explosionCallback(MyEnt, ent, RMinesToBlow, RMinesDmg)
-				return true
+				return false
 			}
-		} else
-			return false
+		}
+		
+		return true
 	})
 }
 
@@ -73,7 +74,7 @@ function RemoteMines(MyEnt, HEnts) {
 	).forEach(ent => {
 		var callBackCalled = false
 		CallMines (
-			MyEnt, ent,
+			MyEnt, Ulti, ent,
 			(MyEnt, ent, rmine) => Entities.GetRangeToUnit(rmine, ent) <= TriggerRadius,
 			(MyEnt, ent, RMinesToBlow) => {
 				callBackCalled = true
@@ -96,7 +97,7 @@ function RemoteMines(MyEnt, HEnts) {
 			Entities.GetRangeToUnit(MyEnt, ent) <= Abilities.GetCastRangeFix(force)
 		)
 			CallMines (
-				MyEnt, ent,
+				MyEnt, Ulti, ent,
 				(MyEnt, ent, rmine) => {
 					var mineVec = Entities.GetAbsOrigin(rmine)
 					var forceVec = Fusion.ForceStaffPos(ent)

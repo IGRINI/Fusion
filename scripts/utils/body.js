@@ -41,7 +41,7 @@ Entities.IsMine = ent =>
 
 Fusion.GetForceStaff = ent => {
 	var item
-	Fusion.ForceStaffNames.some(name => (item = Game.GetAbilityByName(name)) !== undefined)
+	Fusion.ForceStaffNames.some(name => (item = Game.GetAbilityByName(ent, name)) !== undefined)
 	return item
 }
 
@@ -81,9 +81,10 @@ Fusion.TryDagon = (MyEnt, ent, damage, damage_type) => {
 	damage = damage || 0
 	damage_type = damage_type || DAMAGE_TYPES.DAMAGE_TYPE_NONE
 	var Dagon = Fusion.GetDagon(MyEnt)
+	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * Fusion.MyTick * 3
 	if(Dagon !== undefined) {
 		var DagonDamage = Fusion.GetDagonDamage(Dagon)
-		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && Entities.GetHealth(ent) - Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
+		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && TargetHP - Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
 			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Dagon, ent, false)
 			return true
@@ -274,7 +275,7 @@ Fusion.IgnoreBuffs = {
 Fusion.GetMagicMultiplier = (entFrom, entTo) => {
 	var multiplier = Entities.GetMagicalArmorValue(entTo)
 	
-	if(Game.IntersecArrays(Game.GetBuffsNames(entTo), Fusion.IgnoreBuffs) || multiplier == 1)
+	if(Game.IntersecArrays(Game.GetBuffsNames(entTo), Fusion.IgnoreBuffs[DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL]) || multiplier == 1)
 		return 0
 	
 	return 1 + multiplier
@@ -525,6 +526,14 @@ Game.ItemLock = (ent, item, queue) => Game.PrepareUnitOrders({
 	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_SET_ITEM_COMBINE_LOCK,
 	UnitIndex: ent,
 	TargetIndex: item,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
+
+Game.PurchaseItem = (ent, itemid, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_PURCHASE_ITEM,
+	UnitIndex: ent,
+	AbilityIndex: itemid,
 	Queue: queue,
 	ShowEffects: Fusion.debugAnimations
 })
