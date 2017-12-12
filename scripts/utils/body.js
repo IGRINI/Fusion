@@ -69,6 +69,8 @@ Fusion.FindNearestEntity = (ent, ents, ignore) => {
 	return ret !== ent ? ret : undefined
 }
 
+Fusion.TryEtherial = (MyEnt, ent, damage, damage_type) => {}
+
 /**
  * Tries dagon
  * @param {*} MyEnt entity that'll output damage
@@ -80,11 +82,12 @@ Fusion.FindNearestEntity = (ent, ents, ignore) => {
 Fusion.TryDagon = (MyEnt, ent, damage, damage_type) => {
 	damage = damage || 0
 	damage_type = damage_type || DAMAGE_TYPES.DAMAGE_TYPE_NONE
-	var Dagon = Fusion.GetDagon(MyEnt)
-	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 3
+	var Dagon = Fusion.GetDagon(MyEnt),
+		TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 3
 	if(Dagon !== undefined) {
 		var DagonDamage = Fusion.GetDagonDamage(Dagon)
-		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && TargetHP - Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)) {
+		var DagonRange = Abilities.GetCastRange(Dagon)
+		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && TargetHP < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL) + Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) && Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange) {
 			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Dagon, ent, false)
 			return true
