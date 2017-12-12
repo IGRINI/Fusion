@@ -83,10 +83,8 @@ function RemoteMines(MyEnt, ents) {
 		if(rmineTime === -1)
 			return true
 		
-		var dmg = -1
-		Fusion.EzTechies.LVLUp
-			.filter(time => time !== -1 && rmineTime > time)
-			.every((time, lvl) => dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl))
+		var lvl = Fusion.EzTechies.LVLUp.filter(time => time !== -1 && rmineTime > time).reduce((previousValue, currentValue) => currentValue) // grabs last element from array
+		var dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl)
 		if(ents.some(ent => Entities.IsEntityInRange(rmine, ent, TriggerRadius))) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg
@@ -129,7 +127,7 @@ function SubscribeEvents() {
 	if(!Fusion.Subscribes.EzTechiesMineDeath)
 		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", event => {
 			var ent = event.entindex_killed
-			
+
 			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine")
 				Fusion.EzTechies.RemoveRMine(ent)
 		})
