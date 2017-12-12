@@ -3,9 +3,9 @@
 }
 
 var rmineTimeout = 598, // 600 is mine duration
-	shedules = []
+	schedules = []
 function ScheduleExplode(rmine) {
-	shedules[rmine] = $.Schedule(2 + Fusion.MyTick, () => {
+	schedules[rmine] = $.Schedule(2 + Fusion.MyTick, () => {
 		var time = Game.GetGameTime()
 		var delta = time - rmineTimeout + Fusion.MyTick
 		Game.GetBuffs(rmine).every(buff => {
@@ -26,7 +26,7 @@ function ScheduleExplode(rmine) {
 			GameUI.SelectUnit(rmine, false)
 			Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 			GameUI.SelectUnit(MyEnt, false)
-			delete shedules[rmine]
+			delete schedules[rmine]
 		})
 	})
 }
@@ -132,9 +132,9 @@ function SubscribeEvents() {
 		Fusion.Subscribes.EzTechiesMineDeath = GameEvents.Subscribe("entity_killed", event => {
 			var ent = event.entindex_killed
 			if(Entities.GetUnitName(ent) === "npc_dota_techies_remote_mine") {
-				if(shedules[ent]) {
-					$.CancelScheduled(shedules[ent])
-					delete shedules[ent]
+				if(schedules[ent]) {
+					$.CancelScheduled(schedules[ent])
+					delete schedules[ent]
 				}
 				Fusion.EzTechies.RemoveRMine(ent)
 			}

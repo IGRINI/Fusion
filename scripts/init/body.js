@@ -205,11 +205,8 @@ if(Fusion.Panels.MainPanel !== undefined)
 
 function InstallMainHUD() {
 	var globalContext = $.GetContextPanel()
-	while(true)
-		if(globalContext.paneltype == "DOTAHud")
-			break
-		else
-			globalContext = globalContext.GetParent()
+	while(globalContext.paneltype !== "DOTAHud")
+		globalContext = globalContext.GetParent()
 	Fusion.Panels.Main = globalContext
 	Fusion.Panels.Main.HUDElements = Fusion.Panels.Main.FindChild("HUDElements")
 }
