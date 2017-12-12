@@ -3,7 +3,7 @@
 	enabled = false
 
 function CallMines(MyEnt, Ulti, ent, callback, explosionCallback) {
-	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * Fusion.MyTick * 3
+	var TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 3
 	var RMinesToBlow = []
 	var RMinesDmg = 0
 	
