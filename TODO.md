@@ -8,11 +8,14 @@
 * Good GUI with config changing
 * InvokerCombo
 * Add invoker skills' functions with callbacks, integrate to code and turn into commands
-* Shadow Fiend autocoil
+* Rewrite scripts for Node.js (now semi before native realize)
+* Make Fusion site, native support
 
 ## InDev:
-* Make Fusion site, native support
-* Rewrite scripts for Node.js
+* Shadow Fiend autocoil
+* AutoCreepStop
+* AutoLasthit
+* ItemPanel cooldowns & mana
 
 ## Realized:
 * AgrUnAgr

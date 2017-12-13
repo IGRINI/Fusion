@@ -19,16 +19,15 @@ function EzVisageF() {
 
 var HealBarrierPercent = 50
 function Familiars(MyEnt) {
-	var familiars = GetFamiliars()
-	familiars.forEach(ent => {
-		var StoneForm = Entities.GetAbilityByName(ent, "visage_summon_familiars_stone_form")
-		if(Entities.GetHealthPercent(ent) <= HealBarrierPercent)
+	GetFamiliars().forEach(familiar => {
+		var StoneForm = Entities.GetAbilityByName(familiar, "visage_summon_familiars_stone_form")
+		if(Entities.GetHealthPercent(familiar) <= HealBarrierPercent)
 			if(Abilities.GetCooldownTimeRemaining(StoneForm) === 0) {
-				GameUI.SelectUnit(ent, false)
-				Game.CastNoTarget(ent, StoneForm, false)
+				GameUI.SelectUnit(familiar, false)
+				Game.CastNoTarget(familiar, StoneForm, false)
 				GameUI.SelectUnit(MyEnt, false)
 			} else
-				GameUI.PingMinimapAtLocation(Entities.GetAbsOrigin(ent))
+				GameUI.PingMinimapAtLocation(Entities.GetAbsOrigin(familiar))
 	})
 }
 
