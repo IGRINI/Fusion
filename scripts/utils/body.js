@@ -574,7 +574,7 @@ Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(playerID => Players.
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
 Fusion.Behaviors = behavior => behavior.toString(2).split("").reverse().map((val, i) => {
 	if(val === "1")
-		return 2 ** (i + 1)
+		return 2 ** i
 	else
 		return 0
 })

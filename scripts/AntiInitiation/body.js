@@ -80,9 +80,6 @@ function GetAbilArray(abilNameToSearch) {
 
 var flags = []
 function AntiInitiationF() {
-	if(!enabled)
-		return
-	
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
@@ -94,69 +91,31 @@ function AntiInitiationF() {
 	).every(ent => {
 		if(flags[ent])
 			return true
-		for(var m = 0; m < Entities.GetAbilityCount(ent); m++) {
+		for(var m = 0; m < Entities.GetAbilityCount(ent); m++)
 			if(Disable(MyEnt, ent, Entities.GetAbility(ent, m)))
 				return false
-		}
-		if(Game.GetBuffsNames(ent).indexOf("modifier_teleporting") !== -1) {
-			var abil
-			StunAbils.every(abilAr => {
-				var abilName = abilAr[0]
-				var abilToUse = abilAr[1]
-				if(!abilToUse)
-					return true
-				
-				var abilL = Game.GetAbilityByName(MyEnt, abilName)
-				if(abilL === undefined)
-					return true
-				var abilrange = Abilities.GetCastRangeFix(abilL)
-				if (
-					Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
-					(
-						Entities.GetRangeToUnit(MyEnt, ent) > abilrange &&
-						abilrange !== 0
-					)
-				)
-					return true
-				
-				abil = abilL
-				return false
-			})
-			
-			if(abil !== undefined) {
-				GameUI.SelectUnit(MyEnt, false)
-				Game.EntStop(MyEnt, false)
-				
-				var Behavior = Fusion.Behaviors(abil)
-				if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
-					Game.CastNoTarget(MyEnt, abil, false)
-				else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
-					Abilities.CreateDoubleTapCastOrder(abil, MyEnt)
-				else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1)
-					Game.CastTarget(MyEnt, abil, ent, false)
-				flags[ent] = true
-				$.Schedule(1, () => flags[ent] = false)
-				return false
-			}
-		}
+		if(Game.GetBuffsNames(ent).indexOf("modifier_teleporting") !== -1)
+			return !Disable(MyEnt, ent)
 		
 		return true
 	})
 }
 
-function Disable (MyEnt, ent, Abil) {
-	var AbilName = Abilities.GetAbilityName(Abil)
-	if (
-		Abil === -1 ||
-		!Abilities.IsInAbilityPhase(Abil) ||
-		Abilities.GetCooldownTimeRemaining(Abil) !== 0 ||
-		Abilities.GetLevel(Abil) === 0 ||
-		GetAbilArray(Abilities.GetAbilityName(Abil)) === undefined
-	)
-		return false
-	var AbilAr = GetAbilArray(AbilName)
-	if(AbilAr !== undefined && AbilAr[2])
-		return false
+function Disable(MyEnt, ent, Abil) {
+	if(Abil) { // check that it can be disabled
+		var AbilName = Abilities.GetAbilityName(Abil)
+		var AbilAr
+		if (
+			Abil === -1 ||
+			!Abilities.IsInAbilityPhase(Abil) ||
+			Abilities.GetCooldownTimeRemaining(Abil) !== 0 ||
+			Abilities.GetLevel(Abil) === 0 ||
+			(AbilAr = GetAbilArray(AbilName)) === undefined ||
+			AbilAr[2]
+		)
+			return false
+	}
+
 	var abil
 	Abils.every(ar => !ar.some(abilAr => {
 		var abilName = abilAr[0]
@@ -165,9 +124,10 @@ function Disable (MyEnt, ent, Abil) {
 			return false
 		
 		var abilL = Game.GetAbilityByName(MyEnt, abilName)
+		if(abilL === undefined)
+			return false
 		var abilrange = Abilities.GetCastRangeFix(abilL)
 		if (
-			abilL === undefined ||
 			Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
 			(
 				Entities.GetRangeToUnit(MyEnt, ent) > abilrange &&
@@ -183,7 +143,6 @@ function Disable (MyEnt, ent, Abil) {
 		return false
 	
 	GameUI.SelectUnit(MyEnt, false)
-	Game.EntStop(MyEnt, false)
 	
 	var Behavior = Fusion.Behaviors(abil)
 	if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
