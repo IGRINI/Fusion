@@ -3,5 +3,5 @@
 		<Panel style="width:50px;min-height:50px;flow-children:down;horizontal-align:left;"></Panel>
 		<Image src="s2r://panorama/images/hud/button_courier_greenarrow_png.vtex" style="horizontal-align:center;vertical-align:center;" />
 		<Panel style="width:50px;min-height:50px;flow-children:down;horizontal-align:right;"></Panel>
-    </Panel> 
+	</Panel> 
 </root>

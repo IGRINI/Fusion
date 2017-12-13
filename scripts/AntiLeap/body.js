@@ -55,7 +55,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			function L() {
 				if (enabled) {
 					AntiLeapF()

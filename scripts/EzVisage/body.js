@@ -80,7 +80,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			EzVisageOnInterval()
 			Game.ScriptLogMsg("Script enabled: EzVisage", "#00ff00")
 		} else

@@ -74,7 +74,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			AxeAutoUltOnInterval()
 			Game.ScriptLogMsg("Script enabled: Axe AutoUlt", "#00ff00")
 		} else

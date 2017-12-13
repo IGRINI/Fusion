@@ -11,11 +11,11 @@
 * Shadow Fiend autocoil
 
 ## InDev:
-* AggrUnAggr
 * Make Fusion site, native support
 * Rewrite scripts for Node.js
 
 ## Realized:
+* AgrUnAgr
 * Make AutoDeny use soul ring together with pudge's rot
 * ~~Make server based on NIO (non-blocking IO)~~ *_discontinued, as new platform will not require server_*
 * Snatcher

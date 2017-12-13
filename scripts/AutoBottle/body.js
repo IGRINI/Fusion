@@ -22,7 +22,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			AutoBottleOnInterval()
 			Game.ScriptLogMsg("Script enabled: AutoBottle", "#00ff00")
 		} else

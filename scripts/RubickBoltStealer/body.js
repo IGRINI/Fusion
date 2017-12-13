@@ -97,7 +97,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			RubickBoltStealerOnInterval()
 			Game.ScriptLogMsg("Script enabled: RubickBoltStealer", "#00ff00")
 		} else

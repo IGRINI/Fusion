@@ -41,7 +41,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			ZeusAutoultOnInterval()
 			Game.ScriptLogMsg("Script enabled: Zeus Autoult", "#00ff00")
 		} else

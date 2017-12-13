@@ -3,7 +3,7 @@ var TruePickupRadius = 150,
 	NoTarget = [],
 	RunePositions = [
 		[-3149.0625,3725.8125,304],  // direTop
-		[-1760,1216,176],            // riverTop
+		[-1760,1216,176],			// riverTop
 		[-4328.09375,1591.9375,432], // radiantTop
 		[4167.90625,-1704.0625,448], // direBot
 		[2250.5625,-1857.84375,192], // riverBot
@@ -100,7 +100,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			CreateParticle()
 			ItemSnatcherF()
 			RuneSnatcherF()

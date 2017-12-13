@@ -32,7 +32,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			WardBuyTrollOnInterval()
 			Game.ScriptLogMsg("Script enabled: WardBuyTroll", "#00ff00")
 		} else

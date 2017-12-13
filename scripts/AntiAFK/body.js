@@ -49,7 +49,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if(enabled) {
 			AntiAFKF()
 			Game.ScriptLogMsg("Script enabled: AntiAFK", "#00ff00")
 		} else 

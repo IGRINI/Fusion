@@ -202,7 +202,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			function f() {
 				$.Schedule (
 					Fusion.MyTick,

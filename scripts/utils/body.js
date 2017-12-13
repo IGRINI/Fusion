@@ -12,7 +12,7 @@ Game.GetHideItem = ent => {
 		"item_shadow_amulet", // shadow amulet
 		"item_glimmer_cape",  // glimmer cape
 		"item_silver_edge",   // shadow blade
-		"item_invis_sword"    // silver edge
+		"item_invis_sword"	// silver edge
 	].every(itemName => {
 		var item = Game.GetAbilityByName(ent, itemName)
 		if(item !== undefined) {
@@ -420,6 +420,14 @@ Game.MoveToTarget = (ent, entTo, queue) => Game.PrepareUnitOrders({
 	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_TARGET,
 	UnitIndex: ent,
 	TargetIndex: entTo,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
+
+Game.AttackTarget = (ent, target, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_ATTACK_TARGET,
+	UnitIndex: ent,
+	TargetIndex: target,
 	Queue: queue,
 	ShowEffects: Fusion.debugAnimations
 })

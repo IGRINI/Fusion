@@ -1,4 +1,5 @@
-﻿var enabled = false
+﻿var enabled = false,
+	layout_string
 if(Fusion.Panels.ItemPanel)
 	Fusion.Panels.ItemPanel.DeleteAsync(0)
 Fusion.ItemPanel = new Map()
@@ -69,39 +70,48 @@ function ItemPanelEvery() {
 }
 
 function ItemPanelLoad() {
-	Fusion.GetXML("ItemPanel/panel").then(a => {
-		Fusion.Panels.ItemPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "ItemPanel1")
-		Fusion.Panels.ItemPanel.BLoadLayoutFromString(a, false, false)
-		Fusion.Panels.ItemPanel.Children().forEach(child => child.style.height = "0")
-		GameUI.MovePanel(Fusion.Panels.ItemPanel, p => {
-			var position = p.style.position.split(" ")
-			Fusion.Configs.ItemPanel.MainPanel.x = position[0]
-			Fusion.Configs.ItemPanel.MainPanel.y = position[1]
-			Fusion.SaveConfig("ItemPanel", Fusion.Configs.ItemPanel)
-		})
-		
-		Fusion.GetConfig("ItemPanel").then(config => {
-			Fusion.Configs.ItemPanel = config
-			Fusion.Panels.ItemPanel.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
-			ItemPanelEvery()
-		})
+	Fusion.Panels.ItemPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "ItemPanel1")
+	Fusion.Panels.ItemPanel.BLoadLayoutFromString(layout_string, false, false)
+	Fusion.Panels.ItemPanel.Children().forEach(child => child.style.height = "0")
+	GameUI.MovePanel(Fusion.Panels.ItemPanel, panel => {
+		var position = panel.style.position.split(" ")
+		Fusion.Configs.ItemPanel.MainPanel.x = position[0]
+		Fusion.Configs.ItemPanel.MainPanel.y = position[1]
+
+		Fusion.SaveConfig("ItemPanel", Fusion.Configs.ItemPanel)
+	})
+	
+	Fusion.GetConfig("ItemPanel").then(config => {
+		Fusion.Configs.ItemPanel = config
+		Fusion.Panels.ItemPanel.style.position = `${config.MainPanel.x} ${config.MainPanel.y} 0`
+		ItemPanelEvery()
 	})
 }
 
 script = {
 	name: "ItemPanel",
+	onPreload: () => Fusion.GetXML("ItemPanel/panel").then(response => layout_string = response),
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			ItemPanelLoad()
 			Game.ScriptLogMsg("Script enabled: ItemPanel", "#00ff00")
 		} else {
 			Fusion.ItemPanel = []
-			if(Fusion.Panels.ItemPanel)
+			if(Fusion.Panels.ItemPanel) {
 				Fusion.Panels.ItemPanel.DeleteAsync(0)
+				delete Fusion.Panels.ItemPanel
+			}
 			Game.ScriptLogMsg("Script disabled: ItemPanel", "#ff0000")
 		}
 	},
-	onDestroy: () => enabled = false
+	onDestroy: () => {
+		enabled = false
+		Fusion.ItemPanel = []
+		if(Fusion.Panels.ItemPanel) {
+			Fusion.Panels.ItemPanel.DeleteAsync(0)
+			delete Fusion.Panels.ItemPanel
+		}
+	}
 }

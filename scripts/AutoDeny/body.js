@@ -35,7 +35,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			function intervalFunc() {
 				$.Schedule(
 					Fusion.MyTick / 3,

@@ -55,7 +55,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			SniperAutoultOnInterval()
 			Game.ScriptLogMsg("Script enabled: Sniper Autoult", "#00ff00")
 		} else

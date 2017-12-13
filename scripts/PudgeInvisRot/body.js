@@ -21,7 +21,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			PudgeInvisRotOnInterval()
 			Game.ScriptLogMsg("Script enabled: PudgeInvisRot", "#00ff00")
 		} else

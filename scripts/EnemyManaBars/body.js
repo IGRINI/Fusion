@@ -68,7 +68,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			EMBEvery()
 			Game.ScriptLogMsg("Script enabled: EnemyManaBars", "#00ff00")
 		} else

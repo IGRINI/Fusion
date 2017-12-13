@@ -38,7 +38,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if(enabled) {
 			DagonStealerOnInterval()
 			Game.ScriptLogMsg("Script enabled: DagonStealer", "#00ff00")
 		} else

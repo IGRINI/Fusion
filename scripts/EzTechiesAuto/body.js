@@ -144,7 +144,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			EzTechiesF()
 			Game.ScriptLogMsg("Script enabled: EzTechiesAuto", "#00ff00")
 		} else

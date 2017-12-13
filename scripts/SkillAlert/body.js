@@ -18,9 +18,6 @@
 	enabled = false
 
 function SAlertEvery() {
-	if (!SkillAlert.checked)
-		return
-	
 	Entities.GetAllEntitiesByName("npc_dota_thinker").map(thinker => {
 		var vec = Entities.GetAbsOrigin(thinker)
 		var buffsnames = Game.GetBuffsNames(thinker)
@@ -32,12 +29,9 @@ function SAlertEvery() {
 			AlertPosition(modifier, vec, thinker)
 	})
 	
-	Entities.GetAllEntities().filter(ent =>
-		Entities.IsAlive(ent)
-		&& !Entities.IsBuilding(ent)
-	).forEach(ent => {
-		var buffs = Game.GetBuffsNames(ent)
-		var xyz = Entities.GetAbsOrigin(ent)
+	Entities.PlayersHeroEnts().filter(ent => Entities.IsAlive(ent)).forEach(ent => {
+		var buffs = Game.GetBuffsNames(ent),
+			xyz = Entities.GetAbsOrigin(ent)
 		
 		buffs.forEach(buff => {
 			var modifier = targetModifiers[buff]
@@ -74,7 +68,7 @@ function AlertTarget(modifier, ent) {
 		panels[ent] = A
 		$.Schedule(modifier[1], () => panels.splice(ent, 1))
 	}
-	if(Fusion.Configs.SkillAlert.EmitSound === "true")
+	if(Fusion.Configs.SkillAlert.EmitSound === "true" && modifier[4])
 		Game.EmitSound(modifier[4])
 }
 
@@ -100,7 +94,7 @@ function AlertPosition(modifier, vec, thinker) {
 }
 
 function CreateFollowParticle(particlepath, time, ent) {
-	if(z.indexOf(ent) !== -1)
+	if(particlepath === "" || z.indexOf(ent) !== -1)
 		return
 	var p = Particles.CreateParticle(particlepath, ParticleAttachment_t.PATTACH_OVERHEAD_FOLLOW, ent)
 	Particles.SetParticleControl(p, 0, 0)
@@ -134,7 +128,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			Fusion.GetConfig("SkillAlert").then(config => {
 				Fusion.Configs.SkillAlert = config
 				SAlertEvery()

@@ -58,7 +58,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			AutoUltNecrophosOnInterval()
 			Game.ScriptLogMsg("Script enabled: Necrophos Autoult", "#00ff00")
 		} else

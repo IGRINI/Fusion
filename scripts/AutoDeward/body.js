@@ -59,7 +59,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			AutoDewardF()
 			Game.ScriptLogMsg("Script enabled: AutoDeward", "#00ff00")
 		} else

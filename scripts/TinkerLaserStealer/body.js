@@ -78,7 +78,7 @@ script = {
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
-		if (checkbox.checked) {
+		if (enabled) {
 			TinkerLaserStealerOnInterval()
 			Game.ScriptLogMsg("Script enabled: TinkerLaserStealer", "#00ff00")
 		} else
