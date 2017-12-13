@@ -59,7 +59,7 @@ function EMBEvery() {
 		DeleteAll()
 }
 
-return {
+script = {
 	name: "ExpRange",
 	onPreload: DeleteAll,
 	onToggle: checkbox => {

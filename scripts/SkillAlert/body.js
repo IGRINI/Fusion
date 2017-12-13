@@ -129,7 +129,7 @@ function CreateTimerParticle(vec, time, ent) {
 	)
 }
 
-return {
+script = {
 	name: "SkillAlert",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

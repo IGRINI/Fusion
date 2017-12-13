@@ -27,13 +27,13 @@ function WardBuyTrollF() {
 	flag = !flag
 }
 
-return {
+script = {
 	name: "WardBuyTroll",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (checkbox.checked) {
-			WardBuyTrollOnCheckOnInterval()
+			WardBuyTrollOnInterval()
 			Game.ScriptLogMsg("Script enabled: WardBuyTroll", "#00ff00")
 		} else
 			Game.ScriptLogMsg("Script disabled: WardBuyTroll", "#ff0000")

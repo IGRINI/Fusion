@@ -21,7 +21,7 @@ function onPreloadF() {
 	}
 }
 
-return {
+script = {
 	name: "Custom games tools",
 	onPreload: onPreloadF,
 	isVisible: false

@@ -1,7 +1,7 @@
 ﻿var enabled = false
 if(Fusion.Panels.ItemPanel)
 	Fusion.Panels.ItemPanel.DeleteAsync(0)
-Fusion.ItemPanel = []
+Fusion.ItemPanel = new Map()
 
 function NewItem(oldinv, newinv, ent) {
 	newinv.forEach(n => {
@@ -32,7 +32,7 @@ function ItemPanelEvery() {
 		return
 	
 	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME)) {
-		ItemPanel.checked = false
+		enabled = false
 		Game.ScriptLogMsg("ItemPanel cannot be enabled before pre-game", "#ff0000")
 		ItemPanelLoadOnOff()
 		return
@@ -45,22 +45,26 @@ function ItemPanelEvery() {
 			P.style.height = "24px"
 			P.Children()[0].heroname = Entities.GetUnitName(ent)
 			var Inv = Game.GetInventory(ent)
-			if(Fusion.ItemPanel[ent] === undefined)
-				Fusion.ItemPanel[ent] = []
-			if (Array.isArray(Fusion.ItemPanel[ent]))
-				if(Game.CompareArrays(Fusion.ItemPanel[ent], Inv)) {
+			if(!Fusion.ItemPanel.has(ent))
+				Fusion.ItemPanel.set(ent, [])
+			var Inv_old = Fusion.ItemPanel.get(ent)
+			if (Array.isArray(Inv_old))
+				if(Game.CompareArrays(Inv_old, Inv)) {
 					k++
 					return
 				}
-			NewItem(Fusion.ItemPanel[ent], Inv, ent)
-			Fusion.ItemPanel[ent] = Inv
+			NewItem(Inv_old, Inv, ent)
+			Fusion.ItemPanel.set(ent, Inv)
 			P.Children().forEach(child => child.itemname = "")
-			for(var n in Inv)
+			for(var n in Inv) {
+				if(Inv[n] === -1)
+					continue
 				P.Children()[parseInt(n) + 1].itemname = Abilities.GetAbilityName(Inv[n])
+			}
 			k++
 		})
 	
-	if(ItemPanel.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, ItemPanelEvery)
 }
 
@@ -84,7 +88,7 @@ function ItemPanelLoad() {
 	})
 }
 
-return {
+script = {
 	name: "ItemPanel",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

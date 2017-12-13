@@ -42,7 +42,7 @@ function EzProcastOnOffLoad() {
 			P.Children()[0].abilityname = Abilities.GetAbilityName(Ab)
 		}
 		Game.GetInventory(MyEnt)
-			.filter(item => Behaviors.indexOf(2) === -1)
+			.filter(item => item !== -1 && Behaviors.indexOf(2) === -1)
 			.forEach(item => {
 				Behaviors = Fusion.Behaviors(item)
 				var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
@@ -116,7 +116,7 @@ function onPreloadF() {
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
 }
 
-return {
+script = {
 	name: "EzProcast",
 	onPreload: onPreloadF,
 	onToggle: checkbox => {
@@ -128,5 +128,8 @@ return {
 			Game.ScriptLogMsg("Script disabled: EzProcast", "#ff0000")
 		}
 	},
-	onDestroy: () => Fusion.Panels.EzProcast.DeleteAsync(0)
+	onDestroy: () => {
+		if(Fusion.Panels.EzProcast)
+			Fusion.Panels.EzProcast.DeleteAsync(0)
+	}
 }

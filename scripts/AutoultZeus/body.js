@@ -36,7 +36,7 @@ function ZeusAutoultF() {
 		})
 }
 
-return {
+script = {
 	name: "AutoultZeus",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

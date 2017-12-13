@@ -30,7 +30,7 @@ function AutoDenyOnInterval() {
 	Game.CastPosition(MyEnt, item, Entities.GetAbsOrigin(MyEnt), false)
 }
 
-return {
+script = {
 	name: "AutoDeny",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

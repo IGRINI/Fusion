@@ -197,7 +197,7 @@ function Disable (MyEnt, ent, Abil) {
 	return true
 }
 
-return {
+script = {
 	name: "AntiInitiation",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
@@ -208,7 +208,7 @@ return {
 					Fusion.MyTick,
 					() => {
 						AntiInitiationF()
-						if(AntiInitiation.checked)
+						if(enabled)
 							f()
 					}
 				)

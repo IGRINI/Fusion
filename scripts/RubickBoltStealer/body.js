@@ -92,7 +92,7 @@ function FindPairs(el, ar) {
 			.map(ar2 => ar2[0] !== el ? ar2[0] : ar2[1])
 }
 
-return {
+script = {
 	name: "RubickBoltStealer",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

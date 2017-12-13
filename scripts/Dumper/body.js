@@ -55,7 +55,7 @@ function onPreloadF() {
 	}
 }
 
-return {
+script = {
 	name: "Dumper",
 	onPreload: onPreloadF,
 	isVisible: false

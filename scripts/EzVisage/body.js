@@ -75,7 +75,7 @@ function EzVisageOnInterval() {
 		$.Schedule(Fusion.MyTick, EzVisageOnInterval)
 }
 
-return {
+script = {
 	name: "EzVisage",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

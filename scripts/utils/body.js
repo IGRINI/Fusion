@@ -84,7 +84,7 @@ Fusion.TryDagon = (MyEnt, ent, damage, damage_type) => {
 	damage_type = damage_type || DAMAGE_TYPES.DAMAGE_TYPE_NONE
 	var Dagon = Fusion.GetDagon(MyEnt),
 		TargetHP = Entities.GetHealth(ent) + Entities.GetHealthThinkRegen(ent) * 3
-	if(Dagon !== undefined) {
+	if(Dagon) {
 		var DagonDamage = Fusion.GetDagonDamage(Dagon)
 		var DagonRange = Abilities.GetCastRange(Dagon)
 		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && TargetHP < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL) + Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) && Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange) {
@@ -373,25 +373,6 @@ Game.VelocityWaypoint = (ent, time, movespeed) => {
 	return [zxc[0] + (forward[0] * movespeed * time),zxc[1] + (forward[1] * movespeed * time),zxc[2]]
 }
 
-//сообщение в боковую панель
-Game.ScriptLogMsg = (msg, color) => {
-	var ScriptLog = Fusion.Panels.MainPanel.FindChildTraverse("ScriptLog")
-	var ScriptLogMessage = $.CreatePanel( "Label", ScriptLog, "ScriptLogMessage" )
-	ScriptLogMessage.BLoadLayoutFromString("\
-<root>\
-	<Label/>\
-</root>", false, false)
-	ScriptLogMessage.style.fontSize = "15px"
-	var text = `	•••	${msg}`
-	ScriptLogMessage.text = text
-	if (color) {
-		ScriptLogMessage.style.color = color
-		ScriptLogMessage.style.textShadow = `0px 0px 4px 1.2 ${color}33`
-	}
-	ScriptLogMessage.DeleteAsync(7)
-	Fusion.AnimatePanel( ScriptLogMessage, {"opacity": "0;"}, 2, "linear", 4)
-}
-
 //Функция делает панельку перемещаемой кликом мыши по ней. callback нужен например для того, чтобы сохранить координаты панели в файл
 GameUI.MovePanel = (a, callback) => {
 	var onactivateF = () => {
@@ -573,8 +554,7 @@ Game.GetInventory = ent => {
 	var inv = []
 	for(i = 0; i < 6; i++) {
 		var item = Entities.GetItemInSlot(ent, i)
-		if(item !== -1)
-			inv.push(item)
+		inv.push(item)
 	}
 	return inv
 }
@@ -601,7 +581,7 @@ Game.GetBuffs = ent => {
 
 Game.GetBuffsNames = ent => Game.GetBuffs(ent).map(buff => Buffs.GetName(ent, buff))
 
-return {
+script = {
 	name: "Utilities",
 	isVisible: false
 }

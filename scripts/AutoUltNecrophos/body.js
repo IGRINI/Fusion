@@ -53,7 +53,7 @@ function AutoUltNecrophosF() {
 	})
 }
 
-return {
+script = {
 	name: "AutoultNecrophos",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

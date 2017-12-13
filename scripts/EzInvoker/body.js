@@ -94,7 +94,7 @@
 	}
 }
 
-return {
+script = {
 	name: "EzInvoker",
 	onPreload: onPreloadF,
 	isVisible: false

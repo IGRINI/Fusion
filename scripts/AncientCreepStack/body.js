@@ -201,7 +201,7 @@ function AncientCreepStackU() {
 	Fusion.Panels.AncientCreepStack.Children()[1].text = `Gold: ~${neu[4]}`
 	Fusion.Panels.AncientCreepStack.Children()[2].text = `Exp: ~${neu[5]}`
 	var time = Math.round(Game.GetDOTATime(false, false) % 60)
-	Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg ) translate3d( 0px, "+((time-Math.floor(time))*20)+"px, 0px );"}, 0.3, "ease-in-out", 0)
+	Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, [["transform", "rotateX( 35deg ) translate3d( 0px, "+((time-Math.floor(time))*20)+"px, 0px );"]], 0.3, "ease-in-out", 0)
 }
 
 function move(ent, toSelect, vec) {
@@ -245,21 +245,22 @@ function onPreloadF() {
 		<Label style='color:white;font-size:16px;'/>\
 	</Panel>\
 </root>", false, false)
-		Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, {"transform": "rotateX( 35deg );"}, 0.3, "ease-in", 0)
+		Fusion.AnimatePanel( Fusion.Panels.AncientCreepStack, [["transform", "rotateX( 35deg );"]], 0.3, "ease-in", 0)
 		Game.ScriptLogMsg("Script enabled: AncientCreepStack", "#00ff00")
 	}
 	Game.AddCommand("__AncientCreepStack_Activate", Fusion.Commands.AncientCreepStack, "", 0)
 }
 
-return {
-	name: "AncientCreepStack",
+script = {
+	name: "Ancient Creep Stack",
+	isVisible: false, // not working.. need to update coords
 	onPreload: onPreloadF,
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (!checkbox.checked) {
 			destroy()
-			Game.ScriptLogMsg("Script disabled: AncientCreepStack", "#ff0000")
+			Game.ScriptLogMsg("Script disabled: Ancient Creep Stack", "#ff0000")
 			return
 		}
 		Fusion.Commands.AncientCreepStack()
@@ -279,7 +280,7 @@ return {
 			}
 		)}
 		u()
-		Game.ScriptLogMsg("Script enabled: AncientCreepStack", "#00ff00")
+		Game.ScriptLogMsg("Script enabled: Ancient Creep Stack", "#00ff00")
 	},
 	onDestroy: () => {
 		enabled = false

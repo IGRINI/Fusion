@@ -159,7 +159,7 @@ function onPreloadF() {
 	}
 }
 
-return {
+script = {
 	name: "EzTechies",
 	onPreload: onPreloadF,
 	isVisible: false

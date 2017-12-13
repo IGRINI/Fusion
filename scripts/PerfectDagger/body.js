@@ -30,7 +30,7 @@ function onPreloadF() {
 	})
 }
 
-return {
+script = {
 	name: "PerfectDagger",
 	isVisible: false,
 	onPreload: onPreloadF

@@ -54,7 +54,7 @@ function GetDewardItem(MyEnt) {
 	return result
 }
 
-return {
+script = {
 	name: "AutoDeward",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

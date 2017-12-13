@@ -110,7 +110,7 @@ function onPreloadF() {
 	}
 }
 
-return {
+script = {
 	name: "EzMeepo",
 	onPreload: onPreloadF,
 	isVisible: false

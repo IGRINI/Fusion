@@ -50,7 +50,7 @@ function AntiLeapF() {
 	})
 }
 
-return {
+script = {
 	name: "AntiLeap",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

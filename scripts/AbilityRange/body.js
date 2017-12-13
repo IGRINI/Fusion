@@ -1,15 +1,17 @@
 ﻿function InventoryChanged(data) {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Fusion.Particles.AbilityRange.length == 0)
-		return
 	
 	Fusion.Particles.AbilityRange.forEach((par, abil) => {
 		var Range = Abilities.GetCastRangeFix(abil)
 		Particles.DestroyParticleEffect(par, true)
-		if (!Range || Range <= 0)
+		if (!Range || Range <= 0) {
+			Fusion.Particles.AbilityRange.delete(abil)
 			return
-		Fusion.Particles.AbilityRange[abil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
-		Particles.SetParticleControl(Fusion.Particles.AbilityRange[abil], 1,  [Range,0,0])
+		}
+		
+		par = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
+		Fusion.Particles.AbilityRange.set(abil, par)
+		Particles.SetParticleControl(par, 1,  [Range, 0, 0])
 	})
 }
 
@@ -21,7 +23,7 @@ function Destroy() {
 	if(Fusion.Particles.AbilityRange)
 		Fusion.Particles.AbilityRange.forEach(par => Particles.DestroyParticleEffect(par, true))
 	Fusion.Subscribes.AbilityRange = []
-	Fusion.Particles.AbilityRange = []
+	Fusion.Particles.AbilityRange = new Map()
 	delete Fusion.Panels.AbilityRange
 }
 
@@ -36,10 +38,12 @@ function SkillLearned(data) {
 	var Range = Abilities.GetCastRangeFix(LearnedAbil)
 	if (data.abilityname === "attribute_bonus" || Range <= 0)
 		return
-	if (Fusion.Particles.AbilityRange[LearnedAbil]){
-		Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[LearnedAbil], true)
-		Fusion.Particles.AbilityRange[LearnedAbil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
-		Particles.SetParticleControl(Fusion.Particles.AbilityRange[LearnedAbil], 1,  [Range,0,0])
+	var par = Fusion.Particles.AbilityRange.get(LearnedAbil)
+	if(par) {
+		Particles.DestroyParticleEffect(par, true)
+		par = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
+		Fusion.Particles.AbilityRange.set(LearnedAbil, par)
+		Particles.SetParticleControl(par, 1,  [Range,0,0])
 	}
 	CheckBs = AbilityRangePanel.Children()
 	for(c=0;c<CheckBs.length;c++){
@@ -72,18 +76,17 @@ function chkboxpressed() {
 		var Abil = CheckBs[c].GetAttributeInt("Skill", 0)
 		if (Abil == 0 )
 			continue
-		if (Checked){
-			if (!Fusion.Particles.AbilityRange[Abil]){
-				Fusion.Particles.AbilityRange[Abil] = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
-				Range = Abilities.GetCastRangeFix(Abil)
-				Particles.SetParticleControl(Fusion.Particles.AbilityRange[Abil], 1,  [Range,0,0])
+		if (Checked)
+			if(!Fusion.Particles.AbilityRange.has(Abil)) {
+				var par = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW , MyEnt)
+				Fusion.Particles.AbilityRange.set(Abil, par)
+				Particles.SetParticleControl(par, 1, [Abilities.GetCastRangeFix(Abil), 0, 0])
 			}
-		}else{
-			if (Fusion.Particles.AbilityRange[Abil]){
-				Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange[Abil], true)
-				Fusion.Particles.AbilityRange.splice(Abil, i)
+		else
+			if(Fusion.Particles.AbilityRange.has(Abil)) {
+				Particles.DestroyParticleEffect(Fusion.Particles.AbilityRange.get(Abil), true)
+				Fusion.Particles.AbilityRange.delete(Abil)
 			}
-		}
 	}
 }
 
@@ -131,8 +134,7 @@ function onToggleF(checkbox) {
 			Abil = Entities.GetAbility(MyEnt,i)
 			if ( Abil == -1 )
 				continue
-			Range = Abilities.GetCastRangeFix(Abil)
-			if (Abilities.GetAbilityName(Abil) == "attribute_bonus" || Range<=0 )
+			if (Abilities.GetAbilityName(Abil) == "attribute_bonus" || Abilities.GetCastRangeFix(Abil) <= 0)
 				continue
 			Behavior = Abilities.GetBehavior( Abil )
 			CheckB = $.CreatePanel( "ToggleButton", AbilityRangePanel, "AbilityRangeSkill" )
@@ -160,7 +162,7 @@ function onToggleF(checkbox) {
 	}
 }
 
-return {
+script = {
 	name: "AbilityRange",
 	onToggle: onToggleF,
 	onDestroy: Destroy

@@ -50,7 +50,7 @@ function SniperAssassinateF() {
 	})
 }
 
-return {
+script = {
 	name: "SniperAssassinate",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

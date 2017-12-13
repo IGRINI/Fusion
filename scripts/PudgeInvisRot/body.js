@@ -16,7 +16,7 @@ function PudgeInvisRotF() {
 	Game.ToggleAbil(MyEnt, Abil, false)
 }
 
-return {
+script = {
 	name: "PudgeInvisRot",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

@@ -21,7 +21,7 @@ function ExpRangeEnable() {
 	Particles.SetParticleControl(Fusion.Particles.DaggerRange, 1, [DaggerRange, 0, 0])
 }
 
-return {
+script = {
 	name: "ExpRange",
 	onToggle: checkbox => {
 		if (checkbox.checked) {

@@ -4,10 +4,10 @@ Fusion = {
 	Panels: {},
 	Particles: {},
 	Subscribes: {},
-	Scripts: {},// {onPreload, onToggle, onDestroy, name, isVisible}
+	Scripts: new Map(),// {onPreload, onToggle, onDestroy, name, isVisible}
 	MyTick: 1 / 30,
 	debug: false,
-	debugLoad: false,
+	debugLoad: true,
 	debugAnimations: false,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
@@ -17,7 +17,7 @@ Fusion.AddScriptToList = script => {
 	if(script.isVisible === false) // I don't want to spam with !== undefined
 		return
 	
-	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, scriptName)
+	var Temp = $.CreatePanel("Panel", Fusion.Panels.MainPanel.scripts, script.name)
 	Temp.BLoadLayoutFromString(`<root>\
 	<styles>\
 		<include src="s2r://panorama/styles/dotastyles.vcss_c"/>\
@@ -32,44 +32,67 @@ Fusion.AddScriptToList = script => {
 	Temp.SetPanelEvent("onactivate", () => script.onToggle(checkbox))
 }
 
-Fusion.ReloadFusion = () => {
-	if(Fusion.Panels.MainPanel.BHasClass("PopupOpened"))
-		Fusion.Panels.MainPanel.ToggleClass("PopupOpened") // hide opened popup
-	Fusion.Panels.MainPanel.ToggleClass("Popup") // hide popup
+Game.ScriptLogMsg = (msg, color) => {
+	var ScriptLog = Fusion.Panels.MainPanel.FindChildTraverse("ScriptLog")
+	var ScriptLogMessage = $.CreatePanel( "Label", ScriptLog, "ScriptLogMessage" )
+	ScriptLogMessage.BLoadLayoutFromString("\
+<root>\
+	<Label/>\
+</root>", false, false)
+	ScriptLogMessage.style.fontSize = "15px"
+	var text = `	•••	${msg}`
+	ScriptLogMessage.text = text
+	if (color) {
+		ScriptLogMessage.style.color = color
+		ScriptLogMessage.style.textShadow = `0px 0px 4px 1.2 ${color}33`
+	}
+	ScriptLogMessage.DeleteAsync(7)
+	Fusion.AnimatePanel(ScriptLogMessage, [["opacity", "0;"]], 2, "linear", 4)
+}
 
+Fusion.ReloadFusion = () => {
 	Fusion.Scripts.forEach((script, scriptName) => {
-		if(script.onDestroy !== undefined)
+		if(script.onDestroy)
 			script.onDestroy()
 		
-		delete Fusion.Scripts[scriptName]
+		Fusion.Scripts.delete(scriptName)
 	})
-	Promise.all(JSON.parse(response).map(Fusion.GetScript)).then(scriptsCode => {
-		scriptsCode.forEach(scriptCode => {
-			try {
-				var script = new Function(scriptCode)()
-				Fusion.Scripts[script.name] = script
-			} catch(e) {
-				$.Msg(script);
-				$.Msg(e);
-			}
-		})
-		Fusion.LoadFusion().then(() => Fusion.ServerRequest("scriptlist").then(response => {
-			Fusion.Panels.MainPanel.scripts.RemoveAndDeleteChildren()
-			Fusion.Scripts.forEach(script => {
-				if(typeof script !== "object")
-					return
-				if(script.onPreload !== undefined)
-					script.onPreload()
-				
-				Fusion.AddScriptToList(script)
-			})
 
-			Fusion.Panels.MainPanel.ToggleClass("Popup") // unhide popup
-		}))
-	}).catch(err => {
-		$.Msg("error @ Fusion.ReloadFusion");
-		$.Msg(err);
-	})
+	if(Fusion.Panels.MainPanel) {
+		Fusion.Panels.MainPanel.DeleteAsync(0) // it'll be reinitialized by Fusion.LoadFusion()
+		delete Fusion.Panels.MainPanel
+	}
+
+	Fusion.ServerRequest("scriptlist").then(response =>
+		Promise.all(JSON.parse(response).map(Fusion.GetScript)).then(scriptsCode => {
+			scriptsCode.forEach(scriptCode => {
+				try {
+					var script
+					eval(scriptCode) // this must set script to some object
+					if(script)
+						Fusion.Scripts.set(script.name, script)
+				} catch(e) {
+					$.Msg("error @ Fusion.ReloadFusion @ scriptsCode.forEach");
+					$.Msg(scriptCode);
+					$.Msg(e);
+				}
+			})
+			Fusion.LoadFusion().then(() => {
+				Fusion.Scripts.forEach(script => {
+					if(script.onPreload !== undefined)
+						script.onPreload()
+					
+					Fusion.AddScriptToList(script)
+				})
+
+				Fusion.Panels.MainPanel.SetHasClass("Popup", true) // unhide popup
+				$.Msg("test3")
+			})
+		}).catch(err => {
+			$.Msg("error @ Fusion.ReloadFusion");
+			$.Msg(err);
+		})
+	)
 }
 
 Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
@@ -123,7 +146,7 @@ Fusion.AnimatePanel = (panel, properties, duration, ease, delay) => {
 	var transitionString = `${duration * 1000}.0ms ${ease} ${delay * 1000}.0ms`,
 		finalTransition = "",
 		isFirst = true
-	Object.entries(properties).forEach(([key, value]) => {
+	properties.forEach(([key, value]) => {
 		finalTransition += `${!isFirst ? ", " : ""}${key}=${value} ${transitionString}`
 		if(isFirst)
 			isFirst = false
@@ -135,8 +158,11 @@ Fusion.StatsEnabled = true
 Fusion.MinimapActsEnabled = true
 Fusion.HUDEnabled = true
 Fusion.LoadFusion = () => new Promise((resolve, reject) => {
-	if(Fusion.Panels.MainPanel !== undefined)
+	if(Fusion.Panels.MainPanel) {
 		Fusion.Panels.MainPanel.DeleteAsync(0)
+		delete Fusion.Panels.MainPanel
+	}
+
 	Fusion.Panels.MainPanel = $.CreatePanel("Panel", Fusion.Panels.Main, "DotaOverlay")
 	Fusion.GetXML("init/hud").then(layout_string => {
 		if(Fusion.debugLoad)
@@ -196,7 +222,7 @@ Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 		})
 		
 		Fusion.SteamID = Game.GetLocalPlayerInfo().player_steamid // comment if you don"t wanted in logging your steamid
-		Fusion.Panels.MainPanel.ToggleClass("Popup") // automatically hide popup
+		Fusion.Panels.MainPanel.SetHasClass("Popup", false) // automatically hide popup
 	})
 })
 

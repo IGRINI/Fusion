@@ -139,7 +139,7 @@ function EzTechiesF() {
 		$.Schedule(Fusion.MyTick, EzTechiesF)
 }
 
-return {
+script = {
 	name: "EzTechiesAuto",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

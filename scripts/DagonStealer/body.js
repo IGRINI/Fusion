@@ -3,7 +3,7 @@
 function DagonStealerOnInterval() {
 	DagonSteal()
 	
-	if(DagonStealer.checked)
+	if(enabled)
 		$.Schedule(Fusion.MyTick, DagonStealerOnInterval)
 }
 
@@ -33,14 +33,7 @@ function DagonSteal() {
 		.every(ent => !Fusion.TryDagon(MyEnt, ent))
 }
 
-var DagonStealer = Fusion.AddScript("DagonStealer", () => {
-	if (DagonStealer.checked) {
-		DagonStealerOnInterval()
-		Game.ScriptLogMsg("Script enabled: DagonStealer", "#00ff00")
-	} else
-		Game.ScriptLogMsg("Script disabled: DagonStealer", "#ff0000")
-})
-return {
+script = {
 	name: "DagonStealer",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

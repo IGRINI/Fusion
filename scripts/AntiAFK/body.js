@@ -44,7 +44,7 @@ function AFK(MyEnt, HEnts) {
 	})
 }
 
-return {
+script = {
 	name: "AntiAFK",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

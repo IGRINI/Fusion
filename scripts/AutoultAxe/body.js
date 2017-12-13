@@ -69,7 +69,7 @@ function CastDagon(MyEnt, Dagon, ent) {
 	Game.CastTarget(MyEnt, Dagon, ent, false)
 }
 
-return {
+script = {
 	name: "AntiAFK",
 	onToggle: checkbox => {
 		enabled = checkbox.checked

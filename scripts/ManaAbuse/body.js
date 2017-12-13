@@ -13,7 +13,7 @@ function onPreloadF() {
 	Fusion.Commands.ManaAbuseF = () => {
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 			myVec = Entities.GetAbsOrigin(MyEnt),
-			Inv = Game.GetInventory(MyEnt)
+			Inv = Game.GetInventory(MyEnt).filter(item => item !== -1)
 		Inv.forEach(Item => {
 			var ItemName = Abilities.GetAbilityName(Item),
 				ManaPool = 0
@@ -36,7 +36,7 @@ function onPreloadF() {
 	}
 	Game.AddCommand("__ManaAbuse", Fusion.Commands.ManaAbuseF, "", 0)
 }
-return {
+script = {
 	name: "ManaAbuse",
 	isVisible: false,
 	onPreload: onPreloadF

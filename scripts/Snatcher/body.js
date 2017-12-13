@@ -95,9 +95,8 @@ function ItemSnatcherF() {
 		$.Schedule(Fusion.MyTick, ItemSnatcherF)
 }
 
-return {
+script = {
 	name: "Snatcher",
-	onPreload: DestroyParticle,
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
@@ -111,5 +110,8 @@ return {
 			Game.ScriptLogMsg("Script disabled: Snatcher", "#ff0000")
 		}
 	},
-	onDestroy: () => enabled = false
+	onDestroy: () => {
+		enabled = false
+		DestroyParticle()
+	}
 }

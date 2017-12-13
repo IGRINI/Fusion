@@ -13,12 +13,12 @@ function AutoBottleF() {
 		return
 	
 	var Bottle = Game.GetAbilityByName(MyEnt, "item_bottle")
-	if(Bottle !== undefined && Entities.IsInRangeOfFountain(MyEnt) && Abilities.GetCooldownTimeRemaining(abilL) === 0)
+	if(Bottle !== undefined && Entities.IsInRangeOfFountain(MyEnt) && Abilities.GetCooldownTimeRemaining(Bottle) === 0)
 		Game.CastNoTarget(MyEnt, Bottle, false)
 }
 
-return {
-	name: "AntiLeap",
+script = {
+	name: "AutoBottle",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 

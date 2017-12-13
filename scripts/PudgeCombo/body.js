@@ -71,7 +71,7 @@ function onPreloadF() {
 	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
 }
 
-return {
+script = {
 	name: "PudgeCombo",
 	isVisible: false,
 	onPreload: onPreloadF

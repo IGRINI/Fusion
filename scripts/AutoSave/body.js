@@ -46,9 +46,9 @@ function AutoSaveF() {
 	}))
 }
 
-return {
+script = {
 	name: "AutoSave",
-	isVisible: false
+	isVisible: false // let's define more SavingAbils && BuffsNames to enable this script
 }
 /*var AutoSave = Fusion.AddScript("AutoSave", () => {
 	if (!AutoSave.checked)
