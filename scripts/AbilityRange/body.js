@@ -2,8 +2,9 @@
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 	
 	Fusion.Particles.AbilityRange.forEach((par, abil) => {
-		var Range = Abilities.GetCastRangeFix(abil)
 		Particles.DestroyParticleEffect(par, true)
+
+		var Range = Abilities.GetCastRangeFix(abil)
 		if (!Range || Range <= 0) {
 			Fusion.Particles.AbilityRange.delete(abil)
 			return
@@ -164,6 +165,8 @@ function onToggleF(checkbox) {
 
 script = {
 	name: "AbilityRange",
+	isVisible: false, // FIXIT
+	onPreload: Destroy, // as it defines our globals
 	onToggle: onToggleF,
 	onDestroy: Destroy
 }

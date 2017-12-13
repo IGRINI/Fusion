@@ -65,7 +65,7 @@ Fusion.ReloadFusion = () => {
 
 	Fusion.ServerRequest("scriptlist").then(response =>
 		Promise.all(JSON.parse(response).map(Fusion.GetScript)).then(scriptsCode => {
-			scriptsCode.forEach(scriptCode => {
+			scriptsCode.forEach(scriptCode => { // works like a scriptsCode.forEach(requireFromString)
 				try {
 					var script
 					eval(scriptCode) // this must set script to some object
@@ -86,7 +86,6 @@ Fusion.ReloadFusion = () => {
 				})
 
 				Fusion.Panels.MainPanel.SetHasClass("Popup", true) // unhide popup
-				$.Msg("test3")
 			})
 		}).catch(err => {
 			$.Msg("error @ Fusion.ReloadFusion");
@@ -101,14 +100,14 @@ Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 		"data": {
 			"steamid": Fusion.SteamID
 		},
-		"complete": a => {
-			if (a.status === 200) {
-				a.responseText = a.responseText || "\n"
-				resolve(a.responseText.substring(0, a.responseText.length - 1))
+		"complete": response => {
+			if (response.status === 200) {
+				response.responseText = response.responseText || "\n"
+				resolve(response.responseText.substring(0, response.responseText.length - 1))
 			} else {
 				if(Fusion.debugLoad)
-					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(a)}.`
-				if(a.status !== 403) {
+					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(response)}.`
+				if(response.status !== 403) {
 					if(Fusion.debugLoad)
 						$.Msg(log + " Trying again.")
 					Fusion.ServerRequest(name, val).then(resolve)
