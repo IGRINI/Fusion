@@ -15,8 +15,6 @@ function Save(MyEnt, ent) {
 		var abil = Game.GetAbilityByName(MyEnt, ar[0])
 		if(abil === undefined)
 			return true
-		var abilBehaviors = Fusion.Behaviors(abil)
-		var speed = ar[1]
 		if(distance > Abilities.GetCastRangeFix(abil) || !Abilities.IsCooldownReady(abil) || Abilities.IsHidden(abil) || !Abilities.IsActivated(abil))
 			return true
 		Game.CastTarget(MyEnt, abil, ent)

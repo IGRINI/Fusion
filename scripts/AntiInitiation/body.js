@@ -19,8 +19,8 @@ var DisableAbils = [
 
 var StunAbils = [
 	["dragon_knight_dragon_tail", false],
-	["tidehunter_ravage", false],
-	["earthshaker_echo_slam", true],
+	["tidehunter_ravage", true],
+	["earthshaker_echo_slam", false, true],
 	["earthshaker_fissure", false],
 	["magnataur_reverse_polarity", false],
 	["beastmaster_primal_roar", false],
@@ -129,6 +129,7 @@ function Disable(MyEnt, ent, Abil) {
 		var abilrange = Abilities.GetCastRangeFix(abilL)
 		if (
 			Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
+			Abilities.IsHidden(abilL) ||
 			(
 				Entities.GetRangeToUnit(MyEnt, ent) > abilrange &&
 				abilrange !== 0
@@ -139,20 +140,23 @@ function Disable(MyEnt, ent, Abil) {
 		abil = abilL
 		return true
 	}))
-	if(abil === undefined)
+	if(!abil)
 		return false
 	
 	GameUI.SelectUnit(MyEnt, false)
-	
+
 	var Behavior = Fusion.Behaviors(abil)
+	$.Msg(`${Abilities.GetAbilityName(abil)}: ${Behavior}`)
 	if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
 		Game.CastNoTarget(MyEnt, abil, false)
 	else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
-		Abilities.CreateDoubleTapCastOrder(abil, MyEnt)
+		Game.CastPosition(MyEnt, abil, Entities.GetAbsOrigin(ent), false)
 	else if(Behavior.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1)
 		Game.CastTarget(MyEnt, abil, ent, false)
+
 	flags[ent] = true
 	$.Schedule(1, () => flags[ent] = false)
+
 	return true
 }
 

@@ -572,12 +572,14 @@ Game.IsIllusion = ent => Entities.PlayersHeroEnts().indexOf(ent) === -1
 Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(playerID => Players.GetPlayerHeroEntityIndex(playerID))
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
-Fusion.Behaviors = behavior => behavior.toString(2).split("").reverse().map((val, i) => {
+Fusion.Behaviors = abil => Fusion.RepresentBehavior(Abilities.GetBehavior(abil))
+
+Fusion.RepresentBehavior = behavior => behavior.toString(2).split("").reverse().map((val, i) => {
 	if(val === "1")
 		return 2 ** i
 	else
 		return 0
-})
+}).filter(val => val !== 0)
 
 //объект с указателями на бафы юнита
 Game.GetBuffs = ent => {
