@@ -10,6 +10,7 @@
 * Add invoker skills' functions with callbacks, integrate to code and turn into commands
 * Rewrite scripts for Node.js (now semi before native realize)
 * Make Fusion site, native support
+* Rubick spell autosteal
 
 ## InDev:
 * Shadow Fiend autocoil
@@ -37,9 +38,6 @@
 ## Unordered soon:
 * Fix TinkerLaserStealer' pathing for scepter
 * Fix coordinates for AncientCreepStack
-
-## Soon:
-* Fully rewrite rubick autosteal
 
 ## Realized:
 * Fix EzTechies
