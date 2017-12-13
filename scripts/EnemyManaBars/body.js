@@ -61,7 +61,10 @@ function EMBEvery() {
 
 script = {
 	name: "EnemyManaBars",
-	onPreload: () => Fusion.GetXML("EnemyManaBars/manabar").then(xml => manabar_layout = xml),
+	onPreload: () => {
+		DeleteAll() // as it defines variables
+		Fusion.GetXML("EnemyManaBars/manabar").then(xml => manabar_layout = xml)
+	},
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
