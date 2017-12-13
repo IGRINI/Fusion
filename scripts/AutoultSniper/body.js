@@ -1,13 +1,13 @@
 var enabled = false
 
-function SniperAssassinateOnInterval() {
-	SniperAssassinateF()
+function SniperAutoultOnInterval() {
+	SniperAutoultF()
 
 	if(enabled)
-		$.Schedule(Fusion.MyTick, SniperAssassinateOnInterval)
+		$.Schedule(Fusion.MyTick, SniperAutoultOnInterval)
 }
 
-function SniperAssassinateF() {
+function SniperAutoultF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "sniper_assassinate"),
 		HideItem = Game.GetHideItem(MyEnt),
@@ -51,15 +51,15 @@ function SniperAssassinateF() {
 }
 
 script = {
-	name: "SniperAssassinate",
+	name: "Autoult Sniper",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (checkbox.checked) {
-			SniperAssassinateOnInterval()
-			Game.ScriptLogMsg("Script enabled: SniperAssassinate", "#00ff00")
+			SniperAutoultOnInterval()
+			Game.ScriptLogMsg("Script enabled: Sniper Autoult", "#00ff00")
 		} else
-			Game.ScriptLogMsg("Script disabled: SniperAssassinate", "#ff0000")
+			Game.ScriptLogMsg("Script disabled: Sniper Autoult", "#ff0000")
 	},
 	onDestroy: () => enabled = false
 }

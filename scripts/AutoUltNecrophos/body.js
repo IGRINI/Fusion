@@ -54,15 +54,15 @@ function AutoUltNecrophosF() {
 }
 
 script = {
-	name: "AutoultNecrophos",
+	name: "Autoult Necrophos",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (checkbox.checked) {
 			AutoUltNecrophosOnInterval()
-			Game.ScriptLogMsg("Script enabled: AutoUltNecrophos", "#00ff00")
+			Game.ScriptLogMsg("Script enabled: Necrophos Autoult", "#00ff00")
 		} else
-			Game.ScriptLogMsg("Script disabled: AutoUltNecrophos", "#ff0000")
+			Game.ScriptLogMsg("Script disabled: Necrophos Autoult", "#ff0000")
 	},
 	onDestroy: () => enabled = false
 }

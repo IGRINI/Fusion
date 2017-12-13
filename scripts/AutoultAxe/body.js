@@ -1,14 +1,14 @@
 var enabled = false,
 	flag = false
 
-function AxeUltiOnCheckOnInterval() {
-	AxeUltiF()
+function AxeAutoUltOnInterval() {
+	AxeAutoUltF()
 
 	if(enabled)
-		$.Schedule(Fusion.MyTick, AxeUltiOnCheckOnInterval)
+		$.Schedule(Fusion.MyTick, AxeAutoUltOnInterval)
 }
 
-function AxeUltiF() {
+function AxeAutoUltF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
 		UltiLvl = Abilities.GetLevel(Ulti),
@@ -70,15 +70,15 @@ function CastDagon(MyEnt, Dagon, ent) {
 }
 
 script = {
-	name: "AntiAFK",
+	name: "AutoUlt Axe",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (checkbox.checked) {
-			AxeUltiOnCheckOnInterval()
-			Game.ScriptLogMsg("Script enabled: AxeUlti", "#00ff00")
+			AxeAutoUltOnInterval()
+			Game.ScriptLogMsg("Script enabled: Axe AutoUlt", "#00ff00")
 		} else
-			Game.ScriptLogMsg("Script disabled: AxeUlti", "#ff0000")
+			Game.ScriptLogMsg("Script disabled: Axe AutoUlt", "#ff0000")
 	},
 	onDestroy: () => enabled = false
 }

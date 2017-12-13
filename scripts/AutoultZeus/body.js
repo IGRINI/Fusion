@@ -37,15 +37,15 @@ function ZeusAutoultF() {
 }
 
 script = {
-	name: "AutoultZeus",
+	name: "Autoult Zeus",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (checkbox.checked) {
 			ZeusAutoultOnInterval()
-			Game.ScriptLogMsg("Script enabled: AutoultZeus", "#00ff00")
+			Game.ScriptLogMsg("Script enabled: Zeus Autoult", "#00ff00")
 		} else
-			Game.ScriptLogMsg("Script disabled: AutoultZeus", "#ff0000")
+			Game.ScriptLogMsg("Script disabled: Zeus Autoult", "#ff0000")
 	},
 	onDestroy: () => enabled = false
 }

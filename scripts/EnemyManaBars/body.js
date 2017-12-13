@@ -60,19 +60,19 @@ function EMBEvery() {
 }
 
 script = {
-	name: "ExpRange",
-	onPreload: DeleteAll,
+	name: "EnemyManaBars",
+	onPreload: () => Fusion.GetXML("EnemyManaBars/manabar").then(xml => manabar_layout = xml),
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (checkbox.checked) {
-			Fusion.GetXML("EnemyManaBars/manabar").then(xml => {
-				manabar_layout = xml
-				EMBEvery()
-			})
+			EMBEvery()
 			Game.ScriptLogMsg("Script enabled: EnemyManaBars", "#00ff00")
 		} else
 			Game.ScriptLogMsg("Script disabled: EnemyManaBars", "#ff0000")
 	},
-	onDestroy: () => enabled = false
+	onDestroy: () => {
+		enabled = false
+		DeleteAll()
+	}
 }
