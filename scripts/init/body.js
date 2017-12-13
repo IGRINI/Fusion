@@ -7,7 +7,7 @@ Fusion = {
 	Scripts: new Map(),// {onPreload, onToggle, onDestroy, name, isVisible}
 	MyTick: 1 / 30,
 	debug: false,
-	debugLoad: true,
+	debugLoad: false,
 	debugAnimations: false,
 	FusionServer: "http://localhost:4297",
 	SteamID: 0
