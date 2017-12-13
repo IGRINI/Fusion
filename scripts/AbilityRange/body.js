@@ -53,8 +53,7 @@ function SkillLearned(data) {
 			return
 	}
 	var CheckB = $.CreatePanel( "ToggleButton", AbilityRangePanel, "AbilityRangeSkill" )
-	CheckB.BLoadLayoutFromString("\
-<root>\
+	CheckB.BLoadLayoutFromString("<root>\
 	<styles>\
 		<include src='s2r://panorama/styles/magadan.css'/>\
 		<include src='s2r://panorama/styles/dotastyles.vcss_c'/>\
@@ -138,17 +137,16 @@ function onToggleF(checkbox) {
 				continue
 			Behavior = Abilities.GetBehavior( Abil )
 			CheckB = $.CreatePanel( "ToggleButton", AbilityRangePanel, "AbilityRangeSkill" )
-			CheckB.BLoadLayoutFromString("\
-	<root>\
-		<styles>\
-			<include src='s2r://panorama/styles/magadan.css'/>\
-			<include src='s2r://panorama/styles/dotastyles.vcss_c'/>\
-		</styles>\
-		<Panel>\
-			<ToggleButton class='CheckBox' style='vertical-align:center;'/>\
-			<DOTAAbilityImage style='width:30px;margin:3px;border-radius:15px;'/>\
-		</Panel>\
-	</root>", false, false)
+			CheckB.BLoadLayoutFromString("<root>\
+	<styles>\
+		<include src='s2r://panorama/styles/magadan.css'/>\
+		<include src='s2r://panorama/styles/dotastyles.vcss_c'/>\
+	</styles>\
+	<Panel>\
+		<ToggleButton class='CheckBox' style='vertical-align:center;'/>\
+		<DOTAAbilityImage style='width:30px;margin:3px;border-radius:15px;'/>\
+	</Panel>\
+</root>", false, false)
 			CheckB.Children()[1].abilityname = Abilities.GetAbilityName(Abil)
 			CheckB.SetAttributeInt("Skill", Abil)
 			CheckB.SetPanelEvent( "onactivate", chkboxpressed )

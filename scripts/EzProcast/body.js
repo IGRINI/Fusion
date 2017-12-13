@@ -1,7 +1,4 @@
-﻿if(Fusion.Panels.EzProcast)
-	Fusion.Panels.EzProcast.DeleteAsync(0)
-
-function EzProcastOnOffLoad() {
+﻿function EzProcastOnOffLoad() {
 	Fusion.GetXML("EzProcast/panel").then(layout_string => {
 		Fusion.Panels.EzProcast = $.CreatePanel("Panel", Fusion.Panels.Main, "EzProcast")
 		Fusion.Panels.EzProcast.BLoadLayoutFromString(layout_string, false, false)
@@ -46,8 +43,7 @@ function EzProcastOnOffLoad() {
 			.forEach(item => {
 				Behaviors = Fusion.Behaviors(item)
 				var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
-				P.BLoadLayoutFromString("\
-<root>\
+				P.BLoadLayoutFromString("<root>\
 	<script>\
 		function Add() {\
 			Parent = $.GetContextPanel().GetParent().GetParent();\
@@ -129,7 +125,9 @@ script = {
 		}
 	},
 	onDestroy: () => {
-		if(Fusion.Panels.EzProcast)
+		if(Fusion.Panels.EzProcast) {
 			Fusion.Panels.EzProcast.DeleteAsync(0)
+			delete Fusion.Panels.EzProcast
+		}
 	}
 }
