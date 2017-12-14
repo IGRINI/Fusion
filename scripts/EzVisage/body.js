@@ -1,4 +1,5 @@
-var enabled = false
+var enabled = false,
+	isInvalid = false
 
 function GetFamiliars() {
 	return Entities.GetAllEntitiesByClassname("npc_dota_visage_familiar").filter(ent =>
@@ -75,6 +76,8 @@ function Souls(MyEnt) {
 
 function EzVisageOnInterval() {
 	EzVisageF()
+	if(isInvalid && GameUI.IsControlDown())
+		GetFamiliars().forEach(familiar => GameUI.SelectUnit(familiar, true))
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick, EzVisageOnInterval)
@@ -82,6 +85,7 @@ function EzVisageOnInterval() {
 
 script = {
 	name: "EzVisage",
+	onPreload: () => Fusion.GetConfig("EzVisage").then(config => isInvalid = config.invalid_mode),
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
