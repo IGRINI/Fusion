@@ -85,7 +85,7 @@ Fusion.ReloadFusion = () => {
 					Fusion.AddScriptToList(script)
 				})
 
-				Fusion.Panels.MainPanel.SetHasClass("Popup", true) // unhide popup
+				Fusion.Panels.MainPanel.visible = true // unhide popup
 			})
 		}).catch(err => {
 			$.Msg("error @ Fusion.ReloadFusion");
@@ -153,9 +153,6 @@ Fusion.AnimatePanel = (panel, properties, duration, ease, delay) => {
 	panel.style.transition = finalTransition + ";"
 }
 
-Fusion.StatsEnabled = true
-Fusion.MinimapActsEnabled = true
-Fusion.HUDEnabled = true
 Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 	if(Fusion.Panels.MainPanel) {
 		Fusion.Panels.MainPanel.DeleteAsync(0)
@@ -168,6 +165,7 @@ Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 			$.Msg("HUD now are initializing...")
 		
 		Fusion.Panels.MainPanel.BLoadLayoutFromString(layout_string, false, false)
+		Fusion.Panels.MainPanel.visible = false // automatically hide popup
 		Fusion.Panels.MainPanel.ToggleClass("PopupOpened")
 		Fusion.Panels.MainPanel.FindChildTraverse("Reload").SetPanelEvent("onactivate", Fusion.ReloadFusion)
 		Fusion.Panels.MainPanel.Slider = Fusion.Panels.MainPanel.FindChildInLayoutFile("CameraDistance")
@@ -196,7 +194,7 @@ Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 			Fusion.Panels.MainPanel.Slider.saved = true
 			
 			function OnTickSlider() {
-				if(!Fusion.Panels.MainPanel.Slider || Fusion.Panels.MainPanel.Slider.value === 0) {
+				if(!Fusion.Panels.MainPanel || !Fusion.Panels.MainPanel.Slider || Fusion.Panels.MainPanel.Slider.value === 0) {
 					$.Schedule(Fusion.MyTick, OnTickSlider)
 					return
 				}
@@ -219,9 +217,6 @@ Fusion.LoadFusion = () => new Promise((resolve, reject) => {
 			if(Fusion.debugLoad)
 				$.Msg("Slider initialized!")
 		})
-		
-		Fusion.SteamID = Game.GetLocalPlayerInfo().player_steamid // comment if you don"t wanted in logging your steamid
-		Fusion.Panels.MainPanel.SetHasClass("Popup", false) // automatically hide popup
 	})
 })
 
@@ -236,38 +231,23 @@ function InstallMainHUD() {
 	Fusion.Panels.Main.HUDElements = Fusion.Panels.Main.FindChild("HUDElements")
 }
 
+Fusion.StatsEnabled = true
+Fusion.MinimapActsEnabled = true
 function WaitForGameStart() {
 	$.Schedule (
 		Fusion.MyTick,
 		function() {
 			if(Players.GetLocalPlayer() !== -1) {
+				Fusion.SteamID = Game.GetLocalPlayerInfo().player_steamid // comment if you don"t wanted in logging your steamid
 				InstallMainHUD()
 				GameUI.SetCameraPitchMin(60)
 				GameUI.SetCameraPitchMax(60)
 				
 				Game.AddCommand( "__ReloadFusion", Fusion.ReloadFusion, "", 0)
-				Game.AddCommand("__TogglePanel", () => Fusion.Panels.MainPanel.ToggleClass("Popup"), "",0)
-				Game.AddCommand('__eval', function (name, arg1) {
-					eval(arg1);
-				}, '', 0);	
-				Game.AddCommand("__ToggleMinimapActs", () => {
-					var panel = Fusion.Panels.Main.HUDElements
-					
-					if(panel = panel.FindChild("minimap_container").FindChild("GlyphScanContainer"))
-						if(Fusion.MinimapActsEnabled = !Fusion.MinimapActsEnabled)
-								panel.style.visibility = ""
-							else
-								panel.style.visibility = "collapse"
-				}, "",0)
-				Game.AddCommand("__ToggleStats", () => {
-					var panel = Fusion.Panels.Main.HUDElements
-					
-					if(panel = panel.FindChild("quickstats"))
-						if(Fusion.StatsEnabled = !Fusion.StatsEnabled)
-							panel.style.visibility = ""
-						else
-							panel.style.visibility = "collapse"
-				}, "",0)
+				Game.AddCommand("__TogglePanel", () => Fusion.Panels.MainPanel.visible = !Fusion.Panels.MainPanel.visible, "",0)
+				Game.AddCommand('__eval', (name, code) => $.Msg(eval(code)), '', 0)
+				Game.AddCommand("__ToggleMinimapActs", () => Fusion.Panels.Main.HUDElements.FindChildTraverse("GlyphScanContainer").visible = Fusion.MinimapActsEnabled = !Fusion.MinimapActsEnabled, "",0)
+				Game.AddCommand("__ToggleStats", () => Fusion.Panels.Main.HUDElements.FindChildTraverse("quickstats").visible = Fusion.StatsEnabled = !Fusion.StatsEnabled, "",0)
 				
 				Fusion.ReloadFusion()
 			} else
