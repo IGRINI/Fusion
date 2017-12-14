@@ -45,7 +45,8 @@ var StunAbils = [
 	["invoker_cold_snap", true],
 	["invoker_tornado", true],
 	["dark_seer_vacuum", true],
-	["bane_nightmare", true]
+	["bane_nightmare", true],
+	["rattletrap_hookshot", true]
 ]
 
 var OtherAbils = [
