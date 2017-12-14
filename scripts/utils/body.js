@@ -7,7 +7,7 @@ Fusion.ForceStaffNames = [
 ]
 
 Game.GetHideItem = ent => {
-	var ret = undefined
+	var ret;
 	[
 		"item_shadow_amulet", // shadow amulet
 		"item_glimmer_cape",  // glimmer cape
