@@ -112,7 +112,7 @@ function onPreloadF() {
 		})
 	}
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
-	Game.AddCommand("__ToggleEzProcast", () => Fusion.Panels.EzProcast.ToggleClass("EzProcast"), "",0)
+	Game.AddCommand("__ToggleEzProcast", () => Fusion.Panels.EzProcast.visible = !Fusion.Panels.EzProcast.visible, "",0)
 }
 
 script = {
