@@ -19,8 +19,7 @@
 			if( !Abilities.IsDisplayedAbility(Ab) || Abilities.IsPassive(Ab) )
 				continue
 			var P = $.CreatePanel("Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcastItems")
-			P.BLoadLayoutFromString("\
-<root>\
+			P.BLoadLayoutFromString("<root>\
 	<script>\
 		function Add() {\
 			Parent=$.GetContextPanel().GetParent().GetParent();\
@@ -39,9 +38,8 @@
 			P.Children()[0].abilityname = Abilities.GetAbilityName(Ab)
 		}
 		Game.GetInventory(MyEnt)
-			.filter(item => item !== -1 && Behaviors.indexOf(2) === -1)
+			.filter(item => item !== -1 && Fusion.Behaviors(item).indexOf(2) === -1)
 			.forEach(item => {
-				Behaviors = Fusion.Behaviors(item)
 				var P = $.CreatePanel( "Panel", Fusion.Panels.EzProcast.Children()[0], "EzProcast1Items2" )
 				P.BLoadLayoutFromString("<root>\
 	<script>\

@@ -1,23 +1,27 @@
 function onPreloadF() {
 	if(!Fusion.Commands.DumpEnemyAbilities) {
 		var lastBuffs = []
-		Fusion.Commands.DumpEnemyAbilities = function() {
-			var HEnts = Entities.PlayersHeroEnts().filter(function(ent) {
-				return Entities.IsAlive(ent) && !(Entities.IsBuilding(ent) || Entities.IsInvulnerable(ent)) && Entities.IsEnemy(ent)
-			})
-			HEnts.map(function(ent) {
+		Fusion.Commands.DumpEnemyAbilities = () => {
+			Entities.PlayersHeroEnts().filter(ent =>
+				Entities.IsAlive(ent)
+				&& !(
+					Entities.IsBuilding(ent)
+					|| Entities.IsInvulnerable(ent)
+				)
+				&& Entities.IsEnemy(ent)
+			).map(ent => {
 				var entName = Entities.GetUnitName(ent).replace("npc_dota_hero_", "")
 				var available = []
-				for(var i = 0; i < Entities.GetNumItemsInInventory(ent); i++) {
+				/*for(var i = 0; i < Entities.GetNumItemsInInventory(ent); i++) {
 					var item = Entities.GetItemInSlot(ent, i)
 					available.push(item)
-				}
+				}*/
 				for(var i = 0; i < Entities.GetAbilityCount(ent); i++) {
 					var abil = Entities.GetAbility(ent, i)
 					available.push(abil)
 				}
 				$.Msg(`${entName}: {`)
-				available.map(function(abil) {
+				available.map(abil => {
 					var abilName = Abilities.GetAbilityName(abil)
 					if(typeof abilName !== "string" || abilName === "")
 						return
