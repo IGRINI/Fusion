@@ -85,30 +85,23 @@ function onPreloadF() {
 		//$.Msg("Abils: "+abils)
 		Game.EntStop(MyEnt)
 		abils.forEach(AbName => {
-			var Abil = Game.GetAbilityByName(MyEnt, AbName)
-			var Behaviors = Fusion.Behaviors(Abil)
-			var TargetTeam = Fusion.RepresentBehavior(Abilities.GetAbilityTargetTeam(Abil))
+			var Abil = Game.GetAbilityByName(MyEnt, AbName),
+				Behaviors = Fusion.Behaviors(Abil)
 			//$.Msg("Team Target: "+EzPDUTT)
 			//$.Msg("Ability Behavior: "+EzPBeh)
 			if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_TOGGLE) !== -1)
-				Game.ToggleAbil(MyEnt, Abil)
+				Game.ToggleAbil(MyEnt, Abil, true)
 			else if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_NO_TARGET) !== -1)
-				Game.CastNoTarget(MyEnt, Abil)
+				Game.CastNoTarget(MyEnt, Abil, true)
 			else if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
-				Game.CastPosition(MyEnt, Abil, pos)
-			else if(AbName === "item_ethereal_blade") {
+				Game.CastPosition(MyEnt, Abil, pos, true)
+			else if(AbName === "item_ethereal_blade")
 				if(EntOnCursor.length != 0)
-					Game.CastTarget(MyEnt, Abil, EntOnCursor[0])
+					Game.CastTarget(MyEnt, Abil, EntOnCursor[0], true)
 				else
-					Game.CastTarget(MyEnt, Abil, MyEnt)
-			} else if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || Behaviors.length === 0) {
-				if(TargetTeam.indexOf(DOTA_UNIT_TARGET_TEAM.DOTA_UNIT_TARGET_TEAM_FRIENDLY) >= 0 || TargetTeam === DOTA_UNIT_TARGET_TEAM.DOTA_UNIT_TARGET_TEAM_NONE)
-					Game.CastTarget(MyEnt, Abil, MyEnt)
-				else if(TargetTeam !== -1 || TargetTeam === DOTA_UNIT_TARGET_TEAM.DOTA_UNIT_TARGET_TEAM_CUSTOM)
-					Game.CastTarget(MyEnt, Abil, MyEnt)
-				else
-					Game.CastTarget(MyEnt, Abil, MyEnt)
-			}
+					Game.CastTarget(MyEnt, Abil, MyEnt, true)
+			else if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || Behaviors.length === 0)
+				Game.CastTarget(MyEnt, Abil, MyEnt, true)
 		})
 	}
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
