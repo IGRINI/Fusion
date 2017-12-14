@@ -95,13 +95,8 @@ function onPreloadF() {
 				Game.CastNoTarget(MyEnt, Abil, true)
 			else if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_POINT) !== -1)
 				Game.CastPosition(MyEnt, Abil, pos, true)
-			else if(AbName === "item_ethereal_blade")
-				if(EntOnCursor.length != 0)
-					Game.CastTarget(MyEnt, Abil, EntOnCursor[0], true)
-				else
-					Game.CastTarget(MyEnt, Abil, MyEnt, true)
-			else if(Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || Behaviors.length === 0)
-				Game.CastTarget(MyEnt, Abil, MyEnt, true)
+			else if(AbName === "item_ethereal_blade" || Behaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || Behaviors.length === 0)
+				Game.CastTarget(MyEnt, Abil, EntOnCursor[0] || MyEnt, true)
 		})
 	}
 	Game.AddCommand("__EzProcast", Fusion.Commands.EzProcastF, "",0)
