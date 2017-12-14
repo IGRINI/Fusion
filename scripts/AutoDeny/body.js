@@ -15,18 +15,16 @@ function AutoDenyOnInterval() {
 			Rot_Damage = Abilities.GetLevelSpecialValueFor(Rot, "rot_damage", Abilities.GetLevel(Rot)),
 			SoulRing_Damage = Abilities.GetSpecialValueFor(SoulRing, "health_sacrifice")
 		if(Entities.GetHealth(MyEnt) <= Rot_Damage + SoulRing_Damage) {
-			if(Game.GetBuffsNames(MyEnt).indexOf("modifier_pudge_rot") === -1) {
-				Game.ToggleAbil(MyEnt, Rot, false)
-				return
-			}
 			if(SoulRing && Abilities.GetCooldownTimeRemaining(SoulRing) === 0)
 				Game.CastNoTarget(MyEnt, SoulRing, false)
+			if(Game.GetBuffsNames(MyEnt).indexOf("modifier_pudge_rot") === -1)
+				Game.ToggleAbil(MyEnt, Rot, false)
 			
 			return
 		}
 	}
 	
-	var item = Game.GetAbilityByName(MyEnt, BSName)
+	var item = Game.GetAbilityByName(MyEnt, "item_bloodstone")
 	if(!item)
 		return
 	Game.CastPosition(MyEnt, item, Entities.GetAbsOrigin(MyEnt), false)
