@@ -27,6 +27,8 @@ function Familiars(MyEnt) {
 				GameUI.SelectUnit(familiar, false)
 				Game.CastNoTarget(familiar, StoneForm, false)
 				GameUI.SelectUnit(MyEnt, false)
+				if(isInvalid)
+					InvalidSelect()
 			} else
 				GameUI.PingMinimapAtLocation(Entities.GetAbsOrigin(familiar))
 	})
@@ -70,14 +72,21 @@ function Souls(MyEnt) {
 	}).every(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)
+		if(isInvalid)
+			InvalidSelect()
+		
 		return false
 	})
+}
+
+function InvalidSelect() {
+	GetFamiliars().forEach(familiar => GameUI.SelectUnit(familiar, true))
 }
 
 function EzVisageOnInterval() {
 	EzVisageF()
 	if(isInvalid && GameUI.IsControlDown())
-		GetFamiliars().forEach(familiar => GameUI.SelectUnit(familiar, true))
+		InvalidSelect()
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick, EzVisageOnInterval)
