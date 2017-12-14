@@ -80,7 +80,14 @@ function Souls(MyEnt) {
 }
 
 function InvalidSelect() {
-	GetFamiliars().forEach(familiar => GameUI.SelectUnit(familiar, true))
+	var localPlayerID = Game.GetLocalPlayerID()
+	Entities.GetAllEntitiesByClassname("npc_dota_visage_familiar").filter(ent =>
+		Entities.IsAlive(ent)
+		&& !Entities.IsBuilding(ent)
+		&& !Entities.IsEnemy(ent)
+		&& Entities.IsControllableByPlayer(ent, localPlayerID)
+		&& !Entities.IsIllusion(ent)
+	).forEach(familiar => GameUI.SelectUnit(familiar, true))
 }
 
 function EzVisageOnInterval() {
