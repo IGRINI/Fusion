@@ -35,9 +35,15 @@ function Souls(MyEnt) {
 	var Abil = Entities.GetAbilityByName(MyEnt, "visage_soul_assumption")
 	if(Abilities.GetLevel(Abil) === 0 || Abilities.GetCooldownTimeRemaining(Abil) !== 0 || Entities.GetMana(MyEnt) < Abilities.GetManaCost(Abil))
 		return
-	var AbilRange = Abilities.GetCastRangeFix(Abil)
-	var AbilCastPoint = Abilities.GetCastPoint(Abil)
-	var SoulDamage = 20 + 65 * Buffs.GetStackCount(MyEnt, Fusion.GetBuffByName(MyEnt, "modifier_visage_soul_assumption"))
+	var AbilRange = Abilities.GetCastRangeFix(Abil),
+		AbilCastPoint = Abilities.GetCastPoint(Abil),
+		buff = Fusion.GetBuffByName(MyEnt, "modifier_visage_soul_assumption")
+	if(!buff)
+		return
+	
+	var SoulDamage = 20 + 65 * (Buffs.GetStackCount(MyEnt, buff) || 0)
+	if(SoulDamage === 0)
+		return
 	
 	Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
