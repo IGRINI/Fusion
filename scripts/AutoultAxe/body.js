@@ -64,11 +64,6 @@ function CastUlti(MyEnt, Ulti, UltiCastPoint, ent) {
 	$.Schedule(UltiCastPoint, () => flag = false)
 }
 
-function CastDagon(MyEnt, Dagon, ent) {
-	GameUI.SelectUnit(MyEnt, false)
-	Game.CastTarget(MyEnt, Dagon, ent, false)
-}
-
 script = {
 	name: "AutoUlt Axe",
 	onToggle: checkbox => {

@@ -126,7 +126,7 @@ function onToggleF(checkbox) {
 				Fusion.SaveConfig("AbilityRange", Fusion.Configs.AbilityRange)
 			}
 			
-			Game.AddCommand( "__AbilityRange_Rotate", Fusion.Commands.AbilityRange_Rotate, "",0)
+			Game.AddCommand("__AbilityRange_Rotate", Fusion.Commands.AbilityRange_Rotate, "", 0)
 		}
 		AbilityRangePanel = Fusion.Panels.Main.FindChildrenWithClassTraverse("AbilityRangePanel")[0]
 		for (var i = 0; i < Entities.GetAbilityCount(MyEnt ); i++){

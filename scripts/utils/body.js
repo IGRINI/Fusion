@@ -560,7 +560,7 @@ Game.IntersecArrays = (a, b) => a.some(val1 => b.some(val2 => val1 === val2))
 //получение массива с инвентарем юнита
 Game.GetInventory = ent => {
 	var inv = []
-	for(i = 0; i < 6; i++) {
+	for(var i = 0; i < 6; i++) {
 		var item = Entities.GetItemInSlot(ent, i)
 		inv.push(item)
 	}
