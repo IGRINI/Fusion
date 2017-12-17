@@ -9,9 +9,6 @@ function AxeAutoUltOnInterval() {
 }
 
 function AxeAutoUltF() {
-	if(CastUltiFlag)
-		return
-	
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
 		UltiLvl = Abilities.GetLevel(Ulti),
@@ -63,8 +60,8 @@ function CastUlti(MyEnt, Ulti, UltiCastPoint, ent) {
 	GameUI.SelectUnit(MyEnt, false)
 	Game.CastTarget(MyEnt, Ulti, ent, false)
 	
-	CastUltiFlag = true
-	$.Schedule(UltiCastPoint, () => CastUltiFlag = false)
+	flag = true
+	$.Schedule(UltiCastPoint, () => flag = false)
 }
 
 function CastDagon(MyEnt, Dagon, ent) {
