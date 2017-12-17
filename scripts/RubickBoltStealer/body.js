@@ -17,7 +17,7 @@ function BoltSteal() {
 	if(Bolt === -1 || Abilities.GetLevel(Bolt) === 0)
 		return
 	
-	var BoltDamage = Abilities.GetLevelSpecialValueFor(Bolt, "damage", Abilities.GetLevel(Bolt)),
+	var BoltDamage = Abilities.GetLevelSpecialValueFor(Bolt, "damage", Abilities.GetLevel(Bolt) - 1),
 		BoltRefractionRange = Abilities.GetSpecialValueFor(Bolt, "radius"),
 		BoltRange = Abilities.GetCastRangeFix(Bolt),
 		BoltCastPoint = Abilities.GetCastPoint(Bolt)

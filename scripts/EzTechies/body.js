@@ -84,7 +84,7 @@ function RemoteMines(MyEnt, ents) {
 			return true
 		
 		var lvl = Fusion.EzTechies.LVLUp.filter(time => time !== -1 && rmineTime > time).reduce((previousValue, currentValue) => currentValue) // grabs last element from array
-		var dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl)
+		var dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl - 1)
 		if(ents.some(ent => Entities.IsEntityInRange(rmine, ent, TriggerRadius))) {
 			RMinesToBlow.push(rmine)
 			RMinesDmg += dmg

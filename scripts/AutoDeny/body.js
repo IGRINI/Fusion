@@ -12,7 +12,7 @@ function AutoDenyOnInterval() {
 	if(Entities.GetUnitName(MyEnt) === "npc_dota_hero_pudge") {
 		var Rot = Entities.GetAbilityByName(MyEnt, "pudge_rot"),
 			SoulRing = Game.GetAbilityByName(MyEnt, "item_soul_ring"),
-			Rot_Damage = Abilities.GetLevelSpecialValueFor(Rot, "rot_damage", Abilities.GetLevel(Rot)),
+			Rot_Damage = Abilities.GetLevelSpecialValueFor(Rot, "rot_damage", Abilities.GetLevel(Rot) - 1),
 			SoulRing_Damage = Abilities.GetSpecialValueFor(SoulRing, "health_sacrifice")
 		if(Entities.GetHealth(MyEnt) <= Rot_Damage + SoulRing_Damage) {
 			if(SoulRing && Abilities.GetCooldownTimeRemaining(SoulRing) === 0)

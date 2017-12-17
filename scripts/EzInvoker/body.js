@@ -50,7 +50,7 @@
 					$.Schedule(EulDuration - SunStrikeDelay + Fusion.MyTick * 15, function() {
 						Game.CastPosition(MyEnt, Tornado, pos, false)
 						
-						var lift_duration = Abilities.GetLevelSpecialValueFor(Tornado, "lift_duration", Abilities.GetLevel(Game.GetAbilityByName(MyEnt, "invoker_quas")) - 2 + (Entities.HasScepter(MyEnt) ? 1 : 0)),
+						var lift_duration = Abilities.GetLevelSpecialValueFor(Tornado, "lift_duration", Abilities.GetLevel(Game.GetAbilityByName(MyEnt, "invoker_quas")) - 2 + (Entities.HasScepter(MyEnt) ? 1 : 0) - 1),
 							talent = Entities.GetAbilityByName(MyEnt, "special_bonus_unique_invoker_8")
 						if(talent !== -1 && Abilities.GetLevel(talent) > 0)
 							lift_duration += Abilities.GetSpecialValueFor(talent, "value")

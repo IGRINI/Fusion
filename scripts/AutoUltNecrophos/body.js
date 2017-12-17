@@ -14,7 +14,7 @@ function AutoUltNecrophosF() {
 		UltiLvl = Abilities.GetLevel(Ulti),
 		UltiDmg = Abilities.GetAbilityDamage(Ulti),
 		UltiManaCost = Abilities.GetManaCost(Ulti),
-		DamagePerMissHP = Abilities.GetLevelSpecialValueFor(Ulti, "damage_per_health", UltiLvl);
+		DamagePerMissHP = Abilities.GetLevelSpecialValueFor(Ulti, "damage_per_health", UltiLvl - 1);
 	
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
 		return

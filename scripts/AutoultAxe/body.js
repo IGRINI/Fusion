@@ -9,10 +9,13 @@ function AxeAutoUltOnInterval() {
 }
 
 function AxeAutoUltF() {
+	if(CastUltiFlag)
+		return
+	
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		Ulti = Entities.GetAbilityByName(MyEnt, "axe_culling_blade"),
 		UltiLvl = Abilities.GetLevel(Ulti),
-		kill_threshold = Abilities.GetLevelSpecialValueFor(Ulti, "kill_threshold", UltiLvl),
+		kill_threshold = Abilities.GetLevelSpecialValueFor(Ulti, "kill_threshold", UltiLvl - 1),
 		UltiCastRange = Abilities.GetCastRangeFix(Ulti) + 75
 	
 	if (

@@ -24,7 +24,7 @@ function CallMines(MyEnt, Ulti, ent, callback, explosionCallback) {
 			return true
 		
 		var lvl = Fusion.EzTechies.LVLUp.filter(time => time !== -1 && rmineTime > time).reduce((previousValue, currentValue) => currentValue) // grabs last element from array
-		var dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl)
+		var dmg = Abilities.GetLevelSpecialValueFor(Ulti, "damage" + (Entities.HasScepter(MyEnt) ? "_scepter" : ""), lvl - 1)
 		
 		if(callback(MyEnt, ent, rmine)) {
 			RMinesToBlow.push(rmine)

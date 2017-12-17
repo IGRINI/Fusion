@@ -11,8 +11,8 @@ Game.GetHideItem = ent => {
 	[
 		"item_shadow_amulet", // shadow amulet
 		"item_glimmer_cape",  // glimmer cape
-		"item_silver_edge",   // shadow blade
-		"item_invis_sword"	// silver edge
+		"item_silver_edge",   // shadow blade, doesn't ignore attack/other abils
+		"item_invis_sword"	// silver edge, doesn't ignore attack/other abils
 	].every(itemName => {
 		var item = Game.GetAbilityByName(ent, itemName)
 		if(item !== undefined) {
@@ -121,7 +121,7 @@ Fusion.GetDagonDamage = dagon => {
 	if(dagon === undefined)
 		return undefined
 	
-	return Abilities.GetLevelSpecialValueFor(dagon, "damage", Abilities.GetLevel(dagon))
+	return Abilities.GetLevelSpecialValueFor(dagon, "damage", Abilities.GetLevel(dagon) - 1)
 }
 
 Fusion.GetEntitiesOnPosition = vec => {

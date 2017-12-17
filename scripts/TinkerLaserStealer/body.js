@@ -17,7 +17,7 @@ function LaserSteal() {
 	if(Laser === -1 || Abilities.GetLevel(Laser) === 0)
 		return
 	
-	var LaserDamage = Abilities.GetLevelSpecialValueFor(Laser, "laser_damage", Abilities.GetLevel(Laser))
+	var LaserDamage = Abilities.GetLevelSpecialValueFor(Laser, "laser_damage", Abilities.GetLevel(Laser) - 1)
 	var LaserRefractionRange = Abilities.GetSpecialValueFor(Laser, "cast_range_scepter")
 
 	var talent = Entities.GetAbilityByName(MyEnt, "special_bonus_unique_tinker")
