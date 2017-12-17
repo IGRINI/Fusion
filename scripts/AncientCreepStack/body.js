@@ -92,10 +92,6 @@ function DrawBox(box) {
 	))
 }
 
-function ComparePoints(a, b, c) {
-	return Game.PointDistance(a, b) <= c
-}
-
 function GetNeutral(ent,maxrange) {
 	var neutrals = Entities.GetAllEntitiesByClassname("npc_dota_creep_neutral")
 	var mr = maxrange
@@ -153,7 +149,7 @@ function AncientCreepStackF() {
 	if(!Entities.IsRangedAttacker(ent)&&GetNeutral(ent,1000)[1]<=250)
 		b=true
 	if(time<50){
-		if(!ComparePoints(xyz,camp[0],5)&&status==0)
+		if(Game.PointDistance(xyz, camp[0]) > 5 && status==0)
 			move(ent,entnow,camp[0])
 		interval = 0.5
 	}
@@ -181,7 +177,7 @@ function AncientCreepStackF() {
 			move(ent,entnow,a[team][z])
 			return
 		}
-		if(ComparePoints(xyz,a[team][z],150)){
+		if(Game.PointDistance(xyz, a[team][z]) <= 150){
 			z++
 			move(ent,entnow,a[team][z])
 		}

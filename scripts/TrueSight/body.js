@@ -4,7 +4,8 @@ var enabled = false,
 		"modifier_item_dustofappearance": "item_dust"
 	},
 	panels = new Map(),
-	particles = new Map()
+	particles = new Map(),
+	ents = []
 function TrueSightOnInterval() {
 	TrueSightF()
 
@@ -23,15 +24,21 @@ function TrueSightF() {
 					CreateAlert_Panel_Gem(ent, Buffs.GetCaster(ent, buff), item_name)
 				CreateAlert_Particle(ent)
 
+				ents.push(ent)
+
 				return true
 			}
 			return false
-		}) && panels.has(ent)) {
-			panels.get(ent).DeleteAsync(0)
-			panels.delete(ent)
+		}) && ents.indexOf(ent) > -1) {
+			if(panels.has(ent)) {
+				panels.get(ent).DeleteAsync(0)
+				panels.delete(ent)
+			}
 
 			Particles.DestroyParticleEffect(particles.get(ent), true)
 			particles.delete(ent)
+
+			Fusion.arrayRemove(ents, ent)
 		}
 	})
 }
@@ -70,27 +77,23 @@ function CreateAlert_Panel(ent, item_name) {
 	panels.set(ent, A)
 }
 
-var par_size = 675 / 4
 function CreateAlert_Particle(ent) {
 	if(particles.has(ent))
 		return
-	
-	var par = Particles.CreateParticle("particles/units/heroes/hero_abaddon/abaddon_aphotic_shield.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent)
-	Particles.SetParticleControl(par, 1, [par_size, 0, 0])
 
-	particles.set(ent, par)
+	particles.set(ent, Particles.CreateParticle("particles/items_fx/aura_shivas.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, ent))
 }
 
 script = {
-	name: "True Sight Detector",
+	name: "TrueSight Detector",
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
 		if (enabled) {
 			TrueSightOnInterval()
-			Game.ScriptLogMsg("Script enabled: True Sight Detector", "#00ff00")
+			Game.ScriptLogMsg("Script enabled: TrueSight Detector", "#00ff00")
 		} else
-			Game.ScriptLogMsg("Script disabled: True Sight Detector", "#ff0000")
+			Game.ScriptLogMsg("Script disabled: TrueSight Detector", "#ff0000")
 	},
 	onDestroy: () => {
 		enabled = false
