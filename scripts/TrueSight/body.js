@@ -35,8 +35,10 @@ function TrueSightF() {
 				panels.delete(ent)
 			}
 
-			Particles.DestroyParticleEffect(particles.get(ent), true)
-			particles.delete(ent)
+			if(particles.has(ent)) {
+				Particles.DestroyParticleEffect(particles.get(ent), true)
+				particles.delete(ent)
+			}
 
 			Fusion.arrayRemove(ents, ent)
 		}
