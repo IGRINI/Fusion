@@ -28,7 +28,7 @@ function DagonSteal() {
 			&& !Entities.IsMagicImmune(ent)
 			&& !Entities.IsInvulnerable(ent)
 			&& !Fusion.HasLinkenAtTime(ent, 0)
-			&& Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange
+			&& Entities.IsEntityInRange(MyEnt, ent, DagonRange)
 		)
 		.every(ent => !Fusion.TryDagon(MyEnt, ent))
 }

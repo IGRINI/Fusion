@@ -19,12 +19,10 @@ function Deward(MyEnt, HEnts) {
 
 	var AbilRange = Abilities.GetCastRangeFix(Abil)
 	HEnts.filter(ent =>
-		!(
-			Entities.IsAlive(ent)
-			&& Entities.IsEnemy(ent)
-		)
-		|| Entities.GetRangeToUnit(MyEnt, ent) > AbilRange
-		|| !AreDeward(ent)
+		Entities.IsAlive(ent)
+		&& Entities.IsEnemy(ent)
+		&& Entities.IsEntityInRange(MyEnt, ent, AbilRange)
+		&& AreDeward(ent)
 	).every(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)

@@ -69,8 +69,8 @@ function SnatcherF() {
 
 	var myVec = Entities.GetAbsOrigin(MyEnt),
 		nearbyRunes = RunePositions.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius),
-		items = Entities.GetAllEntities().filter(ent =>
-			Entities.GetRangeToUnit(ent, MyEnt) <= PickupRadius
+		items = Entities.GetAllEntitiesByClassname("").filter(ent => // uses trick that item haven't classname. will be fixed later in native.
+			Entities.IsEntityInRange(ent, MyEnt, PickupRadius)
 			&& !Entities.IsSelectable(ent)
 			&& Entities.IsItemPhysical(ent)
 			&& IsInRoshpit(Entities.GetAbsOrigin(ent))
@@ -95,6 +95,7 @@ function SnatcherF() {
 
 script = {
 	name: "Snatcher",
+	onPreload: DestroyParticles, // as it defines variables
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 

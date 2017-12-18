@@ -25,7 +25,7 @@ function AutoUltNecrophosF() {
 			Entities.IsBuilding(ent)
 			|| Entities.IsInvulnerable(ent)
 		)
-		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange
+		&& Entities.IsEntityInRange(MyEnt, ent, UltiRange)
 		&& !Entities.IsMagicImmune(ent)
 	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)

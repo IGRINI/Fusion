@@ -10,7 +10,7 @@ var flag = false
 function Save(MyEnt, ent) {
 	if(flag)
 		return
-	var distance = Entities.GetRangeToUnit(MyEnt, ent)
+	var distance = Entities.GetRangeToUnit(MyEnt, ent) // used instead of Entities.IsEntityInRange as it'll not get range many times in tick
 	SavingAbils.every(ar => {
 		var abil = Game.GetAbilityByName(MyEnt, ar[0])
 		if(abil === undefined)

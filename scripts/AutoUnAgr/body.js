@@ -23,7 +23,7 @@ function UnAgrF() {
 	MyHP = curHP
 	
 	Entities.GetAllEntitiesByClassname("npc_dota_creep_lane")
-		.filter(creep => !Entities.IsEnemy(creep) && Entities.IsAlive(creep) && Entities.GetRangeToUnit(MyEnt, creep) < 520)
+		.filter(creep => !Entities.IsEnemy(creep) && Entities.IsAlive(creep) && Entities.IsEntityInRange(MyEnt, creep, 520))
 		.forEach(creep => {
 			Game.AttackTarget(MyEnt, creep, false)
 			Game.EntStop(MyEnt)
@@ -38,7 +38,7 @@ script = {
 		if(!Fusion.Commands.AgrCreepsF) {
 			Fusion.Commands.AgrCreepsF = () => {
 				var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-				Entities.PlayersHeroEnts().filter(ent => Entities.IsEnemy(ent) && Entities.IsAlive(ent) && Entities.GetRangeToUnit(MyEnt, ent) <= 520).forEach(ent => {
+				Entities.PlayersHeroEnts().filter(ent => Entities.IsEnemy(ent) && Entities.IsAlive(ent) && Entities.IsEntityInRange(MyEnt, ent, 520)).forEach(ent => {
 					Game.AttackTarget(MyEnt, ent, false)
 					Game.EntStop(MyEnt)
 				})

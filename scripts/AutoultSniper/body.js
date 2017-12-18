@@ -27,7 +27,7 @@ function SniperAutoultF() {
 			|| Entities.IsInvulnerable(ent)
 		)
 		&& Entities.IsEnemy(ent)
-		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiRange
+		&& Entities.IsEntityInRange(MyEnt, ent, UltiRange)
 		&& !Entities.IsMagicImmune(ent)
 		&& !Fusion.HasLinkenAtTime(ent, 2)
 		&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, UltiDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)

@@ -33,7 +33,7 @@ function AxeAutoUltF() {
 			|| Entities.IsInvulnerable(ent)
 		)
 		&& Entities.IsEnemy(ent)
-		&& Entities.GetRangeToUnit(MyEnt, ent) <= UltiCastRange
+		&& Entities.IsEntityInRange(MyEnt, ent, UltiCastRange)
 		&& !Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti) + Fusion.MyTick)
 	).sort((ent1, ent2) => {
 		var h1 = Entities.GetHealth(ent1)

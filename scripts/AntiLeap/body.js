@@ -11,7 +11,7 @@ var flags = []
 function Disable(MyEnt, ent) {
 	if(flags[ent])
 		return
-	var distance = Entities.GetRangeToUnit(MyEnt, ent)
+	var distance = Entities.GetRangeToUnit(MyEnt, ent) // used instead of Entities.IsEntityInRange as it'll not get range many times in tick
 	DisablingAbils.every(abilName => {
 		var abil = Game.GetAbilityByName(MyEnt, abilName)
 		var abilBehaviors = Fusion.Behaviors(abil)

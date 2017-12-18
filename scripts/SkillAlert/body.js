@@ -101,7 +101,7 @@ function CreateFollowParticle(particlepath, time, ent) {
 	z.push(ent)
 	$.Schedule (
 		time + Fusion.MyTick,
-		function() {
+		() => {
 			Particles.DestroyParticleEffect(p, true)
 			Fusion.arrayRemove(z, ent)
 		}

@@ -5,7 +5,6 @@ function Hook(callback) {
 	var
 		hook = Entities.GetAbilityByName(MyEnt, "pudge_meat_hook"),
 		hookwidth = Abilities.GetSpecialValueFor(hook, "hook_width"),
-		distance = Entities.GetRangeToUnit(MyEnt, ent),
 		reachtime = (distance / Abilities.GetSpecialValueFor(hook, "hook_speed")),
 		angle = Game.AngleBetweenVectors(myVec, myForwardVec, enVec),
 		rottime = Game.RotationTime(angle, 0.7),
@@ -13,7 +12,7 @@ function Hook(callback) {
 		time = reachtime + delay + rottime + Fusion.MyTick,
 		predict = Game.VelocityWaypoint(ent, time)
 	
-	if(distance > Abilities.GetCastRangeFix(hook) + hookwidth / 2)
+	if(!Entities.IsEntityInRange(MyEnt, ent, Abilities.GetCastRangeFix(hook) + hookwidth / 2))
 		return
 	
 	Game.CastPosition(ent, hook, predict, false)

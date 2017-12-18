@@ -114,13 +114,13 @@ function GetNeutral(ent,maxrange) {
 			}
 			if(p[0]>spots[team][0]-500&&p[0]<spots[team][2]+500&&p[1]<spots[team][1]+500&&p[1]>spots[team][3]-500)
 				l++
-			if(Entities.GetRangeToUnit(ent, neutral)<maxrange)
+			if(Entities.IsEntityInRange(ent, neutral, maxrange))
 				n++
-			if(Entities.GetRangeToUnit(ent, neutral)<mr&&Entities.GetRangeToUnit(ent, neutral) < maxrange && ent != neutral){
+			if(Entities.IsEntityInRange(ent, neutral, mr) && Entities.IsEntityInRange(ent, neutral, maxrange) && ent != neutral){
 				mr = Entities.GetRangeToUnit(ent, neutral)
 				e = neutral
-		}
-	})
+			}
+		})
 	return [e,mr,n,l,gold,exp]
 }
 

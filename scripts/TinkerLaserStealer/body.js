@@ -39,7 +39,7 @@ function LaserSteal() {
 			&& !Entities.IsBuilding(ent)
 			&& !Entities.IsInvulnerable(ent)
 		)
-		.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < LaserRange)
+		.filter(ent => Entities.IsEntityInRange(MyEnt, ent, LaserRange))
 		.every(ent => {
 			if(Entities.GetHealth(ent) < LaserDamage) {
 				CastLaser(MyEnt, Laser, LaserCastPoint, ent)

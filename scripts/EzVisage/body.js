@@ -55,7 +55,7 @@ function Souls(MyEnt) {
 			|| Entities.IsInvulnerable(ent)
 		)
 		&& Entities.IsEnemy(ent)
-		&& Entities.GetRangeToUnit(ent, MyEnt) <= AbilRange
+		&& Entities.IsEntityInRange(ent, MyEnt, AbilRange)
 		&& !Fusion.HasLinkenAtTime(ent, AbilCastPoint)
 		&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
 		&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, SoulDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)

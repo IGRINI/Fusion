@@ -73,7 +73,7 @@ function RemoteMines(MyEnt, HEnts) {
 		var callBackCalled = false
 		CallMines (
 			MyEnt, Ulti, ent,
-			(MyEnt, ent, rmine) => Entities.GetRangeToUnit(rmine, ent) <= TriggerRadius,
+			(MyEnt, ent, rmine) => Entities.IsEntityInRange(rmine, ent, TriggerRadius),
 			(MyEnt, ent, RMinesToBlow) => {
 				callBackCalled = true
 				RMinesToBlow.forEach(rmine => {
@@ -92,7 +92,7 @@ function RemoteMines(MyEnt, HEnts) {
 			force !== undefined &&
 			Entities.IsAlive(MyEnt) &&
 			Abilities.GetCooldownTimeRemaining(force) === 0 &&
-			Entities.GetRangeToUnit(MyEnt, ent) <= Abilities.GetCastRangeFix(force)
+			Entities.IsEntityInRange(MyEnt, ent, Abilities.GetCastRangeFix(force))
 		)
 			CallMines (
 				MyEnt, Ulti, ent,

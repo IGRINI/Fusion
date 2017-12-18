@@ -66,7 +66,7 @@ function BoltSteal() {
 	})
 } else*/
 		targets
-			.filter(ent => Entities.GetRangeToUnit(MyEnt, ent) < BoltRange)
+			.filter(ent => Entities.IsEntityInRange(MyEnt, ent, BoltRange))
 			.every(ent => {
 				CastBolt(MyEnt, Bolt, BoltCastPoint, ent)
 				return false

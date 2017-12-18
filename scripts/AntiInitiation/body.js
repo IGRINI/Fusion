@@ -118,26 +118,13 @@ function Disable(MyEnt, ent, Abil) {
 	}
 
 	var abil
-	Abils.every(ar => !ar.some(abilAr => {
-		var abilName = abilAr[0]
-		var abilToUse = abilAr[1]
-		if(!abilToUse)
-			return false
-		
-		var abilL = Game.GetAbilityByName(MyEnt, abilName)
-		if(abilL === undefined)
-			return false
-		var abilrange = Abilities.GetCastRangeFix(abilL)
-		if (
-			Abilities.GetCooldownTimeRemaining(abilL) !== 0 ||
-			Abilities.IsHidden(abilL) ||
-			(
-				Entities.GetRangeToUnit(MyEnt, ent) > abilrange &&
-				abilrange !== 0
-			)
-		)
-			return false
-		
+	Abils.every(ar => !ar.filter(abilAr => abilAr[1]).map(abilAr => Game.GetAbilityByName(MyEnt, abilAr[0])).filter(abilL => {
+		var abil_range = Abilities.GetCastRangeFix(abilL)
+		return
+			(abil_range === 0 || Entities.IsEntityInRange(MyEnt, ent, abil_range))
+			&& !Abilities.IsHidden(abilL)
+			&& Abilities.GetCooldownTimeRemaining(abilL) === 0
+	}).some(abilL => {
 		abil = abilL
 		return true
 	}))

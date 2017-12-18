@@ -87,7 +87,7 @@ Fusion.TryDagon = (MyEnt, ent, damage, damage_type) => {
 	if(Dagon) {
 		var DagonDamage = Fusion.GetDagonDamage(Dagon)
 		var DagonRange = Abilities.GetCastRange(Dagon)
-		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && TargetHP < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL) + Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) && Entities.GetRangeToUnit(MyEnt, ent) <= DagonRange) {
+		if(Abilities.GetCooldownTimeRemaining(Dagon) === 0 && TargetHP < Fusion.CalculateDamage(MyEnt, ent, DagonDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL) + Fusion.CalculateDamage(MyEnt, ent, damage, damage_type) && Entities.IsEntityInRange(MyEnt, ent, DagonRange)) {
 			GameUI.SelectUnit(MyEnt, false)
 			Game.CastTarget(MyEnt, Dagon, ent, false)
 			return true
