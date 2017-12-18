@@ -1,3 +1,4 @@
+Fusion.Particles.Snatcher = []
 var TruePickupRadius = 150,
 	PickupRadius = 450,
 	NoTarget = [],
@@ -28,8 +29,6 @@ function DestroyParticles() {
 function CreateParticle() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		par;
-	
-	Fusion.Particles.Snatcher = []
 	
 	par = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, MyEnt)
 	Particles.SetParticleControl(par, 1, [PickupRadius, 0, 0])
@@ -95,7 +94,6 @@ function SnatcherF() {
 
 script = {
 	name: "Snatcher",
-	onPreload: DestroyParticles, // as it defines variables
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 

@@ -2,32 +2,34 @@
 
 function AutoDewardF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
+		if(enabled)
+			$.Schedule(Fusion.MyTick, AutoDewardF)
 		return
-	var HEnts = Entities.GetAllEntities()
+	}
 	
-	Deward(MyEnt, HEnts)
+	Deward(MyEnt, [Entities.GetAllEntitiesByClassname("npc_dota_ward_base"), Entities.GetAllEntitiesByClassname("npc_dota_ward_base_truesight")])
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick, AutoDewardF)
 }
 
-function Deward(MyEnt, HEnts) {
+function Deward(MyEnt, wardsAr) {
 	var Abil = GetDewardItem(MyEnt)
-	if(Abil === -1)
+	if(!Abil)
 		return
 
 	var AbilRange = Abilities.GetCastRangeFix(Abil)
-	HEnts.filter(ent =>
+	wardsAr.every(wards => !wards.filter(ent =>
 		Entities.IsAlive(ent)
 		&& Entities.IsEnemy(ent)
 		&& Entities.IsEntityInRange(MyEnt, ent, AbilRange)
 		&& AreDeward(ent)
-	).every(ent => {
+	).some(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)
-		return false
-	})
+		return true
+	}))
 }
 
 function AreDeward(ent) {
@@ -35,7 +37,7 @@ function AreDeward(ent) {
 }
 
 function GetDewardItem(MyEnt) {
-	var result = -1
+	var result;
 	[
 		"item_quelling_blade",
 		"item_bfury",
