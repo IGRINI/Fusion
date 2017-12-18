@@ -110,7 +110,7 @@ Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 				if(response.status !== 403) {
 					if(Fusion.debugLoad)
 						$.Msg(log + " Trying again.")
-					$.Schedule(0.1, () => Fusion.ServerRequest(name, val).then(resolve)) // TODO: fix in native
+					Fusion.ServerRequest(name, val).then(resolve)
 				} else {
 					if(Fusion.debugLoad)
 						$.Msg(log)
