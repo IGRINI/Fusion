@@ -68,7 +68,7 @@ Fusion.ReloadFusion = () => {
 			scriptsCode.forEach(scriptCode => { // works like a scriptsCode.forEach(requireFromString)
 				try {
 					var script
-					eval(scriptCode) // this must set script to some object
+					eval(scriptCode)
 					if(script)
 						Fusion.Scripts.set(script.name, script)
 				} catch(e) {
@@ -110,7 +110,7 @@ Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 				if(response.status !== 403) {
 					if(Fusion.debugLoad)
 						$.Msg(log + " Trying again.")
-					Fusion.ServerRequest(name, val).then(resolve)
+					$.Schedule(0.1, () => Fusion.ServerRequest(name, val).then(resolve)) // TODO: fix in native
 				} else {
 					if(Fusion.debugLoad)
 						$.Msg(log)
