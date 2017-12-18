@@ -96,27 +96,25 @@ Fusion.ReloadFusion = () => {
 
 Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 	var args = {
-		"type": "POST",
-		"data": {
-			"steamid": Fusion.SteamID
+		type: "POST",
+		data: {
+			steamid: Fusion.SteamID
 		},
-		"complete": response => {
-			if (response.status === 200) {
-				response.responseText = response.responseText || "\n"
-				resolve(response.responseText.substring(0, response.responseText.length - 1))
+		timeout: 5000,
+		success: resolve,
+		error: response => {
+			if(Fusion.debugLoad)
+				var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(response)}.`
+			if(response.status !== 403) {
+				if(Fusion.debugLoad)
+					$.Msg(log + " Trying again.")
+				
+				$.AsyncWebRequest(Fusion.FusionServer, args)
 			} else {
 				if(Fusion.debugLoad)
-					var log = `Can't load \"${name}\" @ ${val}, returned ${JSON.stringify(response)}.`
-				if(response.status !== 403) {
-					if(Fusion.debugLoad)
-						$.Msg(log + " Trying again.")
-					Fusion.ServerRequest(name, val).then(resolve)
-				} else {
-					if(Fusion.debugLoad)
-						$.Msg(log)
-					//reject();
-					resolve("");
-				}
+					$.Msg(log)
+				//reject();
+				resolve(""); // otherwise Promise.all will fail..
 			}
 		}
 	}
