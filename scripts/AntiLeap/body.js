@@ -13,9 +13,6 @@ function Disable(MyEnt, ent) {
 		return
 	var distance = Entities.GetRangeToUnit(MyEnt, ent) // used instead of Entities.IsEntityInRange as it'll not get range many times in tick
 	DisablingAbils.every(abilName => {
-		if(abolName === "item_cyclone" && !Entities.IsEnemy(ent))
-			return true
-		
 		var abil = Game.GetAbilityByName(MyEnt, abilName)
 		if(!abil || distance > Abilities.GetCastRangeFix(abil) || !Abilities.IsCooldownReady(abil) || Abilities.IsHidden(abil) || !Abilities.IsActivated(abil))
 			return true
