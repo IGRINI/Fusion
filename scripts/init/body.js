@@ -148,7 +148,6 @@ Fusion.ServerRequest = (name, val) => new Promise((resolve, reject) => {
 		data: {
 			steamid: Fusion.SteamID
 		},
-		timeout: 5000,
 		success: resolve,
 		error: response => {
 			if(Fusion.debugLoad)
