@@ -1,4 +1,4 @@
-var DisablingAbils = [ "item_cyclone" ],
+var DisablingAbils = [ "item_cyclone", "item_force_staff" ],
 	enabled = false
 DisablingAbils.push(Fusion.ForceStaffNames)
 
@@ -13,13 +13,16 @@ function Disable(MyEnt, ent) {
 		return
 	var distance = Entities.GetRangeToUnit(MyEnt, ent) // used instead of Entities.IsEntityInRange as it'll not get range many times in tick
 	DisablingAbils.every(abilName => {
-		var abil = Game.GetAbilityByName(MyEnt, abilName)
-		var abilBehaviors = Fusion.Behaviors(abil)
-		if(abil === undefined || distance > Abilities.GetCastRangeFix(abil) || !Abilities.IsCooldownReady(abil) || Abilities.IsHidden(abil) || !Abilities.IsActivated(abil))
+		if(abolName === "item_cyclone" && !Entities.IsEnemy(ent))
 			return true
 		
-		if(abilBehaviors.indexOf(DOTA_ABILITY_BEHAVIOR.DOTA_ABILITY_BEHAVIOR_UNIT_TARGET) !== -1 || abilBehaviors.length === 0)
-			Game.CastTarget(MyEnt, abil, ent)
+		var abil = Game.GetAbilityByName(MyEnt, abilName)
+		if(!abil || distance > Abilities.GetCastRangeFix(abil) || !Abilities.IsCooldownReady(abil) || Abilities.IsHidden(abil) || !Abilities.IsActivated(abil))
+			return true
+		
+		GameUI.SelectUnit(MyEnt, false)
+		Game.CastTarget(MyEnt, abil, ent, false)
+
 		flags[ent] = true
 		$.Schedule(Abilities.GetCastPoint(abil), () => delete flags[ent])
 		return false
