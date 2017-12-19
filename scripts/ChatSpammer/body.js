@@ -1,19 +1,19 @@
-var enabled = false
-
-var heroes = [
-	"Slark",
-	"Pudge",
-	"Techies",
-	"Windranger",
-	"Shadow Demon",
-]
+const start = 'a'.charCodeAt(0)
+var enabled = false,
+	heroes = [
+		"Slark",
+		"Pudge",
+		"Techies",
+		"Windranger",
+		"Shadow Demon",
+	]
 
 function ChatSpammerF() {
-	var randHero = heroes.randomElement()
+	/*var randHero = heroes.randomElement()
 	suggest_hero_pick(randHero)
-	suggest_hero_pick(randHero)
+	suggest_hero_pick(randHero)*/
 
-	suggest_hero_role('a'.repeat(Number.MAX_VALUE))
+	suggest_hero_role(String.fromCharCode(start + Math.floor(Math.random() * 26)).repeat(0xFF))
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick * 5, ChatSpammerF)
