@@ -31,7 +31,7 @@ Object.defineProperty(Array.prototype, "remove", { // remove value from array wi
 if (!String.prototype.repeat) { // FIXME: remove in native, as anyway there'll be ES6 support
 	Object.defineProperty(String.prototype, "repeat", {
 		enumerable: false,
-		value: function() {
+		value: function(count) {
 			if (this == null)
 				throw new TypeError(`Can't convert ${this} to object`);
 			var str = '' + this;
