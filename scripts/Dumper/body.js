@@ -35,28 +35,6 @@ function onPreloadF() {
 		}
 		Game.AddCommand("__DumpEnemyAbilities", Fusion.Commands.DumpEnemyAbilities, "", 0)
 	}
-
-	if(!Fusion.Commands.ModifierDebugging) {
-		var ModifierDebuggingEnabled = false
-		Fusion.Commands.ModifierDebugging = {
-			Command: () => {
-				if(ModifierDebuggingEnabled)
-					return
-				ModifierDebuggingEnabled = true
-				Fusion.Commands.ModifierDebugging.Function()
-			},
-			Function: () => {
-				var MyEnt = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer())
-				var buffs = Game.GetBuffsNames(MyEnt)
-				if(!Fusion.DeepEquals(lastBuffs, buffs)) {
-					lastBuffs = buffs
-					$.Msg(buffs)
-				}
-				$.Schedule(Fusion.MyTick, Fusion.Commands.ModifierDebugging.Function)
-			}
-		}
-		Game.AddCommand("__StartModifierDebugging", Fusion.Commands.ModifierDebugging.Command, "", 0)
-	}
 }
 
 script = {

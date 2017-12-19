@@ -33,14 +33,11 @@ function AntiLeapF() {
 	Entities.PlayersHeroEnts().filter(ent =>
 		DisableModifiers.has(Entities.GetUnitName(ent))
 		&& Entities.IsAlive(ent)
-		&& !(
-			Entities.IsBuilding(ent)
-			|| Entities.IsInvulnerable(ent)
-		)
+		&& !Entities.IsBuilding(ent)
+		&& !Entities.IsInvulnerable(ent)
 	).every(ent => {
-		var buffsNames = Game.GetBuffsNames(ent)
 		var disableBuff = DisableModifiers.get(Entities.GetUnitName(ent))
-		return !buffsNames.some(buffName => {
+		return !Game.GetBuffsNames(ent).some(buffName => {
 			if(buffName === disableBuff) {
 				Disable(MyEnt, ent)
 				return true
