@@ -48,7 +48,7 @@ function DenyMines(MyEnt) {
 		.filter(ent => Entities.GetHealthPercent(ent) !== 100)
 		.forEach(rmine => {
 			if(!Entities.IsAlive(rmine)) {
-				Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
+				Fusion.EzTechies.RMines.remove(rmine)
 				return
 			}
 			GameUI.SelectUnit(rmine, false)
@@ -81,7 +81,7 @@ function RemoteMines(MyEnt, HEnts) {
 					Game.CastNoTarget(rmine, Entities.GetAbilityByName(rmine, "techies_remote_mines_self_detonate"), false)
 				})
 				NoTarget.push(ent)
-				$.Schedule(BlowDelay, () => Fusion.arrayRemove(NoTarget, ent))
+				$.Schedule(BlowDelay, () => NoTarget.remove(ent))
 				GameUI.SelectUnit(MyEnt, false)
 			}
 		)

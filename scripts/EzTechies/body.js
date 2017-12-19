@@ -138,7 +138,7 @@ function onPreloadF() {
 		Fusion.EzTechies = {
 			LVLUp: [0, -1, -1],
 			RMines: [],
-			RemoveRMine: rmine => Fusion.arrayRemove(Fusion.EzTechies.RMines, rmine)
+			RemoveRMine: rmine => Fusion.EzTechies.RMines.remove(rmine)
 		}
 		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 		var lvl = Abilities.GetLevel(Entities.GetAbilityByName(MyEnt, "techies_remote_mines")) - 1

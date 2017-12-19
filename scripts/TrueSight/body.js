@@ -40,7 +40,7 @@ function TrueSightF() {
 				particles.delete(ent)
 			}
 
-			Fusion.arrayRemove(ents, ent)
+			ents.remove(ent)
 		}
 	})
 }

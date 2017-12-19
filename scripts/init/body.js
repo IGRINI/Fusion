@@ -13,6 +13,54 @@ Fusion = {
 	SteamID: 0
 }
 
+Object.defineProperty(Array.prototype, "randomElement", {
+	enumerable: false,
+	value: function() {
+		return this[Math.round(this.length * Math.random())]
+	}
+})
+Object.defineProperty(Array.prototype, "remove", { // remove value from array without creating new array
+	enumerable: false,
+	value: function(obj) {
+		var i = this.indexOf(obj)
+		if(i >= 0)
+			this.splice(i, 1)
+	}
+})
+
+if (!String.prototype.repeat) { // FIXME: remove in native, as anyway there'll be ES6 support
+	Object.defineProperty(String.prototype, "repeat", {
+		enumerable: false,
+		value: function() {
+			if (this == null)
+				throw new TypeError(`Can't convert ${this} to object`);
+			var str = '' + this;
+			count = +count;
+			if (count != count)
+				count = 0;
+			if (count < 0)
+				throw new RangeError("Repeat count must be non-negative");
+			if (count == Infinity)
+				throw new RangeError("Repeat count must be less than infinity");
+			count = Math.floor(count);
+			if (str.length == 0 || count == 0)
+				return "";
+			if (str.length * count >= 1 << 28)
+				throw new RangeError("Repeat count must not overflow maximum string size");
+			var rpt = "";
+			for (;;) {
+				if ((count & 1) == 1)
+					rpt += str;
+				count >>>= 1;
+				if (count == 0)
+					break
+				str += str;
+			}
+			return rpt;
+		}
+	})
+}
+
 Fusion.AddScriptToList = script => {
 	if(script.isVisible === false) // I don't want to spam with !== undefined
 		return

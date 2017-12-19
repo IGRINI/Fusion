@@ -10,7 +10,7 @@ function onPreloadF() {
 				)
 				&& Entities.IsEnemy(ent)
 			).map(ent => {
-				var entName = Entities.GetUnitName(ent).replace("npc_dota_hero_", "")
+				var entName = Entities.GetUnitName(ent).replace("npc_dota_hero_", "").replace("_", " ")
 				var available = []
 				/*for(var i = 0; i < Entities.GetNumItemsInInventory(ent); i++) {
 					var item = Entities.GetItemInSlot(ent, i)

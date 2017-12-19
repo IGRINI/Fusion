@@ -135,12 +135,6 @@ Fusion.GetEntitiesOnPosition = vec => {
 
 GameUI.FindScreenEntitiesAtCursor = () => GameUI.FindScreenEntities(GameUI.GetCursorPosition()).map(entData => entData.entityIndex)
 
-Fusion.arrayRemove = (ar, obj) => {
-	var i = ar.indexOf(obj)
-	if(i >= 0)
-		ar.splice(i, 1)
-}
-
 Fusion.GetBuffByName = (ent, buffName) => {
 	var ret = undefined
 	Game.GetBuffs(ent).some(buff => {

@@ -103,7 +103,7 @@ function CreateFollowParticle(particlepath, time, ent) {
 		time + Fusion.MyTick,
 		() => {
 			Particles.DestroyParticleEffect(p, true)
-			Fusion.arrayRemove(z, ent)
+			z.remove(ent)
 		}
 	)
 }
@@ -118,7 +118,7 @@ function CreateTimerParticle(vec, time, ent) {
 		time + Fusion.MyTick,
 		() => {
 			Particles.DestroyParticleEffect(p, true)
-			Fusion.arrayRemove(z, ent)
+			z.remove(ent)
 		}
 	)
 }
