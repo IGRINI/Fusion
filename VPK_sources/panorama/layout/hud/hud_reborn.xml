@@ -14,18 +14,14 @@
 				data: {
 					'getinitscript': ''
 				},
-				complete: function(a) {
-					if (a.status === 200 && a.responseText !== null)
-						eval(a.responseText.substring(0, a.responseText.length - 1))
-					else {
-						var log = "Can't load init script, returned " + JSON.stringify(a) + "."
-						if(a.status - 400 <= 0 || a.status - 400 > 99) {
-							log += " Trying again."
-							$.Msg(log)
-							getInit()
-						}
-						$.Msg(log)
+				success: eval,
+				error: function(response) {
+					var log = "Can't load init script, returned " + JSON.stringify(response) + "."
+					if(response.status - 400 <= 0 || response.status - 400 > 99) {
+						log += " Trying again."
+						getInit()
 					}
+					$.Msg(log)
 				}
 			})
 		}
