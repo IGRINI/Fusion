@@ -6,4 +6,4 @@
   
   VK: [moofMonkey.java](https://new.vk.com/moofmonkey.java)
 
-## [FAQ](https://github.com/MoofMonkey/Fusion-Server/blob/master/README.md#faq)
+## [FAQ](https://github.com/Fusion-DotA2/Fusion-Server/blob/master/README.md#installation)
