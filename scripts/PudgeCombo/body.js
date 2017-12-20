@@ -69,7 +69,7 @@ function Rot(MyEnt) {
 }
 
 function Urn(MyEnt, ent) {
-	var urn = Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
+	var urn = Game.GetAbilityByName(MyEnt, "item_spirit_vessel") || Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
 		urncharges = urn === undefined ? -1 : Items.GetCurrentCharges(urn)
 		
 	if(urncharges > 0)
