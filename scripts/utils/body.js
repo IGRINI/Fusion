@@ -133,7 +133,7 @@ Fusion.GetEntitiesOnPosition = vec => {
 	).map(entData => entData.entityIndex)
 }
 
-GameUI.FindScreenEntitiesAtCursor = () => GameUI.FindScreenEntities(GameUI.GetCursorPosition()).map(entData => entData.entityIndex)
+GameUI.FindScreenEntitiesAtCursor = () => GameUI.FindScreenEntities(GameUI.GetCursorPosition()).map(entData => entData.entityIndex).filter((item, pos, ar) => ar.indexOf(item) === pos)
 
 Fusion.GetBuffByName = (ent, buffName) => {
 	var ret = undefined
@@ -306,7 +306,7 @@ Fusion.CalculateDamage = (entFrom, entTo, damage, damage_type) => {
 	return damage
 }
 
-Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
+/*Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
 	var distancevector = [
 		b_pos[0] - a_pos[0],
 		b_pos[1] - a_pos[1]
@@ -316,24 +316,24 @@ Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
 		distancevector[1] / Math.sqrt(distancevector[0] ** 2 + distancevector[1] ** 2)
 	]
 	return Math.acos((a_facing[0] * normalize[0]) + (a_facing[1] * normalize[1]))
-}
+}*/
+Game.AngleBetweenVectors = (vec1, vec2) => Math.atan2(Math.abs(vec1[0] - vec2[0]), Math.abs(vec1[1] - vec2[1]))
 
 Game.AngleBetweenTwoFaces = (a_facing, b_facing) => Math.acos((a_facing[0] * b_facing[0]) + (a_facing[1] * b_facing[1]))
 
 Game.RotationTime = (angle, rotspeed) => Fusion.MyTick * angle / rotspeed // angle is npc_heroes MovementTurnRate
 
 Game.GetEntitiesInRange = (pos, range, onlyEnemies) => Entities.PlayersHeroEnts().filter(ent =>
-	(onlyEnemies || Entities.IsEnemy(ent))
+	(!onlyEnemies || Entities.IsEnemy(ent))
 	&& Entities.IsAlive(ent)
-	&& !Entities.IsBuilding(ent)
 	&& !Entities.IsInvulnerable(ent)
 	&& Game.PointDistance(pos, Entities.GetAbsOrigin(ent)) < range
 )
 
 Entities.NearestToMouse = (MyEnt, range, onlyEnemies) => {
 	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), range, onlyEnemies).sort((ent1, ent2) => {
-		var dst1 = Game.PointDistance(ent1, MyEnt),
-			dst2 = Game.PointDistance(ent2, MyEnt)
+		var dst1 = Entities.GetRangeToUnit(ent1, MyEnt),
+			dst2 = Entities.GetRangeToUnit(ent2, MyEnt)
 		if(dst1 > dst2)
 			return 1
 		else if(dst1 < dst2)
@@ -364,7 +364,7 @@ Game.VelocityWaypoint = (ent, time, movespeed) => {
 	var forward = Entities.GetForward(ent)
 	movespeed = movespeed || Game.GetSpeed(ent)
 
-	return [zxc[0] + (forward[0] * movespeed * time),zxc[1] + (forward[1] * movespeed * time),zxc[2]]
+	return [zxc[0] + (forward[0] * movespeed * time), zxc[1] + (forward[1] * movespeed * time), zxc[2]]
 }
 
 //Функция делает панельку перемещаемой кликом мыши по ней. callback нужен например для того, чтобы сохранить координаты панели в файл

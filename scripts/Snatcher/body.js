@@ -69,7 +69,7 @@ function SnatcherF() {
 	var myVec = Entities.GetAbsOrigin(MyEnt),
 		nearbyRunes = RunePositions.filter(RunePos => Game.PointDistance(RunePos, myVec) <= PickupRadius),
 		items = Entities.GetAllEntitiesByClassname("").filter(ent => // uses trick that item haven't classname. will be fixed later in native.
-			Entities.IsEntityInRange(ent, MyEnt, PickupRadius)
+			Entities.IsEntityInRange(MyEnt, ent, PickupRadius)
 			&& !Entities.IsSelectable(ent)
 			&& Entities.IsItemPhysical(ent)
 			&& IsInRoshpit(Entities.GetAbsOrigin(ent))

@@ -1,33 +1,63 @@
-function Hook(callback) {
+function Hook(MyEnt, ent, callback) {
 	myVec = Entities.GetAbsOrigin(MyEnt)
-	myForwardVec = Entities.GetForward(MyEnt)
 	enVec = Entities.GetAbsOrigin(ent)
-	var
-		hook = Entities.GetAbilityByName(MyEnt, "pudge_meat_hook"),
-		hookwidth = Abilities.GetSpecialValueFor(hook, "hook_width"),
-		reachtime = (distance / Abilities.GetSpecialValueFor(hook, "hook_speed")),
-		angle = Game.AngleBetweenVectors(myVec, myForwardVec, enVec),
-		rottime = Game.RotationTime(angle, 0.7),
+	var hook = Entities.GetAbilityByName(MyEnt, "pudge_meat_hook"),
+		hookDist = Abilities.GetCastRangeFix(hook),
+		hookwidth = Abilities.GetSpecialValueFor(hook, "hook_width") / 2,
+		reachtime = Entities.GetRangeToUnit(MyEnt, ent) / Abilities.GetSpecialValueFor(hook, "hook_speed"),
+		angle = /*Game.AngleBetweenVectors(myVec, enVec)*/0,
+		rottime = /*Game.RotationTime(angle, 0.7)*/0,
 		delay = Abilities.GetCastPoint(hook),
 		time = reachtime + delay + rottime + Fusion.MyTick,
 		predict = Game.VelocityWaypoint(ent, time)
 	
-	if(!Entities.IsEntityInRange(MyEnt, ent, Abilities.GetCastRangeFix(hook) + hookwidth / 2))
+	if(!Entities.IsEntityInRange(MyEnt, ent, hookDist + hookwidth))
 		return
 	
-	Game.CastPosition(ent, hook, predict, false)
-	$.Schedule(Abilities.GetCastPoint(hook) - Fusion.MyTick * 3, () => {
-		if(!CancelHook(MyEnt, ent, hookwidth))
+	//Fusion.DrawLineInGameWorld(myVec, predict)
+	Game.CastPosition(MyEnt, hook, predict, false)
+	$.Schedule(time - Fusion.MyTick * 3, () => {
+		if(!CancelHook(MyEnt, hookDist, Fusion.MyTick * 3, hookwidth))
 			callback()
 	})
 }
 
-function CancelHook(MyEnt, ent, hookwidth) {
-	var distance = Game.PointDistance(enVec, Entities.GetAbsOrigin(ent))
+function IsOnTrajectory(MyEnt, distance, time, hookwidth) {
+	/*var myForwardVec = Entities.GetForward(MyEnt),
+		ents = Entities.GetAllEntities().filter(ent => {
+			if(MyEnt === ent)
+				return false
+			
+			var entVec = Game.VelocityWaypoint(ent, time)
+
+			for(var i = 0; i <= distance; i++)
+				if(Game.PointDistance([
+					myVec[0] + myForwardVec[0] * i,
+					myVec[1] + myForwardVec[1] * i,
+					myVec[2] + myForwardVec[2] * i
+				], entVec) <= hookwidth)
+					return true
+			
+			return false
+		}).sort((ent1, ent2) => {
+			var dst1 = Entities.GetRangeToUnit(ent1, MyEnt),
+				dst2 = Entities.GetRangeToUnit(ent2, MyEnt)
+			
+			if(dst1 > dst2)
+				return 1
+			else if(dst1 < dst2)
+				return -1
+			else
+				return 0
+		})
 	
-	if(distance > hookwidth) {
+	return ents.length > 0 ? Entities.PlayersHeroEnts().indexOf(ents[0]) > -1 : false*/
+	return true
+}
+
+function CancelHook(MyEnt, hookDist, delay, hookwidth) {
+	if(!IsOnTrajectory(MyEnt, hookDist, delay, hookwidth)) {
 		Game.EntStop(MyEnt, false)
-		Combo()
 		return true
 	} else
 		return false
@@ -35,7 +65,7 @@ function CancelHook(MyEnt, ent, hookwidth) {
 
 function Rot(MyEnt) {
 	if(Game.GetBuffsNames(MyEnt).indexOf("modifier_pudge_rot") === -1)
-		Abilities.ExecuteAbility(Entities.GetAbilityByName(MyEnt, "pudge_rot"), MyEnt, false)
+		Game.ToggleAbil(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_rot"), false)
 }
 
 function Urn(MyEnt, ent) {
@@ -50,21 +80,25 @@ function Dismember(MyEnt, ent) {
 	Game.CastTarget(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_dismember"), ent, false)
 }
 
+function Combo(MyEnt, ent) {
+	Hook(MyEnt, ent, () => {
+		Urn(MyEnt, ent)
+		Rot(MyEnt, ent)
+		Dismember(MyEnt, ent)
+	})
+}
+
 function onPreloadF() {
 	if(Fusion.Commands.PudgeCombo)
 		return
 
 	Fusion.Commands.PudgeCombo = () => {
-		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-		var ent = Entities.NearestToMouse(MyEnt, 1000, true)
+		var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
+			ent = Entities.NearestToMouse(MyEnt, 1000, true)
 		if(ent === undefined)
 			return
 		
-		Hook(MyEnt, ent, () => {
-			Urn(MyEnt, ent)
-			Rot(MyEnt, ent)
-			Dismember(MyEnt, ent)
-		})
+		Combo(MyEnt, ent)
 	}
 
 	Game.AddCommand("__PudgeCombo", Fusion.Commands.PudgeCombo, "", 0)
