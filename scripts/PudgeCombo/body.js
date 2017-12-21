@@ -15,11 +15,10 @@ function Hook(MyEnt, ent, callback) {
 		return
 	
 	Game.CastPosition(MyEnt, hook, predict, false)
-	/*$.Schedule(time - Fusion.MyTick * 3, () => {
+	$.Schedule(time - Fusion.MyTick * 3, () => {
 		if(!CancelHook(MyEnt, hookDist, Fusion.MyTick * 3, hookwidth))
 			callback()
-	})*/
-	callback()
+	})
 }
 
 function IsOnTrajectory(MyEnt, distance, time, hookwidth) {
