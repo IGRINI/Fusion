@@ -14,12 +14,12 @@ function Hook(MyEnt, ent, callback) {
 	if(!Entities.IsEntityInRange(MyEnt, ent, hookDist + hookwidth))
 		return
 	
-	//Fusion.DrawLineInGameWorld(myVec, predict)
 	Game.CastPosition(MyEnt, hook, predict, false)
-	$.Schedule(time - Fusion.MyTick * 3, () => {
+	/*$.Schedule(time - Fusion.MyTick * 3, () => {
 		if(!CancelHook(MyEnt, hookDist, Fusion.MyTick * 3, hookwidth))
 			callback()
-	})
+	})*/
+	callback()
 }
 
 function IsOnTrajectory(MyEnt, distance, time, hookwidth) {
@@ -53,6 +53,10 @@ function CancelHook(MyEnt, hookDist, delay, hookwidth) {
 		return false
 }
 
+function Etherial(MyEnt, ent) {
+	Game.CastTarget(MyEnt, Game.GetAbilityByName(MyEnt, "item_ethereal_blade"), ent, false)
+}
+
 function Rot(MyEnt) {
 	if(Game.GetBuffsNames(MyEnt).indexOf("modifier_pudge_rot") === -1)
 		Game.ToggleAbil(MyEnt, Entities.GetAbilityByName(MyEnt, "pudge_rot"), false)
@@ -61,7 +65,7 @@ function Rot(MyEnt) {
 function Urn(MyEnt, ent) {
 	var urn = Game.GetAbilityByName(MyEnt, "item_spirit_vessel") || Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
 		urncharges = urn ? Items.GetCurrentCharges(urn) : -1
-		
+	
 	if(urncharges > 0)
 		Game.CastTarget(MyEnt, urn, ent, false)
 }
@@ -72,8 +76,9 @@ function Dismember(MyEnt, ent) {
 
 function Combo(MyEnt, ent) {
 	Hook(MyEnt, ent, () => {
+		Etherial(MyEnt, ent)
 		Urn(MyEnt, ent)
-		Rot(MyEnt, ent)
+		Rot(MyEnt)
 		Dismember(MyEnt, ent)
 	})
 }

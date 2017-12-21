@@ -331,16 +331,8 @@ Game.GetEntitiesInRange = (pos, range, onlyEnemies) => Entities.PlayersHeroEnts(
 )
 
 Entities.NearestToMouse = (MyEnt, range, onlyEnemies) => {
-	var ents = Game.GetEntitiesInRange(Game.GetScreenCursonWorldVec(), range, onlyEnemies).sort((ent1, ent2) => {
-		var dst1 = Entities.GetRangeToUnit(ent1, MyEnt),
-			dst2 = Entities.GetRangeToUnit(ent2, MyEnt)
-		if(dst1 > dst2)
-			return 1
-		else if(dst1 < dst2)
-			return -1
-		else
-			return 0
-	})
+	var curVec = Game.GetScreenCursonWorldVec(),
+		ents = Array.prototype.orderBy.call(Game.GetEntitiesInRange(curVec, range, onlyEnemies), ent => Game.PointDistance(Entities.GetAbsOrigin(ent), curVec))
 	
 	return ents.length > 0 ? ents[0] : undefined
 }
