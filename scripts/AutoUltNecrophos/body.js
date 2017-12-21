@@ -19,7 +19,7 @@ function AutoUltNecrophosF() {
 	if(UltiLvl === 0 || Abilities.GetCooldownTimeRemaining(Ulti) > 0 || UltiManaCost > Entities.GetMana(MyEnt))
 		return
 	
-	Entities.PlayersHeroEnts().filter(ent =>
+	Array.prototype.orderBy.call(Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(
 			Entities.IsBuilding(ent)
@@ -27,17 +27,7 @@ function AutoUltNecrophosF() {
 		)
 		&& Entities.IsEntityInRange(MyEnt, ent, UltiRange)
 		&& !Entities.IsMagicImmune(ent)
-	).sort((ent1, ent2) => {
-		var h1 = Entities.GetHealth(ent1)
-		var h2 = Entities.GetHealth(ent2)
-		
-		if(h1 === h2)
-			return 0
-		if(h1 > h2)
-			return 1
-		else
-			return -1
-	}).every(ent => {
+	), ent => Entities.GetHealth(ent, MyEnt)).every(ent => {
 		if(Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti)))
 			return true
 		var dmg = (Entities.GetMaxHealth(ent) - Entities.GetHealth(ent)) * DamagePerMissHP

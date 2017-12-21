@@ -20,7 +20,7 @@ function SniperAutoultF() {
 	if(UltiLvl === 0 || UltiCd > 0 || UltiManaCost > Entities.GetMana(MyEnt) || Abilities.IsInAbilityPhase(Ulti))
 		return
 
-	Entities.PlayersHeroEnts().filter(ent =>
+		Array.prototype.orderBy.call(Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(
 			Entities.IsBuilding(ent)
@@ -31,17 +31,7 @@ function SniperAutoultF() {
 		&& !Entities.IsMagicImmune(ent)
 		&& !Fusion.HasLinkenAtTime(ent, 2)
 		&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, UltiDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
-	).sort((ent1, ent2) => {
-		var h1 = Entities.GetHealth(ent1)
-		var h2 = Entities.GetHealth(ent2)
-		
-		if(h1 === h2)
-			return 0
-		if(h1 > h2)
-			return 1 
-		else
-			return -1
-	}).every(ent => {
+	), ent => Entities.GetHealth(ent, MyEnt)).every(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		if(HideItem !== undefined)
 			Game.CastTarget(MyEnt, HideItem, MyEnt, false)

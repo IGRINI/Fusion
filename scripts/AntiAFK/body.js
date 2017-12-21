@@ -9,32 +9,19 @@ function AntiAFKF() {
 		return
 	
 	GameUI.SelectUnit(MyEnt, false)
-	AFK(MyEnt, HEnts)
+	AFK(MyEnt)
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick, AntiAFKF)
 }
 
-function AFK(MyEnt, HEnts) {
-	Entities.PlayersHeroEnts().filter(ent =>
-		Entities.IsAlive(ent)
+function AFK(MyEnt) {
+	Array.prototype.orderBy.call(Entities.PlayersHeroEnts().filter(ent =>
+		ent !== MyEnt
+		&& Entities.IsAlive(ent)
 		&& !Entities.IsEnemy(ent)
-		&& ent !== MyEnt
-		&& !(
-			Entities.IsBuilding(ent)
-			|| Entities.IsInvulnerable(ent)
-		)
-	).sort((ent1, ent2) => {
-		var rng1 = Entities.GetRangeToUnit(MyEnt, ent1)
-		var rng2 = Entities.GetRangeToUnit(MyEnt, ent2)
-		
-		if(rng1 === rng2)
-			return 0
-		if(rng1 > rng2)
-			return 1
-		else
-			return -1
-	}).every(ent => {
+		&& !Entities.IsBuilding(ent)
+	), ent => Entities.GetRangeToUnit(ent, MyEnt)).every(ent => {
 		if(feeder)
 			Game.MoveToAttackPos(MyEnt, Entities.GetAbsOrigin(ent), false)
 		else

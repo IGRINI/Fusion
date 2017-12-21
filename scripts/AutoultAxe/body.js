@@ -26,7 +26,7 @@ function AxeAutoUltF() {
 	)
 		return
 	
-	Entities.PlayersHeroEnts().filter(ent =>
+	Array.prototype.orderBy.call(Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(
 			Entities.IsBuilding(ent)
@@ -35,17 +35,7 @@ function AxeAutoUltF() {
 		&& Entities.IsEnemy(ent)
 		&& Entities.IsEntityInRange(MyEnt, ent, UltiCastRange)
 		&& !Fusion.HasLinkenAtTime(ent, Abilities.GetCastPoint(Ulti) + Fusion.MyTick)
-	).sort((ent1, ent2) => {
-		var h1 = Entities.GetHealth(ent1)
-		var h2 = Entities.GetHealth(ent2)
-		
-		if(h1 === h2)
-			return 0
-		if(h1 > h2)
-			return 1
-		else
-			return -1
-	}).every(ent => {
+	), ent => Entities.GetHealth(ent, MyEnt)).every(ent => {
 		if(Entities.GetHealth(ent) < kill_threshold) {
 			CastUlti(MyEnt, Ulti, Abilities.GetCastPoint(Ulti), ent)
 			return false

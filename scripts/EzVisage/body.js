@@ -48,7 +48,7 @@ function Souls(MyEnt) {
 	if(SoulDamage === 0)
 		return
 	
-	Entities.PlayersHeroEnts().filter(ent =>
+	Array.prototype.orderBy.call(Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(
 			Entities.IsBuilding(ent)
@@ -59,17 +59,7 @@ function Souls(MyEnt) {
 		&& !Fusion.HasLinkenAtTime(ent, AbilCastPoint)
 		&& Fusion.GetMagicMultiplier(MyEnt, ent) !== 0
 		&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, SoulDamage, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
-	).sort((ent1, ent2) => {
-		var h1 = Entities.GetHealth(ent1)
-		var h2 = Entities.GetHealth(ent2)
-		
-		if(h1 === h2)
-			return 0
-		if(h1 > h2)
-			return 1
-		else
-			return -1
-	}).every(ent => {
+	), ent => Entities.GetHealth(ent, MyEnt)).every(ent => {
 		GameUI.SelectUnit(MyEnt, false)
 		Game.CastTarget(MyEnt, Abil, ent, false)
 		if(isInvalid)

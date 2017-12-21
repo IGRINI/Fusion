@@ -114,24 +114,14 @@ function RemoteMines(MyEnt, HEnts) {
 
 function EzTechiesF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	var HEnts = Entities.PlayersHeroEnts().filter(ent =>
+	var HEnts = Array.prototype.orderBy.call(Entities.PlayersHeroEnts().filter(ent =>
 		Entities.IsAlive(ent)
 		&& !(
 			Entities.IsBuilding(ent)
 			|| Entities.IsInvulnerable(ent)
 		)
 		&& Entities.IsEnemy(ent)
-	).sort(function(ent1, ent2) {
-		var h1 = Entities.GetHealth(ent1)
-		var h2 = Entities.GetHealth(ent2)
-		
-		if(h1 === h2)
-			return 0
-		if(h1 > h2)
-			return 1
-		else
-			return -1
-	})
+	), ent => Entities.GetHealth(ent, MyEnt))
 
 	RemoteMines(MyEnt, HEnts)
 	DenyMines(MyEnt)

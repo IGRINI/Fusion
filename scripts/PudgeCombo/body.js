@@ -24,7 +24,7 @@ function Hook(MyEnt, ent, callback) {
 
 function IsOnTrajectory(MyEnt, distance, time, hookwidth) {
 	/*var myForwardVec = Entities.GetForward(MyEnt),
-		ents = Entities.GetAllEntities().filter(ent => {
+		ents = Array.prototype.orderBy.call(Entities.GetAllEntities().filter(ent => {
 			if(MyEnt === ent)
 				return false
 			
@@ -39,17 +39,7 @@ function IsOnTrajectory(MyEnt, distance, time, hookwidth) {
 					return true
 			
 			return false
-		}).sort((ent1, ent2) => {
-			var dst1 = Entities.GetRangeToUnit(ent1, MyEnt),
-				dst2 = Entities.GetRangeToUnit(ent2, MyEnt)
-			
-			if(dst1 > dst2)
-				return 1
-			else if(dst1 < dst2)
-				return -1
-			else
-				return 0
-		})
+		}), ent => Entities.GetRangeToUnit(ent, MyEnt))
 	
 	return ents.length > 0 ? Entities.PlayersHeroEnts().indexOf(ents[0]) > -1 : false*/
 	return true
@@ -70,7 +60,7 @@ function Rot(MyEnt) {
 
 function Urn(MyEnt, ent) {
 	var urn = Game.GetAbilityByName(MyEnt, "item_spirit_vessel") || Game.GetAbilityByName(MyEnt, "item_urn_of_shadows"),
-		urncharges = urn === undefined ? -1 : Items.GetCurrentCharges(urn)
+		urncharges = urn ? Items.GetCurrentCharges(urn) : -1
 		
 	if(urncharges > 0)
 		Game.CastTarget(MyEnt, urn, ent, false)

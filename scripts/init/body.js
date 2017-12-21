@@ -19,6 +19,12 @@ Object.defineProperty(Array.prototype, "randomElement", {
 		return this[Math.round(this.length * Math.random())]
 	}
 })
+Object.defineProperty(Array.prototype, "orderBy", {
+	enumerable: false,
+	value: function(cb) {
+		return this.sort((obj1, obj2) => cb(obj1) - cb(obj2))
+	}
+})
 Object.defineProperty(Array.prototype, "remove", { // remove value from array without creating new array
 	enumerable: false,
 	value: function(obj) {
