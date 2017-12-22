@@ -1,10 +1,5 @@
 var enabled = false,
-	flag = false,
-	items = [
-		["item_ward_observer", 42],
-		//["item_ward_sentry", 43]
-	],
-	latestItem
+	flag = false
 
 function WardBuyTrollOnInterval() {
 	WardBuyTrollF()
@@ -17,14 +12,19 @@ function WardBuyTrollF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
 
 	if(flag)
-		Game.SellItem(MyEnt, Game.GetAbilityByName(MyEnt, latestItem))
-	else {
-		var item = items[Math.floor(Math.random() * items.length)]
-		latestItem = item[0]
-		Game.PurchaseItem(MyEnt, item[1])
-	}
+		Game.SellItem(MyEnt, GetItemAnywhere(MyEnt, "item_ward_observer"))
+	else
+		Game.PurchaseItem(MyEnt, 42)
 
 	flag = !flag
+}
+
+function GetItemAnywhere(ent, name) {
+	for(var i = 0; i < 15; i++) {
+		var item = Entities.GetItemInSlot(ent, i)
+		if(Abilities.GetAbilityName(item) === name)
+			return item
+	}
 }
 
 script = {

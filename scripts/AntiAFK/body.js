@@ -3,10 +3,11 @@
 
 function AntiAFKF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
-	if(Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt))
+	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME) || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
+		if(enabled)
+			$.Schedule(Fusion.MyTick, AntiAFKF)
 		return
-	if(Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_PRE_GAME))
-		return
+	}
 	
 	GameUI.SelectUnit(MyEnt, false)
 	AFK(MyEnt)
