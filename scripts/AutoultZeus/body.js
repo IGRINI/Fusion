@@ -31,7 +31,7 @@ function ZeusAutoultF() {
 			Game.CastNoTarget(MyEnt, Ulti, false)
 
 			flag = true
-			$.Schedule(Abilities.GetCastPoint(Ulti), () => flag = false)
+			$.Schedule(Abilities.GetCastPoint(Ulti) * 2, () => flag = false)
 			
 			return false
 		})

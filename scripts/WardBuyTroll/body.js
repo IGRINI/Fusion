@@ -2,7 +2,7 @@ var enabled = false,
 	flag = false,
 	items = [
 		["item_ward_observer", 42],
-		["item_ward_sentry", 43]
+		//["item_ward_sentry", 43]
 	],
 	latestItem
 
@@ -10,7 +10,7 @@ function WardBuyTrollOnInterval() {
 	WardBuyTrollF()
 
 	if(enabled)
-		$.Schedule(Fusion.MyTick * 4, WardBuyTrollOnInterval)
+		$.Schedule(Fusion.MyTick/* * 4*/, WardBuyTrollOnInterval)
 }
 
 function WardBuyTrollF() {

@@ -16,6 +16,7 @@
 * Shadow Fiend autocoil
 * AutoCreepStop
 * ItemPanel cooldowns & mana
+* Don't use abilities when you're invis
 
 ## Realized:
 * AgrUnAgr
