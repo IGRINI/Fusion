@@ -27,6 +27,7 @@ function ZeusAutoultF() {
 			&& Entities.IsAlive(ent)
 			&& Entities.GetHealth(ent) < Fusion.CalculateDamage(MyEnt, ent, UltiDmg, DAMAGE_TYPES.DAMAGE_TYPE_MAGICAL)
 		).every(ent => {
+			GameUI.SelectUnit(MyEnt, false)
 			Game.CastNoTarget(MyEnt, Ulti, false)
 
 			flag = true
