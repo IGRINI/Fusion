@@ -10,6 +10,8 @@ function WardBuyTrollOnInterval() {
 
 function WardBuyTrollF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+	if(!Entities.IsAlive(MyEnt))
+		return
 
 	if(flag)
 		Game.SellItem(MyEnt, GetItemAnywhere(MyEnt, "item_ward_observer"))
