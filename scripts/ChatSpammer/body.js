@@ -1,6 +1,4 @@
-const start = 'a'.charCodeAt(0),
-	  exclude = ["f", "j", "t", "l"]
-var enabled = false,
+const str = 'a'.repeat(0xFF),
 	heroes = [
 		"Slark",
 		"Pudge",
@@ -8,15 +6,13 @@ var enabled = false,
 		"Windranger",
 		"Shadow Demon",
 	]
+var enabled = false
 
 function ChatSpammerF() {
 	/*var randHero = heroes.randomElement()
 	suggest_hero_pick(randHero)
 	suggest_hero_pick(randHero)*/
-	var char = String.fromCharCode(start + Math.floor(Math.random() * 26))
-	while(exclude.indexOf(char) > -1)
-		char--
-	suggest_hero_role(char.repeat(0xFF))
+	suggest_hero_role(str)
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick * 5, ChatSpammerF)

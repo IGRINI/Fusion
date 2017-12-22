@@ -8,14 +8,13 @@
 * Good GUI with config changing
 * InvokerCombo
 * Add invoker skills' functions with callbacks, integrate to code and turn into commands
-* Rewrite scripts for Node.js (now semi before native realize)
+* Prepare scripts for Node.js (now semi before native realize)
 * Make Fusion site, native support
 * Rubick spell autosteal
 
 ## InDev:
 * Shadow Fiend autocoil
 * AutoCreepStop
-* AutoLasthit
 * ItemPanel cooldowns & mana
 
 ## Realized:
