@@ -60,7 +60,7 @@ function LastHit() {
 	)
 		return
 	
-	[Entities.PlayersHeroEnts(), Entities.GetLaneCreeps()].some(ar => ar.filter(ent =>
+	Entities.PlayersHeroEnts().concat(Entities.GetLaneCreeps()).filter(ent =>
 		Entities.IsEntityInRange(MyEnt, ent, abilRadius)
 		&& Entities.IsEnemy(ent)
 		&& Entities.IsAlive(ent)
@@ -75,7 +75,7 @@ function LastHit() {
 		flag = true
 		$.Schedule(delay, () => flag = false)
 		return true
-	}))
+	})
 }
 
 script = {
