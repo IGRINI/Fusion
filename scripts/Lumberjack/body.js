@@ -1,10 +1,12 @@
 var enabled = false,
-	Interval = Fusion.MyTick
+	Interval = Fusion.MyTick,
+	ignore = []
 
 function LumberjackF() {
 	var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID()),
 		chopItem = Fusion.GetChopItem(MyEnt),
-		chopItemRange = Abilities.GetCastRangeFix(chopItem)
+		chopItemRange = Abilities.GetCastRangeFix(chopItem),
+		regrowthTime = 300
 	if(Game.IsGamePaused() || Entities.IsStunned(MyEnt) || !Entities.IsAlive(MyEnt)) {
 		if(enabled)
 			$.Schedule(Interval, LumberjackF)
@@ -24,7 +26,13 @@ function LumberjackF() {
 		Interval = Fusion.MyTick
 	
 	trees.every(tree => {
+		if(ignore.indexOf(tree) > -1)
+			return true
+		
 		Game.CastTargetTree(MyEnt, chopItem, tree, false)
+
+		ignore.push(tree)
+		$.Schedule(regrowthTime, () => ignore.remove(tree))
 		return false
 	})
 	
@@ -34,7 +42,6 @@ function LumberjackF() {
 
 script = {
 	name: "Lumberjack",
-	isVisible: false, // aren't released now
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
@@ -45,5 +52,8 @@ script = {
 			Game.ScriptLogMsg("Script disabled: Lumberjack", "#ff0000")
 		}
 	},
-	onDestroy: () => enabled = false
+	onDestroy: () => {
+		enabled = false
+		ignore.forEach((el, id) => delete ignore[id])
+	}
 }
