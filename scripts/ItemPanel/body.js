@@ -37,7 +37,7 @@ function ItemPanelEvery() {
 		return
 	}
 	var k = 0
-	Entities.PlayersHeroEnts()
+	Entities.PlayersHeroEnts(true)
 		.filter(ent => Entities.IsEnemy(ent))
 		.forEach(ent => {
 			var P = Fusion.Panels.ItemPanel.Children()[k]
