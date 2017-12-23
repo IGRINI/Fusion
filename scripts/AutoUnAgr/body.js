@@ -22,7 +22,7 @@ function UnAgrF() {
 	}
 	MyHP = curHP
 	
-	Entities.GetAllEntitiesByClassname("npc_dota_creep_lane")
+	Entities.GetLaneCreeps()
 		.filter(creep => !Entities.IsEnemy(creep) && Entities.IsAlive(creep) && Entities.IsEntityInRange(MyEnt, creep, 520))
 		.forEach(creep => {
 			Game.AttackTarget(MyEnt, creep, false)
