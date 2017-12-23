@@ -2,7 +2,7 @@ function onPreloadF() {
 	if(!Fusion.Commands.DumpEnemyAbilities) {
 		var lastBuffs = []
 		Fusion.Commands.DumpEnemyAbilities = () => {
-			Entities.PlayersHeroEnts().filter(ent =>
+			Entities.PlayersHeroEnts(true).filter(ent =>
 				Entities.IsAlive(ent)
 				&& !(
 					Entities.IsBuilding(ent)
@@ -25,7 +25,7 @@ function onPreloadF() {
 					var abilName = Abilities.GetAbilityName(abil)
 					if(typeof abilName !== "string" || abilName === "")
 						return
-					$.Msg(`\t${abilName} {`)
+					$.Msg(`\t${abilName.replace("_", " ").replace(entName, "")} {`)
 					$.Msg(`\t\tLevel: ${Abilities.GetLevel(abil)}`)
 					$.Msg(`\t\tCooldown: ${Math.ceil(Abilities.GetCooldownTimeRemaining(abil))}`)
 					$.Msg("\t}")
@@ -34,6 +34,20 @@ function onPreloadF() {
 			})
 		}
 		Game.AddCommand("__DumpEnemyAbilities", Fusion.Commands.DumpEnemyAbilities, "", 0)
+	}
+	if(!Fusion.Commands.DumpNearby) {
+		Fusion.Commands.DumpNearby = (name, arg1) => {
+			var MyEnt = Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())
+			Array.prototype.orderBy.call (
+				Entities.GetAllEntities().filter(ent => ent !== MyEnt && Entities.IsEntityInRange(MyEnt, ent, parseInt(arg1)) && !Entities.IsBuilding(ent) && !Entities.IsOwnedByAnyPlayer(ent)),
+				ent => -Entities.GetRangeToUnit(ent, MyEnt)
+			).forEach(ent => {
+				var pos = Entities.GetAbsOrigin(ent)
+				$.Msg(`${ent}: [${pos}]`)
+				GameUI.PingMinimapAtLocation(pos)
+			})
+		}
+		Game.AddCommand("__DumpNearby", Fusion.Commands.DumpNearby, "", 0)
 	}
 }
 

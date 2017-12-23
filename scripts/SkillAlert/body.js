@@ -29,21 +29,23 @@ function SAlertEvery() {
 			AlertPosition(modifier, vec, thinker)
 	})
 	
-	Entities.PlayersHeroEnts().filter(ent => Entities.IsAlive(ent)).forEach(ent => {
-		var buffs = Game.GetBuffsNames(ent),
-			xyz = Entities.GetAbsOrigin(ent)
-		
-		buffs.forEach(buff => {
-			var modifier = targetModifiers[buff]
-			if(modifier !== undefined && modifier !== [])
-				AlertTarget(modifier, ent)
-			else {
-				var modifier = waitingPosModifiers[buff]
+	Entities.PlayersHeroEnts()
+		.filter(ent => Entities.IsAlive(ent))
+		.forEach(ent => {
+			var buffs = Game.GetBuffsNames(ent),
+				xyz = Entities.GetAbsOrigin(ent)
+			
+			buffs.forEach(buff => {
+				var modifier = targetModifiers[buff]
 				if(modifier !== undefined && modifier !== [])
-					; //AlertTarget(modifier, ent) // AlertPosition
-			}
+					AlertTarget(modifier, ent)
+				else {
+					var modifier = waitingPosModifiers[buff]
+					if(modifier !== undefined && modifier !== [])
+						; //AlertTarget(modifier, ent) // AlertPosition
+				}
+			})
 		})
-	})
 
 	if(enabled)
 		$.Schedule(Fusion.MyTick, SAlertEvery)

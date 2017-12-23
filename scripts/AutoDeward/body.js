@@ -15,7 +15,7 @@ function AutoDewardF() {
 }
 
 function Deward(MyEnt, wardsAr) {
-	var Abil = GetDewardItem(MyEnt)
+	var Abil = Fusion.GetChopItem(MyEnt)
 	if(!Abil)
 		return
 
@@ -34,24 +34,6 @@ function Deward(MyEnt, wardsAr) {
 
 function AreDeward(ent) {
 	return Entities.IsWard(ent) || Entities.IsMine(ent)
-}
-
-function GetDewardItem(MyEnt) {
-	var result;
-	[
-		"item_quelling_blade",
-		"item_bfury",
-		"item_tango"
-	].every(itemName => {
-		let item = Game.GetAbilityByName(MyEnt, itemName)
-		if(item !== undefined) {
-			result = item
-			return false
-		}
-		return true
-	})
-	
-	return result
 }
 
 script = {

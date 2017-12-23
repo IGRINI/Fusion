@@ -6,13 +6,44 @@ Fusion.ForceStaffNames = [
 	"item_hurricane_pike",
 ]
 
+Fusion.CanBeVisible = ent => {
+	var truesight = Game.GetBuffs(ent).some(buff => ["modifier_item_dustofappearance", "modifier_truesight"].indexOf(Buffs.GetName(ent, buff)) > -1)
+	return !(!truesight && Entities.IsInvisible(ent))
+}
+
+Fusion.GetChopItem = ent => {
+	var result;
+	[
+		"item_quelling_blade",
+		"item_bfury",
+		"item_tango"
+	].every(itemName => {
+		let item = Game.GetAbilityByName(ent, itemName)
+		if(item !== undefined) {
+			result = item
+			return false
+		}
+		return true
+	})
+	
+	return result
+}
+
+Entities.IsRune = ent => !Entities.IsTree(ent) && !Entities.IsSelectable(ent) && !Entities.IsItemPhysical(ent) && eq(Entities.GetUp(ent), [0, 0, 1])
+
+Entities.IsTree = ent => ent > 10000
+
+function eq(ar1, ar2) {
+	return !ar1.some((el, id) => ar2[id] !== el)
+}
+
 Game.GetHideItem = ent => {
 	var ret;
 	[
 		"item_shadow_amulet", // shadow amulet
 		"item_glimmer_cape",  // glimmer cape
 		"item_silver_edge",   // shadow blade, doesn't ignore attack/other abils
-		"item_invis_sword"	// silver edge, doesn't ignore attack/other abils
+		"item_invis_sword"    // silver edge,  doesn't ignore attack/other abils
 	].every(itemName => {
 		var item = Game.GetAbilityByName(ent, itemName)
 		if(item !== undefined) {
@@ -435,6 +466,15 @@ Game.CastTarget = (ent, abil, target, queue) => Game.PrepareUnitOrders({
 	ShowEffects: Fusion.debugAnimations
 })
 
+Game.CastTargetTree = (ent, abil, target, queue) => Game.PrepareUnitOrders({
+	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TARGET_TREE,
+	UnitIndex: ent,
+	TargetIndex: target,
+	AbilityIndex: abil,
+	Queue: queue,
+	ShowEffects: Fusion.debugAnimations
+})
+
 Game.CastPosition = (ent, abil, xyz, queue) => Game.PrepareUnitOrders({
 	OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_POSITION,
 	UnitIndex: ent,
@@ -553,9 +593,14 @@ Game.GetInventory = ent => {
 	return inv
 }
 
-Game.IsIllusion = ent => Entities.PlayersHeroEnts().indexOf(ent) === -1
-
-Entities.PlayersHeroEnts = () => Game.GetAllPlayerIDs().map(playerID => Players.GetPlayerHeroEntityIndex(playerID))
+Entities.PlayersHeroEnts = returnNotVisible => {
+	var ents = Entities.GetAllEntities(),
+		playerEnts = Game.GetAllPlayerIDs().map(playerID => Players.GetPlayerHeroEntityIndex(playerID))
+	if(!returnNotVisible)
+		playerEnts = playerEnts.filter(ent => ents.indexOf(ent) > -1)
+	
+	return playerEnts
+}
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
 Fusion.Behaviors = abil => Fusion.RepresentBehavior(Abilities.GetBehavior(abil))

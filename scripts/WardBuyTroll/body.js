@@ -5,7 +5,7 @@ function WardBuyTrollOnInterval() {
 	WardBuyTrollF()
 
 	if(enabled)
-		$.Schedule(Fusion.MyTick/* * 4*/, WardBuyTrollOnInterval)
+		$.Schedule(Fusion.MyTick, WardBuyTrollOnInterval)
 }
 
 function WardBuyTrollF() {
@@ -21,7 +21,7 @@ function WardBuyTrollF() {
 	flag = !flag
 }
 
-function GetItemAnywhere(ent, name) {
+function GetItemAnywhere(ent, name) { // searches for item in inventory, backpack + stash
 	for(var i = 0; i < 15; i++) {
 		var item = Entities.GetItemInSlot(ent, i)
 		if(Abilities.GetAbilityName(item) === name)

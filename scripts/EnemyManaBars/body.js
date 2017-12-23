@@ -23,7 +23,7 @@ function EMBEvery() {
 	Fusion.Panels.EnemyManaBars.forEach((panel, ent) => {
 		if(HEnts.indexOf(ent) !== -1)
 			return
-		ent => Fusion.Panels.EnemyManaBars.get(ent).visible = false
+		panel.visible = false
 	})
 	
 	HEnts.forEach(ent => {
