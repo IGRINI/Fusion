@@ -34,6 +34,7 @@ function LumberjackF() {
 
 script = {
 	name: "Lumberjack",
+	isVisible: false, // aren't released now
 	onToggle: checkbox => {
 		enabled = checkbox.checked
 
