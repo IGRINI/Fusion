@@ -53,14 +53,15 @@ function LastHit() {
 	
 	if (
 		abil === -1
+		|| Abilities.GetLocalPlayerActiveAbility() !== -1
 		|| Abilities.GetLevel(abil) === -1
+		|| Entities.GetMana(MyEnt) < Abilities.GetManaCost(abil)
 		|| Abilities.GetCooldownTimeRemaining(abil) !== 0
 		|| flag
-		|| Abilities.GetLocalPlayerActiveAbility() !== -1
 	)
 		return
 	
-	Entities.PlayersHeroEnts().concat(Entities.GetLaneCreeps()).filter(ent =>
+	Entities.PlayersHeroEnts().concat(Entities.GetAllCreeps()).filter(ent =>
 		Entities.IsEntityInRange(MyEnt, ent, abilRadius)
 		&& Entities.IsEnemy(ent)
 		&& Entities.IsAlive(ent)

@@ -89,7 +89,7 @@ function onPreloadF() {
 			var playerID = Game.GetLocalPlayerID()
 			var MyEnt = Players.GetPlayerHeroEntityIndex(playerID)
 			
-			return Entities.GetAllEntitiesByClassname(MeepoName).filter(ent =>
+			return Entities.GetAllEntitiesByClassname(Fusion.MeepoClassname).filter(ent =>
 				Entities.IsAlive(ent)
 				&& !Entities.IsEnemy(ent)
 				&& !Entities.IsStunned(ent)

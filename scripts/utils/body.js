@@ -6,9 +6,10 @@ Fusion.ForceStaffNames = [
 	"item_hurricane_pike",
 ]
 
-Entities.GetLaneCreeps = () => Entities.GetAllEntitiesByClassname("npc_dota_creep_siege").concat(Entities.GetAllEntitiesByClassname("npc_dota_creep_lane"))
+Entities.GetAllLaneCreeps = () => Entities.GetAllEntitiesByClassname("npc_dota_creep_siege").concat(Entities.GetAllEntitiesByClassname("npc_dota_creep_lane"))
+Entities.GetAllCreeps = () => Entities.GetAllEntities().filter(ent => Entities.IsCreep(ent))
 
-Fusion.CanBeVisible = ent => {
+Entities.CanBeVisible = ent => {
 	var truesight = Game.GetBuffs(ent).some(buff => ["modifier_item_dustofappearance", "modifier_truesight"].indexOf(Buffs.GetName(ent, buff)) > -1)
 	return !(!truesight && Entities.IsInvisible(ent))
 }
