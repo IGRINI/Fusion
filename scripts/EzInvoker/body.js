@@ -35,13 +35,13 @@
 				Wex(); Quas(); Wex(); Invoke();
 			}
 			// sunstrike tornado eul veil etherial dagon
+			Game.CastPosition(MyEnt, Veil, pos, false)
 			Game.CastTarget(MyEnt, Eul, enemy, false)
 			$.Schedule(EulDuration - SunStrikeDelay + Fusion.MyTick * 9, function() {
 				Game.CastPosition(MyEnt, SunStrike, pos, false)
 				Exort(); Wex(); Exort(); Invoke();
 				
 				$.Schedule(EulDuration - SunStrikeDelay + Fusion.MyTick * 5, function() {
-					Game.CastPosition(MyEnt, Veil, pos, false)
 					Game.CastTarget(MyEnt, Etherial, enemy, false)
 					Game.CastTarget(MyEnt, Dagon, enemy, false)
 					//if(Abilities.GetCurrentCharges(Urn) > 0)

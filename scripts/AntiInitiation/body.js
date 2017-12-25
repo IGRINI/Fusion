@@ -128,7 +128,7 @@ function Disable(MyEnt, ent, Abil) {
 		abil = abilL
 		return true
 	}))
-	if(!abil)
+	if(abil === undefined)
 		return false
 	
 	GameUI.SelectUnit(MyEnt, false)

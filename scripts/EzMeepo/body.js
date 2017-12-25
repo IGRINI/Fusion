@@ -38,6 +38,7 @@ function onPreloadF() {
 			}
 			
 			var MyEnt = Players.GetPlayerHeroEntityIndex(playerID)
+			
 			if(flag === 0) {
 				var SelectedEnt = Players.GetLocalPlayerPortraitUnit()
 				PoofAllMeeposToMeepo(playerID, SelectedEnt, WithCheck)
