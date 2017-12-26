@@ -11,12 +11,12 @@
 * Prepare scripts for Node.js (now semi before native realize)
 * Make Fusion site, native support
 * Rubick spell autosteal
-
-## InDev:
 * Shadow Fiend autocoil
 * AutoCreepStop
+
+## InDev:
 * ItemPanel cooldowns & mana
-* Don't use abilities when you're invis
+* One big script for all steals, etc.
 
 ## Realized:
 * AgrUnAgr
