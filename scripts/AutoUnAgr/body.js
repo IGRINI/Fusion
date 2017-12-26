@@ -22,7 +22,7 @@ function UnAgrF() {
 	}
 	MyHP = curHP
 	
-	Entities.GetLaneCreeps()
+	Entities.GetAllLaneCreeps()
 		.filter(creep => !Entities.IsEnemy(creep) && Entities.IsAlive(creep) && Entities.IsEntityInRange(MyEnt, creep, 520))
 		.forEach(creep => {
 			Game.AttackTarget(MyEnt, creep, false)
