@@ -232,16 +232,7 @@ Abilities.GetCastRangeFix = abil => { // Don"t redefine internals
 	return AbilRange
 }
 
-Fusion.ForceStaffPos = ent => {
-	var entVec = Entities.GetAbsOrigin(ent),
-		entForward = Entities.GetForward(ent)
-	
-	return [
-		entVec[0] + entForward[0] * Fusion.ForceStaffUnits,
-		entVec[1] + entForward[1] * Fusion.ForceStaffUnits,
-		entVec[2] + entForward[2] * Fusion.ForceStaffUnits
-	]
-}
+Fusion.ForceStaffPos = ent => Fusion.VectorRotation(Entities.GetAbsOrigin(ent), Entities.GetForward(ent), Fusion.ForceStaffUnits)
 
 Fusion.BuffsAbsorbMagicDmg = {
 	"modifier_item_pipe_barrier": {
