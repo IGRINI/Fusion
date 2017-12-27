@@ -1,4 +1,5 @@
 function Hook(MyEnt, ent, callback) {
+	Game.EntStop(MyEnt, false)
 	myVec = Entities.GetAbsOrigin(MyEnt)
 	enVec = Entities.GetAbsOrigin(ent)
 	var hook = Entities.GetAbilityByName(MyEnt, "pudge_meat_hook"),
@@ -12,8 +13,7 @@ function Hook(MyEnt, ent, callback) {
 	if(!Entities.IsEntityInRange(MyEnt, ent, hookDist + hookwidth))
 		return
 	
-	Game.EntStop(MyEnt, false)
-	Game.CastPosition(MyEnt, hook, Fusion.VectorDif(myVec, Fusion.Angle2Vector(Fusion.AngleBetweenTwoVectors(myVec, predict))), false)
+	Game.CastPosition(MyEnt, hook, Fusion.VectorRotation(myVec, Fusion.Angle2Vector(Fusion.AngleBetweenTwoVectors(myVec, predict)), -1), false)
 	$.Schedule(time - Fusion.MyTick * 3, () => {
 		if(!CancelHook(MyEnt, hookDist, Fusion.MyTick * 3, hookwidth))
 			callback()

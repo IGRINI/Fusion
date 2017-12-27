@@ -10,8 +10,7 @@ Entities.GetAllLaneCreeps = () => Entities.GetAllEntitiesByClassname("npc_dota_c
 Entities.GetAllCreeps = () => Entities.GetAllEntities().filter(ent => Entities.IsCreep(ent))
 
 Fusion.AngleBetweenTwoVectors = (vec1, vec2) => Math.atan2(vec1[1] - vec2[1], vec1[0] - vec2[0])
-Fusion.VectorSum = (vec1, vec2) => [vec1[0] + vec2[0], vec1[1] + vec2[1], vec1[2] + vec2[2]]
-Fusion.VectorDif = (vec1, vec2) => [vec1[0] - vec2[0], vec1[1] - vec2[1], vec1[2] - vec2[2]]
+Fusion.VectorRotation = (vec, rotation, units) => [vec[0] + rotation[0] * units, vec[1] + rotation[1] * units, vec[2] + rotation[2] * units]
 Fusion.Vector2Angle = vec => Math.atan2(vec[1], vec[0])
 Fusion.Angle2Vector = angle => [Math.cos(angle), Math.sin(angle), 0]
 
