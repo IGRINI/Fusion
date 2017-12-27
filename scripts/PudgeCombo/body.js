@@ -5,16 +5,15 @@ function Hook(MyEnt, ent, callback) {
 		hookDist = Abilities.GetCastRangeFix(hook),
 		hookwidth = Abilities.GetSpecialValueFor(hook, "hook_width") / 2,
 		reachtime = Entities.GetRangeToUnit(MyEnt, ent) / Abilities.GetSpecialValueFor(hook, "hook_speed"),
-		angle = /*Game.AngleBetweenVectors(myVec, enVec)*/0,
-		rottime = /*Game.RotationTime(angle, 0.7)*/0,
 		delay = Abilities.GetCastPoint(hook),
-		time = reachtime + delay + rottime + Fusion.MyTick,
+		time = reachtime + delay + Fusion.MyTick,
 		predict = Game.VelocityWaypoint(ent, time)
 	
 	if(!Entities.IsEntityInRange(MyEnt, ent, hookDist + hookwidth))
 		return
 	
-	Game.CastPosition(MyEnt, hook, predict, false)
+	Game.EntStop(MyEnt, false)
+	Game.CastPosition(MyEnt, hook, Fusion.VectorDif(myVec, Fusion.Angle2Vector(Fusion.AngleBetweenTwoVectors(myVec, predict))), false)
 	$.Schedule(time - Fusion.MyTick * 3, () => {
 		if(!CancelHook(MyEnt, hookDist, Fusion.MyTick * 3, hookwidth))
 			callback()
@@ -23,7 +22,7 @@ function Hook(MyEnt, ent, callback) {
 
 function IsOnTrajectory(MyEnt, distance, time, hookwidth) {
 	/*var myForwardVec = Entities.GetForward(MyEnt),
-		ents = Array.prototype.orderBy.call(Entities.GetAllEntities().filter(ent => {
+		ents = Array.prototype.orderBy.call(Entities.GetAllEntities().filter(ent => Entities.IsEntityInRange(MyEnt, ent, distance + hookwidth)).filter(ent => {
 			if(MyEnt === ent)
 				return false
 			
@@ -99,7 +98,7 @@ function onPreloadF() {
 }
 
 script = {
-	name: "PudgeCombo",
+	name: "Pudge Combo",
 	isVisible: false,
 	onPreload: onPreloadF
 }

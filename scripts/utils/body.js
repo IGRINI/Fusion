@@ -1,4 +1,4 @@
-﻿Fusion.LenseBonusRange = 200
+﻿Fusion.LenseBonusRange = 250
 Fusion.ForceStaffUnits = 600
 Fusion.LinkenTargetName = "modifier_item_sphere_target"
 Fusion.ForceStaffNames = [
@@ -8,6 +8,12 @@ Fusion.ForceStaffNames = [
 
 Entities.GetAllLaneCreeps = () => Entities.GetAllEntitiesByClassname("npc_dota_creep_siege").concat(Entities.GetAllEntitiesByClassname("npc_dota_creep_lane"))
 Entities.GetAllCreeps = () => Entities.GetAllEntities().filter(ent => Entities.IsCreep(ent))
+
+Fusion.AngleBetweenTwoVectors = (vec1, vec2) => Math.atan2(vec1[1] - vec2[1], vec1[0] - vec2[0])
+Fusion.VectorSum = (vec1, vec2) => [vec1[0] + vec2[0], vec1[1] + vec2[1], vec1[2] + vec2[2]]
+Fusion.VectorDif = (vec1, vec2) => [vec1[0] - vec2[0], vec1[1] - vec2[1], vec1[2] - vec2[2]]
+Fusion.Vector2Angle = vec => Math.atan2(vec[1], vec[0])
+Fusion.Angle2Vector = angle => [Math.cos(angle), Math.sin(angle), 0]
 
 Entities.CanBeVisible = ent => {
 	var truesight = Game.GetBuffs(ent).some(buff => ["modifier_item_dustofappearance", "modifier_truesight"].indexOf(Buffs.GetName(ent, buff)) > -1)
@@ -45,8 +51,8 @@ Game.GetHideItem = ent => {
 	[
 		"item_shadow_amulet", // shadow amulet
 		"item_glimmer_cape",  // glimmer cape
-		"item_silver_edge",   // shadow blade, doesn't ignore attack/other abils
-		"item_invis_sword"    // silver edge,  doesn't ignore attack/other abils
+		"item_silver_edge",   // silver edge,  doesn't ignore attack/other abils
+		"item_invis_sword"    // shadow blade, doesn't ignore attack/other abils
 	].every(itemName => {
 		var item = Game.GetAbilityByName(ent, itemName)
 		if(item !== undefined) {
@@ -228,15 +234,14 @@ Abilities.GetCastRangeFix = abil => { // Don"t redefine internals
 }
 
 Fusion.ForceStaffPos = ent => {
-	var entVec = Entities.GetAbsOrigin(ent)
-	var entForward = Entities.GetForward(ent)
-	var forceVec = [
+	var entVec = Entities.GetAbsOrigin(ent),
+		entForward = Entities.GetForward(ent)
+	
+	return [
 		entVec[0] + entForward[0] * Fusion.ForceStaffUnits,
 		entVec[1] + entForward[1] * Fusion.ForceStaffUnits,
 		entVec[2] + entForward[2] * Fusion.ForceStaffUnits
 	]
-	
-	return forceVec
 }
 
 Fusion.BuffsAbsorbMagicDmg = {
