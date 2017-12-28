@@ -8,7 +8,17 @@ function DeleteAll() {
 	Fusion.Panels.EnemyAbilities = new Map()
 }
 
-function EATick() {
+function EnemyAbilitiesOnInterval() {
+	EnemyAbilitiesF()
+
+	if(enabled)
+		$.Schedule(Fusion.MyTick, EnemyAbilitiesOnInterval)
+	else
+		if(latestEnemy)
+			DeleteAll()
+}
+
+function EnemyAbilitiesF() {
 	curEnt = Players.GetLocalPlayerPortraitUnit()
 	if (Entities.IsEnemy(curEnt)) {
 		latestEnemy = true
@@ -16,7 +26,7 @@ function EATick() {
 			generic = 0
 		for (var abilNum = 0; abilNum < abcount - 1 && abilNum <= 5; abilNum++) {
 			var ability = Entities.GetAbility(curEnt, abilNum)
-			if(Abilities.GetAbilityName(ability) != "generic_hidden") {
+			if(Abilities.GetAbilityName(ability) === "generic_hidden") {
 				generic++
 				continue
 			}
@@ -57,11 +67,6 @@ function EATick() {
 		latestEnemy = false
 		DeleteAll()
 	}
-	if(enabled)
-		$.Schedule(Fusion.MyTick, EATick)
-	else
-		if(latestEnemy)
-			DeleteAll()
 }
 
 script = {
@@ -74,7 +79,7 @@ script = {
 		enabled = checkbox.checked
 
 		if (enabled) {
-			EATick()
+			EnemyAbilitiesOnInterval()
 			Game.ScriptLogMsg("Script enabled: EnemyAbilities", "#00ff00")
 		} else
 			Game.ScriptLogMsg("Script disabled: EnemyAbilities", "#ff0000")
