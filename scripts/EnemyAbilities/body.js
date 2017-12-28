@@ -45,20 +45,20 @@ function EnemyAbilitiesF() {
 					abpanel.Children()[0].text = ""
 				abpanel.Children()[1].text = `${abilLevel}/${abilMaxLevel}`
 				if(abilManaCost > curMana)
-					abpanel.Children()[2].visible = true
+					abpanel.Children()[1].visible = true
 				else
-					abpanel.Children()[2].visible = false
+					abpanel.Children()[1].visible = false
 			} else {
-				var ablayout = MainAbilitiesHud.FindChild(`Ability${abilNum-generic}`).FindChild("ButtonAndLevel")
+				var ablayout = MainAbilitiesHud.FindChild(`Ability${abilNum-generic}`).FindChildTraverse("ButtonSize")
 				if(ablayout) {
 					var abpanel = $.CreatePanel("Panel", ablayout, `abpanel${abilNum-generic}`)
 					abpanel.BLoadLayoutFromString(abpanel_layout, false, false)
 					abpanel.Children()[0].text = abilCD
-					abpanel.Children()[1].text = `${abilLevel}/${abilMaxLevel}`
+					// Level: abpanel.Children()[1].text = `${abilLevel}/${abilMaxLevel}`
 					if(abilManaCost > curMana)
-						abpanel.Children()[2].visible = true
+						abpanel.Children()[1].visible = true
 					else
-						abpanel.Children()[2].visible = false
+						abpanel.Children()[1].visible = false
 					Fusion.Panels.EnemyAbilities.set(`abpanel${abilNum-generic}`, abpanel)
 				}
 			}
