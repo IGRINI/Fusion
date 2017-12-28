@@ -46,9 +46,9 @@ function EATick() {
 					abpanel.Children()[0].text = abilCD
 					abpanel.Children()[1].text = `${abilLevel}/${abilMaxLevel}`
 					if(abilManaCost > curMana)
-						abpanel.Children()[2].style.visibility = `visible`
+						abpanel.Children()[2].visible = true
 					else
-						abpanel.Children()[2].style.visibility = `collapse`
+						abpanel.Children()[2].visible = false
 					Fusion.Panels.EnemyAbilities.set(`abpanel${abilNum-generic}`, abpanel)
 				}
 			}
