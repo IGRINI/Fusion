@@ -1,88 +1,74 @@
 var MainAbilitiesHud = Fusion.Panels.Main.HUDElements.FindChildTraverse("abilities"),
-	enabled = false,	currentent = null;
+	enabled = false,
+	curEnt, latestEnemy, abpanel_layout
 
 function DeleteAll() {
-	if (Fusion.Panels.EnemyAbilities) {
-		for (var k in Fusion.Panels.EnemyAbilities) {
-		    Fusion.Panels.EnemyAbilities[k].DeleteAsync(0);
-		}
-	}
+	if (Fusion.Panels.EnemyAbilities)
+		Fusion.Panels.EnemyAbilities.forEach(panel => panel.DeleteAsync(0))
 	Fusion.Panels.EnemyAbilities = new Map()
 }
 
 function EATick() {
-	currentent = Players.GetLocalPlayerPortraitUnit()
-	if (Entities.GetTeamNumber(currentent) != Players.GetTeam(Players.GetLocalPlayer()))
-	{
-		var abcount = Entities.GetAbilityCount(currentent),
-			generic = 0; 
-			//Нужна для отсчета generic_hidden абилок, т.к. они занимают 3 и 4 слоты у почти всех героев
-			//и т.к. у ульты айди в доте 5, а в панораме она отображается в слоте 3(если 4 скилла),
-			//то уровень ульты через перебор уже не оторбразишь. Скорее всего я просто тупой и не додумался до лучшего, пофикси если лучше придумаешь.
+	curEnt = Players.GetLocalPlayerPortraitUnit()
+	if (Entities.IsEnemy(curEnt)) {
+		latestEnemy = true
+		var abcount = Entities.GetAbilityCount(curEnt),
+			generic = 0
 		for (var abilNum = 0; abilNum < abcount - 1 && abilNum <= 5; abilNum++) {
-			var ability = Entities.GetAbility(currentent, abilNum);
-			if(Abilities.GetAbilityName(ability) != "generic_hidden")
-			{
-				var abpanel = Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`],
-					abcoldown = Abilities.GetCooldownTimeRemaining(ability),
-					ablevel = Abilities.GetLevel(ability),
-					abmaxlevel = Abilities.GetMaxLevel(ability),
-					abmanacost = Abilities.GetManaCost(ability),
-					currentmana = Entities.GetMana(currentent);
-				if(abpanel != null)
-				{
-					if(abcoldown>0)
-						abpanel.Children()[0].text = abcoldown.toFixed(0)
-					else
-						abpanel.Children()[0].text = ""
-					abpanel.Children()[1].text = `${ablevel}/${abmaxlevel}`
-					if(abmanacost > currentmana)
+			var ability = Entities.GetAbility(curEnt, abilNum)
+			if(Abilities.GetAbilityName(ability) != "generic_hidden") {
+				generic++
+				continue
+			}
+
+			var abilCD = Abilities.GetCooldownTimeRemaining(ability),
+				abilLevel = Abilities.GetLevel(ability),
+				abilMaxLevel = Abilities.GetMaxLevel(ability),
+				abilManaCost = Abilities.GetManaCost(ability),
+				curMana = Entities.GetMana(curEnt)
+			
+			if(Fusion.Panels.EnemyAbilities.has(`abpanel${abilNum-generic}`)) {
+				var abpanel = Fusion.Panels.EnemyAbilities.get(`abpanel${abilNum-generic}`)
+				if(abilCD > 0)
+					abpanel.Children()[0].text = Math.round(abilCD)
+				else
+					abpanel.Children()[0].text = ""
+				abpanel.Children()[1].text = `${abilLevel}/${abilMaxLevel}`
+				if(abilManaCost > curMana)
+					abpanel.Children()[2].visible = true
+				else
+					abpanel.Children()[2].visible = false
+			} else {
+				var ablayout = MainAbilitiesHud.FindChild(`Ability${abilNum-generic}`).FindChild("ButtonAndLevel")
+				if(ablayout) {
+					var abpanel = $.CreatePanel("Panel", ablayout, `abpanel${abilNum-generic}`)
+					abpanel.BLoadLayoutFromString(abpanel_layout, false, false)
+					abpanel.Children()[0].text = abilCD
+					abpanel.Children()[1].text = `${abilLevel}/${abilMaxLevel}`
+					if(abilManaCost > curMana)
 						abpanel.Children()[2].style.visibility = `visible`
 					else
 						abpanel.Children()[2].style.visibility = `collapse`
+					Fusion.Panels.EnemyAbilities.set(`abpanel${abilNum-generic}`, abpanel)
 				}
-				else
-				{
-					var ablayout = MainAbilitiesHud.FindChild(`Ability${abilNum-generic}`).FindChild("ButtonAndLevel")
-					if(ablayout != null)
-					{
-						Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`] = $.CreatePanel("Panel", ablayout, `abpanel${abilNum-generic}`)
-						Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`].BLoadLayoutFromString("<root>\
-															<Panel style='width:100%;height:100%;' hittest='false'>\
-																<Label hittest='false' text='' style='text-align:center;color:white;font-size:20px;text-shadow:1px 1px 1px 2 #00000099;align:center center;'/>\
-																<Label hittest='false' text='' style='margin-bottom:5%;text-align:center;color:white;font-size:20px;text-shadow:1px 1px 1px 2 #00000099;align:center center;'/>\
-																<Panel hittest='false' style='background-color:blue;opacity:0.2;width:100%;height:100%;'/>\
-															</Panel>\
-														</root>", false, false)
-						Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`].Children()[0].text = abcoldown
-						Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`].Children()[1].text = `${ablevel}/${abmaxlevel}`
-						if(abmanacost > currentmana)
-							Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`].Children()[2].style.visibility = `visible`
-						else
-							Fusion.Panels.EnemyAbilities[`abpanel${abilNum-generic}`].Children()[2].style.visibility = `collapse`
-					}
-				}
-			}
-			else
-			{
-				generic++;
 			}
 		}
-	}
-	else
-	{
+	} else {
+		latestEnemy = false
 		DeleteAll()
 	}
 	if(enabled)
 		$.Schedule(Fusion.MyTick, EATick)
 	else
-		DeleteAll()
+		if(latestEnemy)
+			DeleteAll()
 }
 
 script = {
 	name: "EnemyAbilities",
 	onPreload: () => {
-		DeleteAll()
+		DeleteAll() // as it defines variables
+		Fusion.GetXML("EnemyAbilities/abpanel").then(xml => abpanel_layout = xml)
 	},
 	onToggle: checkbox => {
 		enabled = checkbox.checked
