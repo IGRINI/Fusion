@@ -1,3 +1,4 @@
+// idea and base (c) github.com/IGRINI 2017
 var MainAbilitiesHud = Fusion.Panels.Main.HUDElements.FindChildTraverse("abilities"),
 	enabled = false,
 	latestEnemy, abpanel_layout, lvlpanel_layout

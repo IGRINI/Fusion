@@ -6,9 +6,20 @@ Fusion.ForceStaffNames = [
 	"item_hurricane_pike",
 ]
 
+Entities.FindRotationAngle = (ent, pos) => {
+	var entPos = Entities.GetAbsOrigin(ent),
+		angle = Math.abs(Math.atan2(pos[1] - entPos[1], pos[0] - entPos[0]) - Fusion.Vector2Angle(Entities.GetForward(ent)))
+
+	if (angle > Math.PI)
+		angle = Math.abs((Math.PI * 2) - angle)
+
+	return angle
+}
+Entities.InFront = (ent, dist) => Fusion.VectorRotation(Entities.GetAbsOrigin(ent), Entities.GetForward(ent), dist || Game.GetSpeed_IsMoving(ent))
 Entities.GetAllLaneCreeps = () => Entities.GetAllEntitiesByClassname("npc_dota_creep_siege").concat(Entities.GetAllEntitiesByClassname("npc_dota_creep_lane"))
 Entities.GetAllCreeps = () => Entities.GetAllEntities().filter(ent => Entities.IsCreep(ent))
 
+Fusion.ExtendVector = (vec1, vec2, units) => Fusion.VectorRotation(vec1, Fusion.Angle2Vector(Fusion.AngleBetweenTwoVectors(vec1, vec2)), units)
 Fusion.AngleBetweenTwoVectors = (vec1, vec2) => Math.atan2(vec1[1] - vec2[1], vec1[0] - vec2[0])
 Fusion.VectorRotation = (vec, rotation, units) => [vec[0] + rotation[0] * units, vec[1] + rotation[1] * units, vec[2] + rotation[2] * units]
 Fusion.Vector2Angle = vec => Math.atan2(vec[1], vec[0])
@@ -232,7 +243,7 @@ Abilities.GetCastRangeFix = abil => { // Don"t redefine internals
 	return AbilRange
 }
 
-Fusion.ForceStaffPos = ent => Fusion.VectorRotation(Entities.GetAbsOrigin(ent), Entities.GetForward(ent), Fusion.ForceStaffUnits)
+Fusion.ForceStaffPos = ent => Entities.InFront(ent, Fusion.ForceStaffUnits)
 
 Fusion.BuffsAbsorbMagicDmg = {
 	"modifier_item_pipe_barrier": {
@@ -296,6 +307,7 @@ Fusion.IgnoreBuffs = {
 		"modifier_treant_living_armor",
 		"modifier_item_aegis",
 		"modifier_tusk_snowball_movement",
+		"modifier_eul_cyclone",
 	]
 }
 Fusion.GetMagicMultiplier = (entFrom, entTo) => {
@@ -335,23 +347,9 @@ Fusion.CalculateDamage = (entFrom, entTo, damage, damage_type) => {
 	return damage
 }
 
-/*Game.AngleBetweenVectors = (a_pos, a_facing, b_pos) => {
-	var distancevector = [
-		b_pos[0] - a_pos[0],
-		b_pos[1] - a_pos[1]
-	]
-	var normalize = [
-		distancevector[0] / Math.sqrt(distancevector[0] ** 2 + distancevector[1] ** 2),
-		distancevector[1] / Math.sqrt(distancevector[0] ** 2 + distancevector[1] ** 2)
-	]
-	return Math.acos((a_facing[0] * normalize[0]) + (a_facing[1] * normalize[1]))
-}*/
 Game.AngleBetweenVectors = (vec1, vec2) => Math.atan2(Math.abs(vec1[0] - vec2[0]), Math.abs(vec1[1] - vec2[1]))
-
 Game.AngleBetweenTwoFaces = (a_facing, b_facing) => Math.acos((a_facing[0] * b_facing[0]) + (a_facing[1] * b_facing[1]))
-
 Game.RotationTime = (angle, rotspeed) => Fusion.MyTick * angle / rotspeed // angle is npc_heroes MovementTurnRate
-
 Game.GetEntitiesInRange = (pos, range, onlyEnemies) => Entities.PlayersHeroEnts().filter(ent =>
 	(!onlyEnemies || Entities.IsEnemy(ent))
 	&& Entities.IsAlive(ent)
@@ -378,12 +376,13 @@ Game.GetAbilityByName = (ent, name) => {
 	}
 }
 
-Game.GetSpeed = ent => Entities.IsMoving(ent) ? Entities.GetMoveSpeedModifier(ent, Entities.GetBaseMoveSpeed(ent)) : 0
+Game.GetSpeed = ent => Entities.GetMoveSpeedModifier(ent, Entities.GetBaseMoveSpeed(ent))
+Game.GetSpeed_IsMoving = ent => Entities.IsMoving(ent) ? Game.GetSpeed(ent) : 0
 
 Game.VelocityWaypoint = (ent, time, movespeed) => {
 	var zxc = Entities.GetAbsOrigin(ent)
 	var forward = Entities.GetForward(ent)
-	movespeed = movespeed || Game.GetSpeed(ent)
+	movespeed = movespeed || Game.GetSpeed_IsMoving(ent)
 
 	return [zxc[0] + (forward[0] * movespeed * time), zxc[1] + (forward[1] * movespeed * time), zxc[2]]
 }
