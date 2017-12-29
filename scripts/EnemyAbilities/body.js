@@ -1,7 +1,7 @@
 //idea and base (c) github.com/IGRINI 2017
 var MainHud = Fusion.Panels.Main.HUDElements,
 	enabled = false,
-	latestEnemy, abpanel_layout, lvlpanel_layout,itm_layout;
+	latestEnemy, abpanel_layout, lvlpanel_layout, itm_layout
 
 function DeleteAll() {
 	if (Fusion.Panels.EnemyAbilities)
@@ -10,9 +10,7 @@ function DeleteAll() {
 			lvlPanels.forEach(lvlPanel => lvlPanel.DeleteAsync(0))
 		})
 	if (Fusion.Panels.EnemyItems)
-		Fusion.Panels.EnemyItems.forEach((panel) => {
-			panel.DeleteAsync(0)
-		})
+		Fusion.Panels.EnemyItems.forEach(panel => panel.DeleteAsync(0))
 	Fusion.Panels.EnemyAbilities = new Map()
 	Fusion.Panels.EnemyItems = new Map()
 }
@@ -57,18 +55,15 @@ function EnemyAbilitiesF() {
 			var abilButton = abilLayout.FindChildTraverse("AbilityButton"),
 				abpanel = $.CreatePanel("Panel", abilButton, "abpanel")
 			abpanel.BLoadLayoutFromString(abpanel_layout, false, false)
-			abilButton.MoveChildBefore(abpanel, abilButton.FindChild("AbilityBevel")) // quichhack to move our abpanel before AbilityBevel
+			abilButton.MoveChildBefore(abpanel, abilButton.FindChild("AbilityBevel")) // quickhack to move our abpanel before AbilityBevel
 			Fusion.Panels.EnemyAbilities.set(`abpanel${abilNum - generic}`, [abpanel, lvlPanelContainer.Children()])
 		}
 		var [abPanel, lvlPanels] = Fusion.Panels.EnemyAbilities.get(`abpanel${abilNum-generic}`)
-		if(abilCD > 0)
-		{
+		if(abilCD > 0) {
 			abPanel.FindChild("cooldown").text = Math.ceil(abilCD)
 			abPanel.FindChild("cooldownoverlay").visible = true
-			abPanel.FindChild("cooldownoverlay").style.clip = `radial( 50.0% 50.0%, 0.0deg, -${Math.ceil(abilCD/abilMaxCD*360)}.0deg)`
-		}
-		else
-		{
+			abPanel.FindChild("cooldownoverlay").style.clip = `radial( 50.0% 50.0%, 0.0deg, -${abilCD / abilMaxCD * 360}deg)`
+		} else {
 			abPanel.FindChild("cooldown").text = ""
 			abPanel.FindChild("cooldownoverlay").visible = false
 		}
@@ -89,13 +84,12 @@ function EnemyAbilitiesF() {
 			lvlPanel.SetHasClass("active_level", abilLevel - i - 1 > -1)
 		})
 	}
-	var Inv = Game.GetInHeroItems(selectedEnt);
-		/*Stash = Game.GetStashItems(selectedEnt),
+	var Inv = Entities.GetUnitItems(selectedEnt);
+		/*Stash = Entities.GetStashItems(selectedEnt),
 		stashPanel = MainHud.FindChildTraverse(`stash`);*/
 	for (var n in Inv) {
-		if (Inv[n] === -1) 
-		{
-			if(Fusion.Panels.EnemyItems.has(`itemPanel${n}`)){			//Шобы при перетаскивании предметов не оставались панельки с кд
+		if (Inv[n] === -1) {
+			if(Fusion.Panels.EnemyItems.has(`itemPanel${n}`)) {
 				Fusion.Panels.EnemyItems.get(`itemPanel${n}`).DeleteAsync(0)
 				Fusion.Panels.EnemyItems.delete(`itemPanel${n}`);
 			}
@@ -112,14 +106,11 @@ function EnemyAbilitiesF() {
 			itemMaxCD = Abilities.GetCooldown(Inv[n]),
 			itemManaCost = Abilities.GetManaCost(Inv[n]),
 			curMana = Entities.GetMana(selectedEnt);
-		if(itemCD > 0)
-		{
+		if(itemCD > 0) {
 			itemPanel.FindChild("cooldown").text = Math.ceil(itemCD)
 			itemPanel.FindChild("cooldownoverlay").visible = true
 			itemPanel.FindChild("cooldownoverlay").style.clip = `radial( 50.0% 50.0%, 0.0deg, -${Math.ceil(itemCD/itemMaxCD*360)}.0deg)`
-		}
-		else
-		{
+		} else {
 			itemPanel.FindChild("cooldown").text = ""
 			itemPanel.FindChild("cooldownoverlay").visible = false
 		}
@@ -130,9 +121,8 @@ function EnemyAbilitiesF() {
 	}
 	/*for (var n in Stash) {
 		var itemNum = n + 9;
-		if (Stash[n] === -1) 
-		{
-			if(Fusion.Panels.EnemyItems.has(`itemPanel${itemNum}`)){
+		if (Stash[n] === -1)  {
+			if(Fusion.Panels.EnemyItems.has(`itemPanel${itemNum}`)) {
 				Fusion.Panels.EnemyItems.get(`itemPanel${itemNum}`).DeleteAsync(0)
 				Fusion.Panels.EnemyItems.delete(`itemPanel${itemNum}`);
 			}
@@ -150,14 +140,11 @@ function EnemyAbilitiesF() {
 			itemMaxCD = Abilities.GetCooldown(Stash[n]),
 			itemManaCost = Abilities.GetManaCost(Stash[n]),
 			curMana = Entities.GetMana(selectedEnt);
-		if(itemCD > 0)
-		{
+		if(itemCD > 0) {
 			itemPanel.FindChild("cooldown").text = Math.ceil(itemCD)
 			itemPanel.FindChild("cooldownoverlay").visible = true
 			itemPanel.FindChild("cooldownoverlay").style.clip = `radial( 50.0% 50.0%, 0.0deg, -${Math.ceil(itemCD/itemMaxCD*360)}.0deg)`
-		}
-		else
-		{
+		} else {
 			itemPanel.FindChild("cooldown").text = ""
 			itemPanel.FindChild("cooldownoverlay").visible = false
 		}
