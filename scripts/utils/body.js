@@ -1,4 +1,4 @@
-﻿Fusion.LenseBonusRange = 250
+Fusion.LenseBonusRange = 250
 Fusion.ForceStaffUnits = 600
 Fusion.LinkenTargetName = "modifier_item_sphere_target"
 Fusion.ForceStaffNames = [
@@ -589,6 +589,30 @@ Game.GetInventory = ent => {
 	}
 	return inv
 }
+Game.GetInHeroItems = ent => {
+	var inv = []
+	for(var i = 0; i < 9; i++) {
+		var item = Entities.GetItemInSlot(ent, i)
+		inv.push(item)
+	}
+	return inv
+}
+Game.GetBackpackItems = ent => {
+	var inv = []
+	for(var i = 6; i < 9; i++) {
+		var item = Entities.GetItemInSlot(ent, i)
+		inv.push(item)
+	}
+	return inv
+}
+Game.GetStashItems = ent => {
+	var inv = []
+	for(var i = 9; i < 15; i++) {
+		var item = Entities.GetItemInSlot(ent, i)
+		inv.push(item)
+	}
+	return inv
+}
 
 Entities.PlayersHeroEnts = returnNotVisible => {
 	var ents = Entities.GetAllEntities(),
@@ -597,6 +621,15 @@ Entities.PlayersHeroEnts = returnNotVisible => {
 		playerEnts = playerEnts.filter(ent => ents.indexOf(ent) > -1)
 	
 	return playerEnts
+}
+Entities.GetOwnerID = ent => {
+	var plyids = Game.GetAllPlayerIDs()
+	for(var k in plyids)
+	{
+		if (Entities.IsControllableByPlayer(ent,plyids[k]))
+			return plyids[k]
+	}
+	return false
 }
 
 //возвращает DOTA_ABILITY_BEHAVIOR в удобном представлении
