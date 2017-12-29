@@ -1,6 +1,7 @@
 <root>
 	<Panel style="width:100%;height:100%;" hittest="false">
-		<Label id="cooldown" hittest="false" text="" style=' z-index: 1;text-align: center; color: white; font-size: 20px; text-shadow: 1px 1px 1px 2 #00000099; align: center center; font-family: Radiance;'/>
+		<Label id="cooldown" hittest="false" text="" style=' z-index: 2;text-align: center; color: white; font-size: 20px; text-shadow: 1px 1px 1px 2 #00000099; align: center center; font-family: Radiance;'/>
+		<Panel id="cooldownoverlay" hittest="false" style="z-index: 1;align: center center;width: 80%; height: 80%;background-color:#000000;opacity: .8;" />
 		<Panel id="nomana" hittest="false" style=' z-index: 0;background-color: rgba(119,154,187,1); background-image: url("s2r://panorama/images/hud/reborn/ability_bevel_psd.vtex"); opacity: 0.1; width: 100%; height: 100%;'/>
 	</Panel>
 </root>
